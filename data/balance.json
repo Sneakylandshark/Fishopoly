@@ -405,6 +405,8 @@
 		"_targets_note": "Set 12 Nov from robot runs with no levy: about half of what the bottom quarter of runs earn each season.",
 		"targets": [1000, 1000, 1500, 3000, 25000, 150000, 400000, 800000, 1200000, 2500000, 5000000, 8000000, 10000000, 12000000],
 		"growth_after": 1.1,
+		"_appetite_note": "The Crown's appetite grows with you (Liam 12 Nov): each season's levy is at least appetite x what you earned last season, so you must keep growing.",
+		"appetite": 0.6,
 		"fine_share": 1.0,
 		"max_strikes": 3,
 		"decree_from_season": 6,

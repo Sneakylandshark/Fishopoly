@@ -1317,15 +1317,27 @@ func resolve_push(defect: bool) -> void:
 
 func levy_target(s: int = -1) -> float:
 	# What the Crown wants you to earn in season s (grows every season)
-	var lv: Dictionary = data.levy
 	var n: int = season if s < 0 else s
-	var t: Array = lv.targets
 	# The loyalty multiplier only applies to the current season
 	var m: float = levy_scale * (levy_mult if n == season else 1.0)
+	# The Crown's appetite grows with you: at least a share of what you earned last season
+	return max(levy_base(n), appetite_floor(n)) * m
+
+
+func levy_base(n: int) -> float:
+	# The levy table (after the table ends, each season asks growth_after times the last)
+	var lv: Dictionary = data.levy
+	var t: Array = lv.targets
 	if n <= t.size():
-		return float(t[n - 1]) * m
-	# After the table ends, each season asks growth_after times the last
-	return float(t[-1]) * pow(float(lv.growth_after), n - t.size()) * m
+		return float(t[n - 1])
+	return float(t[-1]) * pow(float(lv.growth_after), n - t.size())
+
+
+func appetite_floor(n: int) -> float:
+	# A share of what you earned in the season before n (0 in season 1)
+	if n < 2 or season_log.size() < n - 1:
+		return 0.0
+	return float(data.levy.appetite) * float(season_log[n - 2])
 
 
 func season_end_day() -> int:
@@ -1335,6 +1347,9 @@ func season_end_day() -> int:
 func levy_text() -> String:
 	# For the top bar
 	var t := "Levy: earn %s by day %d (%s so far)  Strikes %d/%d" % [money(levy_target()), season_end_day(), money(season_earned), strikes, int(data.levy.max_strikes)]
+	# Say so when the Crown's appetite (not the table) sets the target
+	if appetite_floor(season) > levy_base(season):
+		t += " [%d%% of last season]" % int(round(float(data.levy.appetite) * 100))
 	if not decree.is_empty():
 		t += "  |  Decree: %s (%s)" % [decree.name, decree.text]
 	return t
@@ -2232,4 +2247,3 @@ func _offer_continue() -> void:
 		return
 	var crown_name: String = d.get("crown", {}).get("name", "?")
 	pending_pick = {"kind": "continue", "title": "Carry on your run?", "text": "You have a run in progress: day %d, %s in cash, under %s." % [int(d.get("day", 0)), money(float(d.get("cash", 0.0))), crown_name], "options": [{"name": "Continue (day %d)" % int(d.get("day", 0)), "text": "Pick up where you left off.", "index": 0}, {"name": "Start a new run", "text": "The saved run is deleted.", "index": 1}], "stash": pending_pick}
-
