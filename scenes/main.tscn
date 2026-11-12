@@ -475,7 +475,7 @@ The weather is secret until the boats head out: perfect days pay most, normal da
 [b]Tiers:[/b] 1 fishing, pearls, crab, cray, deep sea  ->  2 salvage, treasure, whaling  ->  3 smuggling, hidden moorings, piracy  ->  4 oil. A tier opens when you own every building in the tier below and their upgrades reach a set level (the locked building's menu lists what's missing). Later avenues boost earlier ones (supply chains).
 [b]Dirty money[/b] (tier 3) is laundered at 70% but raises [b]suspicion[/b]. The higher it is, the likelier an investigation. An informant tips you off 2 days ahead: get suspicion 25 lower by then and they find nothing. Otherwise: no earnings that day, a fine, and sailing ships seized. To cool off, [b]Hide[/b] your smuggling and pirate ships in the Hidden Moorings (one per berth; hidden ships earn nothing but are safe), or [b]Pay off officials[/b] (button by the suspicion bar; dearer each time).
 [b]Crown levy:[/b] every 4 weeks the Crown sets a target: earn at least that much this season (you keep the money). Miss it and you're fined the shortfall and get a strike. 3 strikes and you lose the island. From season 6 each season also has a [b]decree[/b], a twist that lasts the season (status bar).
-[b]Crowns:[/b] each Crown has buffs AND drawbacks. As you get rich a rival Crown pushes for the island. Stay and pay tribute, or defect once to the rival (new buffs and drawbacks, dearer island, some crews leave).
+[b]Crowns:[/b] you choose 1 of 6 Crowns at the start. Each has a good side AND a bad side (status bar). As you get rich a rival Crown (a random one you haven't served) pushes for the island (in place of that season's decree). Stay and that season's levy goes up, or defect once to the rival (new buffs and drawbacks, dearer island, some crews leave).
 [b]News:[/b] each week one market goes up or down 50% (status bar).
 "
 
@@ -675,7 +675,7 @@ alignment = 1
 
 [node name="Stay" type="Button" parent="UI/CrownChoice/Box/Buttons"]
 custom_minimum_size = Vector2(220, 48)
-text = "Stay (pay tribute)"
+text = "Stay (bigger levy)"
 
 [node name="Defect" type="Button" parent="UI/CrownChoice/Box/Buttons"]
 custom_minimum_size = Vector2(220, 48)

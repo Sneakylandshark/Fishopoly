@@ -1,4 +1,4 @@
-﻿extends Node3D
+extends Node3D
 ## The greybox scene: draws the island, boats, weather and the menus.
 ## The rules live in game.gd (the "Game" autoload). This script only shows them and passes on button presses.
 ## Click a building (or the dock) to open its menu: build, buy, upgrade.
@@ -271,9 +271,7 @@ func _update_top_bar() -> void:
 	$UI/Actions/BuyIsland.disabled = not Game.can_afford(Game.island_price())
 	$UI/Actions/StartDay.disabled = animating or Game.over or Game.pending_push >= 0 or Game.pending_offer >= 0 or not Game.pending_pick.is_empty()
 	$UI/StatusBar/Row/Forecast.text = Game.forecast_text()
-	$UI/StatusBar/Row/Crown.text = "Crown: %s (%s)" % [Game.crown.name, _buff_text(Game.crown.buffs)]
-	if Game.crown.has("_drawback"):
-		$UI/StatusBar/Row/Crown.text += " " + Game.crown._drawback
+	$UI/StatusBar/Row/Crown.text = "Crown: %s. Good: %s Bad: %s" % [Game.crown.name, Game.crown.good, Game.crown.bad]
 	# The Crown's levy for this season, strikes and the season's decree
 	$UI/StatusBar/Row/Crown.text += "   |   " + Game.levy_text()
 	$UI/StatusBar/Row/Crown.modulate = Color(1, 0.6, 0.4) if Game.strikes > 0 else Color(1, 1, 1)
@@ -302,14 +300,18 @@ func _update_crown_choice() -> void:
 	if not box.visible:
 		return
 	var cr: Dictionary = Game.data.crowns
-	var rival: Dictionary = cr.rival
+	var rival: Dictionary = Game.rival()
+	# The new price: re-appraised, and a Crown's own price rule (Treasure Fleet) swaps in
+	var new_price: float = Game.island_price() * cr.appraisal * float(rival.perks.get("price_mult", 1.0)) / float(Game.crown.perks.get("price_mult", 1.0))
 	var text := "[font_size=24][b]%s pushes for the island[/b][/font_size]\n[i](inspired by %s)[/i]\n\n%s\n\n" % [rival.name, rival.inspired_by, rival.pitch]
-	text += "[b]Stay[/b] with %s: pay %s in tribute (part of last week's earnings).\n\n" % [Game.crown.name, Game.money(Game.tribute_now())]
+	text += "[b]Stay[/b] with %s: this season's levy goes from %s to %s.\n\n" % [Game.crown.name, Game.money(Game.levy_target()), Game.money(Game.levy_target() * Game.stay_levy_mult())]
 	if Game.defected:
 		text += "You have already defected. There is no going back."
 		$UI/CrownChoice/Box/Buttons/Defect.disabled = true
 	else:
-		text += "[b]Defect[/b] to %s (one-way): the island is re-appraised at %s, you lose %s's buffs (%s) and gain theirs (%s), and about %d%% of your boats and crews stay loyal to the old Crown and leave." % [rival.name, Game.money(Game.island_price() * cr.appraisal), Game.crown.name, _buff_text(Game.crown.buffs), _buff_text(rival.buffs), int(cr.defectors * 100)]
+		text += "[b]Defect[/b] to %s (one-way): the island is re-appraised at %s, and about %d%% of your boats and crews stay loyal to the old Crown and leave.
+   You lose: %s %s
+   You gain: %s %s" % [rival.name, Game.money(new_price), int(cr.defectors * 100), Game.crown.good, Game.crown.bad, rival.good, rival.bad]
 		$UI/CrownChoice/Box/Buttons/Defect.disabled = false
 	$UI/CrownChoice/Box/Text.text = text
 
@@ -332,6 +334,17 @@ func _update_pick() -> bool:
 	for o in p.options:
 		text += "[b]%s[/b]\n[color=#9fe39f]%s[/color]\n\n" % [o.name, o.text]
 	$UI/OfferChoice/Box/Text.text = text
+	# The Crown pick has six choices, so it uses its own grid of buttons instead of the usual three
+	var grid := _crown_grid()
+	grid.visible = p.kind == "crown"
+	$UI/OfferChoice/Box/Buttons.visible = p.kind != "crown"
+	if p.kind == "crown":
+		for i in grid.get_child_count():
+			var cb: Button = grid.get_child(i)
+			cb.visible = i < p.options.size()
+			if cb.visible:
+				cb.text = p.options[i].name
+		return true
 	var buttons := [$UI/OfferChoice/Box/Buttons/PickA, $UI/OfferChoice/Box/Buttons/PickB, $UI/OfferChoice/Box/Buttons/Later]
 	for i in buttons.size():
 		var b: Button = buttons[i]
@@ -347,9 +360,31 @@ func _update_pick() -> bool:
 	return true
 
 
+func _crown_grid() -> GridContainer:
+	# Made once, the first time it's needed: six buttons, three to a row
+	var box: VBoxContainer = $UI/OfferChoice/Box
+	if box.has_node("CrownGrid"):
+		return box.get_node("CrownGrid")
+	var grid := GridContainer.new()
+	grid.name = "CrownGrid"
+	grid.columns = 3
+	grid.add_theme_constant_override("h_separation", 12)
+	grid.add_theme_constant_override("v_separation", 12)
+	box.add_child(grid)
+	for i in Game.data.crowns.list.size():
+		var b := Button.new()
+		b.custom_minimum_size = Vector2(260, 44)
+		b.pressed.connect(func(): Game.answer_pick(i))
+		grid.add_child(b)
+	return grid
+
+
 func _update_offer_choice() -> void:
 	if _update_pick():
 		return
+	# Not a pick: put the usual three buttons back
+	_crown_grid().visible = false
+	$UI/OfferChoice/Box/Buttons.visible = true
 	var box := $UI/OfferChoice
 	for b in [$UI/OfferChoice/Box/Buttons/PickA, $UI/OfferChoice/Box/Buttons/PickB, $UI/OfferChoice/Box/Buttons/Later]:
 		b.visible = true

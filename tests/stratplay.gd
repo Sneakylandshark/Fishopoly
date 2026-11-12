@@ -1,4 +1,4 @@
-﻿extends SceneTree
+extends SceneTree
 ## Headless test: robots that follow one strategy for the whole run.
 ## Run: <godot console exe> --headless --path "<project>" -s res://tests/stratplay.gd -- strat=clean runs=50 seed=1000
 ## Strategies:
@@ -20,6 +20,8 @@ var STORM := -1.0
 var LEVY_SCALE := 1.0
 # decree_from= sets the first season with a decree for this test only (-1 = use balance.json)
 var DECREE_FROM := -1
+# crown= picks the starting Crown by id (e.g. turtle_admiral), or "random" (default: the Lord Admiral)
+var CROWN := "lord_admiral"
 var step := 0
 var game: Node
 var dice := RandomNumberGenerator.new()
@@ -37,6 +39,8 @@ func _initialize() -> void:
 			STORM = float(a.substr(6))
 		elif a.begins_with("levy_scale="):
 			LEVY_SCALE = float(a.substr(11))
+		elif a.begins_with("crown="):
+			CROWN = a.substr(6)
 		elif a.begins_with("decree_from="):
 			DECREE_FROM = int(a.substr(12))
 	game = root.get_node_or_null("/root/Game")
@@ -118,7 +122,7 @@ func _process(_delta: float) -> bool:
 		for t in [2, 3, 4]:
 			if t_open[t] >= 0:
 				tier = t
-		print("RUN strat=%s seed=%d %s day=%d tier=%d t2=%d t3=%d t4=%d covers=%d defected=%s invest=%d peak=%d end=%s surveys=%d oilbuilt=%d pbribes=%d strikes=%d season=%d" % [STRAT, SEED + r, result, game.day, tier, t_open[2], t_open[3], t_open[4], covers, str(game.defected), game.investigations, int(peak), end_cause, game.surveys, oil_day, game.permit_bribes, game.strikes, game.season])
+		print("RUN strat=%s seed=%d %s day=%d tier=%d t2=%d t3=%d t4=%d covers=%d defected=%s invest=%d peak=%d end=%s surveys=%d oilbuilt=%d pbribes=%d strikes=%d season=%d crown=%s" % [STRAT, SEED + r, result, game.day, tier, t_open[2], t_open[3], t_open[4], covers, str(game.defected), game.investigations, int(peak), end_cause, game.surveys, oil_day, game.permit_bribes, game.strikes, game.season, game.crown.id])
 		print("SEASONS seed=%d %s" % [SEED + r, " ".join(game.season_log.map(func(x): return str(int(x))))])
 	return true
 
@@ -129,6 +133,13 @@ const DIRTY_BOONS := ["pirates_charter", "smugglers_map", "friendly_magistrate",
 # Pick the boon this strategy likes best: dirty strategies want dirty boons, the rest avoid them
 func _pick_boon() -> int:
 	var opts: Array = game.pending_pick.options
+	if game.pending_pick.kind == "crown":
+		if CROWN == "random":
+			return dice.randi_range(0, opts.size() - 1)
+		for i in game.data.crowns.list.size():
+			if game.data.crowns.list[i].id == CROWN:
+				return i
+		return 0
 	if game.pending_pick.kind != "boon":
 		return 0
 	for i in opts.size():

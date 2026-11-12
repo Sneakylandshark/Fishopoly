@@ -1,4 +1,4 @@
-﻿extends Node
+extends Node
 ## The rules of Fishopoly: money, weather, bills, loans, tiers, Crowns, suspicion, news.
 ## No visuals here. The main scene reads this and draws it.
 ## All numbers come from res://data/balance.json.
@@ -53,6 +53,8 @@ var decree: Dictionary = {}
 var season_log: Array = []
 # Tests can scale every levy target (1 = as in balance.json)
 var levy_scale := 1.0
+# This season's levy multiplier (staying loyal when the rival pushes raises it)
+var levy_mult := 1.0
 # Clean money earned this week (only clean money is taxed)
 var week_taxable := 0.0
 var last_week := 0.0
@@ -61,8 +63,6 @@ var last_storm := 0
 var upcoming: Array = []
 var harbor_spaces := 0
 var harbor_buys := 0
-var greed_rent := 0.0
-var next_milestone := 0.0
 var over := false
 var price := 0.0
 
@@ -86,6 +86,9 @@ var wrecks := 0
 # Crowns, suspicion, news
 var crown: Dictionary = {}
 var defected := false
+# Indexes into data.crowns.list: the Crowns you have served, and the rival pushing right now
+var served: Array = []
+var rival_index := -1
 var push_index := 0
 var pending_push := -1
 var suspicion := 0.0
@@ -144,8 +147,6 @@ func new_run(seed: int = -1, write_log: bool = true) -> void:
 	last_storm = 0
 	harbor_spaces = int(data.start.harbor_spaces)
 	harbor_buys = 0
-	greed_rent = 0.0
-	next_milestone = data.greed.first_milestone
 	over = false
 	price = data.island_price
 	boats = []
@@ -165,7 +166,10 @@ func new_run(seed: int = -1, write_log: bool = true) -> void:
 	for key in data.avenues:
 		levels[key] = _zeros(data.avenues[key].paths.size())
 	wrecks = 0
-	crown = data.crowns.start
+	# The Lord Admiral until the player picks a Crown (right after the sea conditions)
+	crown = data.crowns.list[0]
+	served = [0]
+	rival_index = -1
 	defected = false
 	push_index = 0
 	pending_push = -1
@@ -191,6 +195,7 @@ func new_run(seed: int = -1, write_log: bool = true) -> void:
 	strikes = 0
 	decree = {}
 	season_log = []
+	levy_mult = 1.0
 	_say("Day 0. You own one small boat and a rock. %s owns the island and wants %s for it." % [crown.name, money(price)])
 	_say("CROWN LEVY: earn %s by day %d. Miss a levy and you're fined and get a strike; %d strikes and the Crown takes the island back." % [money(levy_target()), season_end_day(), int(data.levy.max_strikes)])
 	_draw_conditions()
@@ -265,7 +270,7 @@ func harbor_space_price() -> float:
 func unit_price(key: String) -> float:
 	var a: Dictionary = data.avenues[key]
 	var n := units_owned(key)
-	return a.unit * pow(data.unit_price_growth, max(n - 1, 0)) * (1.0 + data.upgrades.unit_price_per_level * avg_level(key))
+	return a.unit * pow(data.unit_price_growth, max(n - 1, 0)) * (1.0 + data.upgrades.unit_price_per_level * avg_level(key)) * perk("unit_cost_" + key)
 
 
 func upgrade_price(key: String, path: int) -> float:
@@ -335,7 +340,8 @@ func income_mult(key: String) -> float:
 	m *= perk("income_all")
 	m *= float(crown.buffs.get(key, 1.0))
 	if news.get("key", "") == key:
-		m *= float(news.mult)
+		# Some Crowns make news move prices further
+		m *= 1.0 + (float(news.mult) - 1.0) * perk("news_swing")
 	return m
 
 
@@ -510,7 +516,7 @@ func rent_for_week(week: int) -> float:
 	var n: int = max(0, int((week - 1) / int(r.weeks_per_step)))
 	var g: float = r.step_growth
 	var steps: float = n if is_equal_approx(g, 1.0) else (pow(g, n) - 1.0) / (g - 1.0)
-	return r.start + r.first_step * steps + greed_rent
+	return (r.start + r.first_step * steps) * perk("rent_mult")
 
 
 func next_rent() -> float:
@@ -751,9 +757,16 @@ func start_day() -> Dictionary:
 				boats.remove_at(i)
 				caught += 1
 		var de: float = a[w] * income_mult(key) * (n - caught)
+		# A licensed share of piracy (Queen's Privateer) comes in clean: no laundering, no suspicion
+		var licensed: float = de * clamp(perk(key + "_clean_add"), 0.0, 1.0)
+		clean += licensed
+		de -= licensed
 		dirty += de
 		dirty_risk += de * risk(key)
-		report.lines.append("%s: +$%s dirty" % [a.name, _money(de)])
+		if licensed > 0:
+			report.lines.append("%s: +$%s clean (licensed) +$%s dirty" % [a.name, _money(licensed), _money(de)])
+		else:
+			report.lines.append("%s: +$%s dirty" % [a.name, _money(de)])
 		if caught > 0:
 			report.lines.append("Patrols caught %d of your %s(s)!" % [caught, a.unit_name.to_lower()])
 
@@ -876,20 +889,6 @@ func start_day() -> Dictionary:
 			report.lines.append("Paid $%s to the Silent Partner. Loan cleared!" % _money(pay))
 	if not over and loan > 0 and day >= loan_due:
 		_liquidate(report)
-
-	# Crown greed: rent rises for good when cash first passes each milestone
-	while cash >= next_milestone:
-		greed_rent += crown.greed * next_milestone
-		report.lines.append("%s notices your wealth. Rent rises by $%s a week." % [crown.name, _money(crown.greed * next_milestone)])
-		next_milestone *= 10.0
-
-	# A rival Crown pushes for the island as you get rich (one at a time; the player must answer)
-	var pushes: Array = data.crowns.push_at
-	if not over and pending_push < 0 and push_index < pushes.size() and cash >= pushes[push_index] * price:
-		pending_push = push_index
-		push_index += 1
-		report["push"] = true
-		report.lines.append("%s pushes for the island!" % data.crowns.rival.name)
 
 	# After the weekly bills a visitor may come with an offer (not in the same week as a Crown push)
 	if not over and day % 7 == 0 and pending_push < 0:
@@ -1057,9 +1056,30 @@ func _clear_old_warning(report: Dictionary) -> void:
 
 # ---------- Rival Crowns ----------
 
-func tribute_now() -> float:
-	var steps: Array = data.crowns.tribute_weeks
-	return steps[min(max(pending_push, 0), steps.size() - 1)] * last_week
+func stay_levy_mult() -> float:
+	# Staying with your Crown when the rival pushes makes this season's levy bigger (each push more)
+	var steps: Array = data.crowns.stay_levy_mult
+	return float(steps[min(max(pending_push, 0), steps.size() - 1)])
+
+
+func rival() -> Dictionary:
+	# The Crown pushing for the island right now
+	return data.crowns.list[max(rival_index, 0)]
+
+
+func _pick_rival() -> void:
+	# A random Crown you haven't served
+	var pool := []
+	for i in data.crowns.list.size():
+		if not served.has(i):
+			pool.append(i)
+	rival_index = pool[rng.randi_range(0, pool.size() - 1)]
+
+
+func _push_due() -> bool:
+	# The rival pushes as you get rich (at shares of the island price), until you defect
+	var pushes: Array = data.crowns.push_at
+	return not defected and push_index < pushes.size() and cash >= pushes[push_index] * price
 
 
 func resolve_push(defect: bool) -> void:
@@ -1068,8 +1088,11 @@ func resolve_push(defect: bool) -> void:
 	var cr: Dictionary = data.crowns
 	if defect and not defected:
 		defected = true
-		crown = cr.rival
-		price *= cr.appraisal
+		var old_mult: float = perk("price_mult")
+		crown = cr.list[rival_index]
+		served.append(rival_index)
+		# Re-appraised dearer; a Crown with its own price rule (Treasure Fleet) changes it too
+		price *= cr.appraisal * perk("price_mult") / old_mult
 		# Some of your people stay loyal to the old Crown and leave
 		var left := 0
 		for i in range(boats.size() - 1, -1, -1):
@@ -1085,16 +1108,12 @@ func resolve_push(defect: bool) -> void:
 			counts[k] = keep
 		pending_push = -1
 		_say("You defected to %s. The island is re-appraised at %s. %d of your boats and crews stayed loyal to the old Crown and left." % [crown.name, money(price), left])
+		decree = {"id": "rival_push", "name": "New Crown", "text": "You serve %s now." % crown.name}
 	else:
-		var t := tribute_now()
-		cash -= t
-		var rep := {"lines": [], "removed": []}
-		if cash < 0:
-			_cover_shortfall(rep)
+		levy_mult = stay_levy_mult()
 		pending_push = -1
-		_say("You stayed with %s and paid %s in tribute to keep the rival away." % [crown.name, money(t)])
-		for line in rep.lines:
-			_say(line)
+		decree = {"id": "rival_push", "name": "Loyalty levy", "text": "You stayed with %s, so this season's levy is x%s." % [crown.name, str(levy_mult)]}
+		_say("You stayed with %s. To keep the rival away, this season's levy is now %s." % [crown.name, money(levy_target())])
 
 
 # ---------- Crown levies ----------
@@ -1104,10 +1123,12 @@ func levy_target(s: int = -1) -> float:
 	var lv: Dictionary = data.levy
 	var n: int = season if s < 0 else s
 	var t: Array = lv.targets
+	# The loyalty multiplier only applies to the current season
+	var m: float = levy_scale * (levy_mult if n == season else 1.0)
 	if n <= t.size():
-		return float(t[n - 1]) * levy_scale
+		return float(t[n - 1]) * m
 	# After the table ends, each season asks growth_after times the last
-	return float(t[-1]) * pow(float(lv.growth_after), n - t.size()) * levy_scale
+	return float(t[-1]) * pow(float(lv.growth_after), n - t.size()) * m
 
 
 func season_end_day() -> int:
@@ -1141,8 +1162,17 @@ func _end_season(report: Dictionary) -> void:
 			return
 	season += 1
 	season_earned = 0.0
+	levy_mult = 1.0
 	decree = {}
-	if season >= int(lv.decree_from_season):
+	# The rival Crown's push takes the place of this season's decree
+	if _push_due():
+		pending_push = push_index
+		push_index += 1
+		_pick_rival()
+		decree = {"id": "rival_push", "name": "Rival Crown", "text": "%s pushes for the island. Stay (this season's levy goes up) or defect." % rival().name}
+		report["push"] = true
+		report.lines.append("CROWN DECREE: %s pushes for the island! Stay loyal and this season's levy rises, or defect." % rival().name)
+	elif season >= int(lv.decree_from_season):
 		_draw_decree(report)
 	report.lines.append("NEXT LEVY: earn $%s by day %d." % [_money(levy_target()), season_end_day()])
 
@@ -1198,6 +1228,16 @@ func _draw_conditions() -> void:
 	pending_pick = {"kind": "conditions", "title": "This year's seas", "text": "Every run's seas are different. These last the whole run:", "options": options}
 
 
+func _offer_crowns() -> void:
+	# Every run starts by choosing which Crown to lease the rock from
+	var options := []
+	for i in data.crowns.list.size():
+		var c: Dictionary = data.crowns.list[i]
+		options.append({"name": c.name, "text": "Good: %s
+Bad: %s" % [c.good, c.bad], "index": i})
+	pending_pick = {"kind": "crown", "title": "Choose your Crown", "text": "Six Crowns will lease you the rock. Each has its own rules. You can defect later, but only once.", "options": options}
+
+
 func _check_tier_boon() -> void:
 	# The first time each tier opens, offer 1 of 3 random boons not taken yet
 	if not pending_pick.is_empty():
@@ -1233,6 +1273,19 @@ func answer_pick(choice: int) -> bool:
 		_apply_perks(b.perks)
 		pending_pick = {}
 		_say("Boon: %s. %s" % [b.name, b.text])
+		return true
+	if p.kind == "crown":
+		if choice < 0 or choice >= data.crowns.list.size():
+			return false
+		crown = data.crowns.list[choice]
+		served = [choice]
+		price = data.island_price * perk("price_mult")
+		pending_pick = {}
+		_say("You lease the rock from %s. %s %s The island costs %s." % [crown.name, crown.good, crown.bad, money(price)])
+		return true
+	if p.kind == "conditions":
+		_offer_crowns()
+		changed.emit()
 		return true
 	pending_pick = {}
 	changed.emit()
@@ -1573,8 +1626,12 @@ func income_estimate(clean_only: bool = false) -> float:
 	for key in data.avenues:
 		if key == "deep" or not built.has(key):
 			continue
+		# For tax, dirty avenues only count their licensed (clean) share, if any
+		var share := 1.0
 		if clean_only and data.avenues[key].get("dirty", false):
-			continue
+			share = clamp(perk(key + "_clean_add"), 0.0, 1.0)
+			if share <= 0.0:
+				continue
 		if key == "salvage":
 			if count_boats("barge") > 0:
 				var sv: Dictionary = data.avenues.salvage
@@ -1587,7 +1644,7 @@ func income_estimate(clean_only: bool = false) -> float:
 			n = count_boats(SHIP_KIND[key], "deep")
 		if key == "hiding":
 			n = int(counts.hiding) - hidden_own()
-		total += avg_per_day(key) * n
+		total += avg_per_day(key) * n * share
 	return total
 
 

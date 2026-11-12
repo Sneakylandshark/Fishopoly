@@ -43,35 +43,44 @@
 		"weeks_per_step": 2
 	},
 
-	"greed": {
-		"_note": "Each time your cash first passes a milestone ($10k, $100k, ...), weekly rent rises for good by this share of it (times the Crown's greed).",
-		"first_milestone": 10000
-	},
-
 	"crowns": {
-		"_note": "You start under the first Crown. As you get rich, the rival pushes for the island (at these shares of the island price). Stay = pay tribute (weeks of income, rising each push). Defect (once, one-way) = the island is re-appraised dearer, you lose the old Crown's buffs and gain the new one's, and some of your people stay loyal to the old Crown and leave. Characters are inspired by real admirals; names and portraits are our own.",
-		"start": {
-			"name": "The Lord Admiral",
-			"inspired_by": "Horatio Nelson",
-			"pitch": "Strong navy, strict on smugglers. Pays well for whale oil and crude.",
-			"buffs": {"whaling": 1.25, "oil": 1.25, "smuggle": 0.8, "piracy": 0.8, "hiding": 0.8},
-			"_drawback": "Strict on smugglers: fines x1.5, suspicion builds 30% faster.",
-			"perks": {"fine": 1.5, "suspicion": 1.3},
-			"greed": 0.02,
-			"tax_bands": [[1000, 0.0], [2500, 0.16], [10000, 0.30], [50000, 0.37], [1000000000000, 0.45]]
-		},
-		"rival": {
-			"name": "The Queen's Privateer",
-			"inspired_by": "Francis Drake",
-			"pitch": "Turns a blind eye to smugglers and pirates, taxes lightly, and asks for less.",
-			"buffs": {"smuggle": 1.25, "piracy": 1.25, "hiding": 1.25, "whaling": 0.75, "oil": 0.75},
-			"_drawback": "No navy to call on: deep-sea boats are 10% less likely to survive storms.",
-			"perks": {"survive_add": -0.1},
-			"greed": 0.01,
-			"tax_bands": [[1000, 0.0], [2500, 0.12], [10000, 0.25], [50000, 0.30], [1000000000000, 0.35]]
-		},
+		"_note": "You start under the first Crown. As you get rich, the rival pushes for the island (at these shares of the island price). Stay = this season's levy goes up (stay_levy_mult). The rival is a random Crown you haven't served. Defect (once, one-way) = the island is re-appraised dearer, you lose the old Crown's buffs and gain the new one's, and some of your people stay loyal to the old Crown and leave. Characters are inspired by real admirals; names and portraits are our own.",
+		"_list_note": "The six Crowns (Liam's table in Progression.md). You pick one at the start of a run. buffs = income multipliers per avenue. perks work like Visitors' perks (risk_X, fine, suspicion, survive_add, launder_add) plus Crown-only ones: rent_mult, news_swing (news moves x this), unit_cost_X (unit price), piracy_clean_add (share of piracy money that comes in clean), price_mult (island price). good/bad are shown to the player. Numbers are Proposed.",
+		"list": [
+			{"id": "lord_admiral", "name": "The Lord Admiral", "inspired_by": "Horatio Nelson (Britain)",
+				"pitch": "Strong navy, strict on smugglers. Pays well for whale oil and crude.",
+				"good": "Whaling and oil earn 25% more.", "bad": "Strong patrols: smugglers and pirates are caught 50% more often.",
+				"buffs": {"whaling": 1.25, "oil": 1.25}, "perks": {"risk_smuggle": 1.5, "risk_piracy": 1.5},
+				"tax_bands": [[1000, 0.0], [2500, 0.16], [10000, 0.30], [50000, 0.37], [1000000000000, 0.45]]},
+			{"id": "merchant_admiral", "name": "The Merchant Admiral", "inspired_by": "Michiel de Ruyter (Dutch Republic)",
+				"pitch": "Trade is everything. Low taxes, and no questions about where the money came from.",
+				"good": "Low tax, and laundering keeps 15% more.", "bad": "News moves prices 60% further, up and down.",
+				"buffs": {}, "perks": {"launder_add": 0.15, "news_swing": 1.6},
+				"tax_bands": [[1000, 0.0], [2500, 0.10], [10000, 0.20], [50000, 0.25], [1000000000000, 0.30]]},
+			{"id": "queens_privateer", "name": "The Queen's Privateer", "inspired_by": "Francis Drake (England)",
+				"pitch": "Piracy with a licence. Half of what your pirates take comes in clean, and the Crown takes its cut.",
+				"good": "Half of all piracy money comes in clean (no laundering, no suspicion).", "bad": "Taxed hard: up to 55%.",
+				"buffs": {}, "perks": {"piracy_clean_add": 0.5},
+				"tax_bands": [[1000, 0.0], [2500, 0.20], [10000, 0.35], [50000, 0.45], [1000000000000, 0.55]]},
+			{"id": "treasure_admiral", "name": "The Treasure Fleet Admiral", "inspired_by": "Zheng He (Ming China)",
+				"pitch": "Great fleets bring great riches, and great riches cost a great deal.",
+				"good": "Treasure earns 30% more, pearls 25% more.", "bad": "The island costs 50% more.",
+				"buffs": {"treasure": 1.3, "pearl": 1.25}, "perks": {"price_mult": 1.5},
+				"tax_bands": [[1000, 0.0], [2500, 0.16], [10000, 0.30], [50000, 0.37], [1000000000000, 0.45]]},
+			{"id": "turtle_admiral", "name": "The Turtle Ship Admiral", "inspired_by": "Yi Sun-sin (Joseon Korea)",
+				"pitch": "A careful defender. Protects your boats and your purse, and has no patience for crooks.",
+				"good": "Deep boats survive storms 15% more often, rent is 20% lower.", "bad": "Dirty money punished hard: fines x2, suspicion builds 50% faster.",
+				"buffs": {}, "perks": {"survive_add": 0.15, "rent_mult": 0.8, "fine": 2.0, "suspicion": 1.5},
+				"tax_bands": [[1000, 0.0], [2500, 0.16], [10000, 0.30], [50000, 0.37], [1000000000000, 0.45]]},
+			{"id": "iron_admiral", "name": "The Iron Fleet Admiral", "inspired_by": "Togo Heihachiro (Japan)",
+				"pitch": "Industry and steel. Builds fast, and expects you to keep up.",
+				"good": "Oil rigs and whaling ships cost 25% less.", "bad": "Rent is 25% higher.",
+				"buffs": {}, "perks": {"unit_cost_oil": 0.75, "unit_cost_whaling": 0.75, "rent_mult": 1.25},
+				"tax_bands": [[1000, 0.0], [2500, 0.16], [10000, 0.30], [50000, 0.37], [1000000000000, 0.45]]}
+		],
 		"push_at": [0.02, 0.1, 0.3],
-		"tribute_weeks": [0.2, 0.4, 0.6],
+		"_stay_note": "When the rival pushes (it replaces that season's decree), staying multiplies that season's levy by this (1st, 2nd, 3rd push).",
+		"stay_levy_mult": [1.5, 2.0, 3.0],
 		"appraisal": 1.1,
 		"defectors": 0.1
 	},

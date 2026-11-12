@@ -43,9 +43,10 @@ WHAT'S IN (everything from the economy tests)
 - Suspicion and investigations (lose a day's earnings, rising fines, ships seized; hidden ships safe).
 - Storm damage to oil rigs and whaling ships (repairs cost money). Pirate ships are never damaged; they need storms.
 - Dirty money is not taxed (only clean income counts for tax).
-- Crowns: you start under The Lord Admiral (inspired by Nelson). The Queen's Privateer (inspired by Drake)
-  pushes as you get rich: stay and pay tribute, or defect once (new buffs, dearer island, 10% of crews leave).
-- Crown greed, Australian-style tax bands, weekly news (one market up or down 50%), the Silent Partner.
+- Crowns: pick 1 of 6 at the start (Lord Admiral, Merchant Admiral, Queen's Privateer, Treasure Fleet, Turtle Ship,
+  Iron Fleet; each has a good and a bad side, see data/balance.json crowns.list). A random Crown you haven't served
+  pushes as you get rich, in place of a season's decree: stay and that season's levy goes up (x1.5 / x2 / x3), or defect once (new buffs and drawbacks, dearer island, 10% of crews leave).
+- Crown levies (4-week targets, strikes, decrees from season 6), Australian-style tax bands on clean money only, weekly news (one market up or down 50%), the Silent Partner.
 - Run log: every real run is saved to AppData\Roaming\Godot\app_userdata\Fishopoly\run_logs
 un_logs.
 
