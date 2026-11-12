@@ -50,9 +50,17 @@ WHAT'S IN (everything from the economy tests)
 - Run log: every real run is saved to AppData\Roaming\Godot\app_userdata\Fishopoly\run_logs
 un_logs.
 
+BUILT 12 NOV (LATER)
+- Champions: pick 1 of 10 at the start (data/balance.json champions). Good side, bad side, champion-only
+  upgrades. 3 unlocked from the start; the rest unlock by playing (saved in user://meta.json).
+- Advisors: one per avenue, A/B choice when you build it (both have a catch).
+- Voyages and the bounty board: smuggling/pirate ships wait in port or go on 2/4/7-day voyages.
+- Wildcat well (cheap early oil), Crown favour (beat a levy by 50%), Iron Fleet and Privateer fixes.
+- Mid-run save: user://save_run.txt, saved every day; the game offers to continue on start.
+- tests/uicheck.tscn: headless check that drives every new panel and menu.
+
 NOT IN YET
-Characters and portraits (other than Crown names), meta progress between
-runs, saving mid-run, sound, real art.
+Characters and portraits (other than Crown names), sound, real art.
 
 CHANGES AFTER LIAM'S FIRST PLAY (11 Nov 2026)
 - In-game help, earnings on every button, rent warnings, a daily summary.

@@ -477,6 +477,12 @@ The weather is secret until the boats head out: perfect days pay most, normal da
 [b]Crown levy:[/b] every 4 weeks the Crown sets a target: earn at least that much this season (you keep the money). Miss it and you're fined the shortfall and get a strike. 3 strikes and you lose the island. From season 6 each season also has a [b]decree[/b], a twist that lasts the season (status bar).
 [b]Crowns:[/b] you choose 1 of 6 Crowns at the start. Each has a good side AND a bad side (status bar). As you get rich a rival Crown (a random one you haven't served) pushes for the island (in place of that season's decree). Stay and that season's levy goes up, or defect once to the rival (new buffs and drawbacks, dearer island, some crews leave).
 [b]News:[/b] each week one market goes up or down 50% (status bar).
+[b]Champion:[/b] pick one at the start. Each has a good side, a bad side, and upgrades only they bring (marked 'champion only'). Win in certain ways to unlock more champions for later runs.
+[b]Advisors:[/b] when you build something, its advisor turns up with two choices. Both have a catch, and your choice lasts the run.
+[b]Voyages:[/b] smuggling and pirate ships wait in port (a little money, a small risk). Send them on voyages from the bounty board (in their building's menu) for big money paid when they get back. Long hauls pay more but are caught more often. Ships away can't be seized.
+[b]Crown favour:[/b] beat a levy by 50% and the Crown owes you a favour. Spend it (status bar) to clear a strike or cancel a decree.
+[b]Wildcat well:[/b] once your oil permit is through, a cheap wildcat well earns a little oil before you can afford the platform.
+[b]Saving:[/b] your run saves at the end of every day. Next time you start the game, you can carry on.
 "
 
 [node name="Close" type="Button" parent="UI/HelpPanel/Box"]

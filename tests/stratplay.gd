@@ -23,6 +23,8 @@ var LEVY_SCALE := 1.0
 var DECREE_FROM := -1
 # crown= picks the starting Crown by id (e.g. turtle_admiral), or "random" (default: the Lord Admiral)
 var CROWN := "lord_admiral"
+# champion= picks the champion by id (e.g. banker), or "random" (default: random)
+var CHAMPION := "random"
 var step := 0
 var game: Node
 var dice := RandomNumberGenerator.new()
@@ -42,6 +44,8 @@ func _initialize() -> void:
 			LEVY_SCALE = float(a.substr(11))
 		elif a.begins_with("crown="):
 			CROWN = a.substr(6)
+		elif a.begins_with("champion="):
+			CHAMPION = a.substr(9)
 		elif a.begins_with("decree_from="):
 			DECREE_FROM = int(a.substr(12))
 	game = root.get_node_or_null("/root/Game")
@@ -91,6 +95,8 @@ func _process(_delta: float) -> bool:
 					game.answer_offer("later")
 			_find_oil()
 			_shop()
+			_send_voyages()
+			_use_favour()
 			if _smart():
 				_dodge_investigators()
 			if not game.pending_pick.is_empty():
@@ -130,7 +136,7 @@ func _process(_delta: float) -> bool:
 		for t in [2, 3, 4]:
 			if t_open[t] >= 0:
 				tier = t
-		print("RUN strat=%s seed=%d %s day=%d tier=%d t2=%d t3=%d t4=%d covers=%d defected=%s invest=%d peak=%d end=%s surveys=%d oilbuilt=%d pbribes=%d strikes=%d season=%d crown=%s start_crown=%s m1=%d m10=%d" % [STRAT, SEED + r, result, game.day, tier, t_open[2], t_open[3], t_open[4], covers, str(game.defected), game.investigations, int(peak), end_cause, game.surveys, oil_day, game.permit_bribes, game.strikes, game.season, game.crown.id, game.data.crowns.list[game.served[0]].id, m1, m10])
+		print("RUN strat=%s seed=%d %s day=%d tier=%d t2=%d t3=%d t4=%d covers=%d defected=%s invest=%d peak=%d end=%s surveys=%d oilbuilt=%d pbribes=%d strikes=%d season=%d crown=%s start_crown=%s m1=%d m10=%d champion=%s favour=%d slow=%d wildcat=%s" % [STRAT, SEED + r, result, game.day, tier, t_open[2], t_open[3], t_open[4], covers, str(game.defected), game.investigations, int(peak), end_cause, game.surveys, oil_day, game.permit_bribes, game.strikes, game.season, game.crown.id, game.data.crowns.list[game.served[0]].id, m1, m10, game.champion().get("id", "-"), game.favour, int(game.stats.slow), str(game.wildcat or game.wildcat_ready_day > 0)])
 		print("SEASONS seed=%d %s" % [SEED + r, " ".join(game.season_log.map(func(x): return str(int(x))))])
 	return true
 
@@ -148,6 +154,13 @@ func _pick_boon() -> int:
 			if game.data.crowns.list[i].id == CROWN:
 				return i
 		return 0
+	if game.pending_pick.kind == "champion":
+		for i in opts.size():
+			if game.data.champions.list[int(opts[i].index)].id == CHAMPION:
+				return i
+		return dice.randi_range(0, opts.size() - 1)
+	if game.pending_pick.kind == "advisor":
+		return dice.randi_range(0, 1)
 	if game.pending_pick.kind != "boon":
 		return 0
 	for i in opts.size():
@@ -166,6 +179,32 @@ func _find_oil() -> void:
 		game.survey(STRAT != "plain" and STRAT != "clean" and game.can_survey_crooked())
 	if STRAT != "plain" and STRAT != "clean" and game.can_bribe_permit() and game.cash - game.permit_bribe_price() >= _reserve():
 		game.bribe_permit()
+	# The wildcat builds a cheap wildcat well as soon as the permit is through
+	if STRAT == "wildcat" and game.can_build_wildcat() and game.cash - float(game.data.oil_search.wildcat_price) >= _reserve():
+		game.build_wildcat()
+
+
+func _send_voyages() -> void:
+	# Any waiting smuggling or pirate ship takes a voyage; the dirty rusher likes long hauls best
+	var tries := 0
+	while tries < 10:
+		tries += 1
+		var pick := -1
+		for i in game.board.size():
+			if game.can_send(i):
+				if pick < 0 or (STRAT == "dirty" and int(game.board[i].length) > int(game.board[pick].length)):
+					pick = i
+		if pick < 0:
+			return
+		game.send_voyage(pick)
+
+
+func _use_favour() -> void:
+	# A favour clears a strike first; otherwise it cancels a decree
+	if game.can_favour_strike():
+		game.favour_strike()
+	elif game.can_favour_decree() and game.favour >= 2:
+		game.favour_decree()
 
 
 func _defect() -> bool:
@@ -280,7 +319,9 @@ func _shop() -> void:
 			if STRAT == "clean" and key in DIRTY:
 				continue
 			if not game.built.has(key):
-				if not game.tier_open(int(a.tier)):
+				# The oil platform needs the permit (at any tier); everything else needs its tier
+				var can_open: bool = game.oil_approved() if key == "oil" else game.tier_open(int(a.tier))
+				if not can_open:
 					continue
 				var c: float = game.build_price(key)
 				var v: float = game.avg_per_day(key) if a.has("unit") else 20.0

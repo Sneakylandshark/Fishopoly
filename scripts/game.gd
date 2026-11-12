@@ -6,8 +6,15 @@ extends Node
 signal changed
 signal day_finished(report: Dictionary)
 signal run_over(won: bool, reason: String)
+# A saved run was loaded (the scene rebuilds its boats)
+signal loaded
 
 const BALANCE_PATH := "res://data/balance.json"
+# Champions unlocked between runs, and the run in progress (saved each day)
+const META_PATH := "user://meta.json"
+const SAVE_PATH := "user://save_run.txt"
+# Everything a saved run needs to carry on where it left off
+const SAVE_VARS := ["day", "cash", "loan", "loan_due", "warnings", "warning_day", "loan_mult", "surveys", "oil_found", "oil_ready_day", "permit_day", "permit_bribes", "week_dirty", "last_week_dirty", "conditions_now", "boons_taken", "pending_pick", "tiers_rewarded", "event_due", "active_effects", "forced_storm_until", "week_income", "season", "season_earned", "strikes", "decree", "season_log", "levy_mult", "week_taxable", "last_week", "last_storm", "upcoming", "harbor_spaces", "harbor_buys", "price", "boats", "counts", "built", "laundering", "perks", "offers_done", "offer_order", "pending_offer", "levels", "wrecks", "crown", "defected", "served", "rival_index", "push_index", "pending_push", "suspicion", "investigations", "investigation_due", "calloff_at", "bribes", "news", "log_lines", "champion_index", "stats", "advisor_queue", "advisors_met", "board", "favour", "wildcat", "wildcat_ready_day", "news_next"]
 # Avenues whose units are ships on the water (stored in "boats"), and the boat kind for each
 const SHIP_KIND := {"crab": "crab", "salvage": "barge", "whaling": "whale", "smuggle": "smuggler", "piracy": "pirate", "oil": "rig"}
 # Avenues whose units are just counted (not ships you can see)
@@ -101,6 +108,26 @@ var investigation_due := -1
 var calloff_at := 0.0
 var bribes := 0
 var news: Dictionary = {}
+# Next week's headline, rolled early so the Economist can warn you
+var news_next: Dictionary = {}
+
+# Champion for this run (index into data.champions.list, -1 = not picked yet), and champions unlocked between runs
+var champion_index := -1
+var unlocked: Array = []
+# This run's counts, for unlocking champions
+var stats: Dictionary = {}
+# Advisors waiting to arrive (avenue keys), and the ones met so far (key -> "a" or "b")
+var advisor_queue: Array = []
+var advisors_met: Dictionary = {}
+# The bounty board: [{"avenue": "smuggle" or "piracy", "length": index into voyages.lengths, "roll": pay multiplier}]
+var board: Array = []
+# Favours the Crown owes you (from beating levies)
+var favour := 0
+# A small wildcat oil well, before the full platform
+var wildcat := false
+var wildcat_ready_day := -1
+# Real games save each day and remember unlocks; headless tests don't
+var save_enabled := false
 
 var log_lines: Array = []
 var log_file: FileAccess = null
@@ -181,6 +208,21 @@ func new_run(seed: int = -1, write_log: bool = true) -> void:
 	investigation_due = -1
 	bribes = 0
 	news = {}
+	news_next = _roll_news()
+	champion_index = -1
+	stats = {"storms": 0, "laundered": 0.0, "slow": 0, "relics": 0}
+	advisor_queue = []
+	advisors_met = {}
+	board = []
+	favour = 0
+	wildcat = false
+	wildcat_ready_day = -1
+	save_enabled = write_log
+	# Tests have every champion; real games remember what you've unlocked
+	if write_log:
+		_load_meta()
+	else:
+		unlocked = data.champions.list.map(func(c): return c.id)
 	conditions_now = []
 	boons_taken = []
 	pending_pick = {}
@@ -201,7 +243,11 @@ func new_run(seed: int = -1, write_log: bool = true) -> void:
 	levy_mult = 1.0
 	_say("Day 0. You own one small boat and a rock. %s owns the island and wants %s for it." % [crown.name, money(price)])
 	_say("CROWN LEVY: earn %s by day %d. Miss a levy and you're fined and get a strike; %d strikes and the Crown takes the island back." % [money(levy_target()), season_end_day(), int(data.levy.max_strikes)])
+	_fill_board()
 	_draw_conditions()
+	# A run in progress can be carried on instead
+	if write_log and has_save():
+		_offer_continue()
 
 
 func _zeros(n: int) -> Array:
@@ -253,11 +299,13 @@ func units_owned(key: String) -> int:
 
 
 func avg_level(key: String) -> float:
+	# Only the avenue's own upgrades count (not champion-only ones)
 	var l: Array = levels[key]
+	var n := base_paths(key).size()
 	var total := 0
-	for x in l:
-		total += x
-	return float(total) / l.size()
+	for i in n:
+		total += l[i]
+	return float(total) / n
 
 
 func fishing_boat_price() -> float:
@@ -284,22 +332,55 @@ func upgrade_price(key: String, path: int) -> float:
 	else:
 		# An avenue can set its own upgrade_base; otherwise upgrades are priced from its building
 		base = data.avenues[key].get("upgrade_base", data.avenues[key].building) / float(data.avenues[key].paths.size())
-	return base * pow(data.upgrades.cost_growth, lvl)
+	# The Scientist makes every upgrade cheaper (and Experiments more so)
+	var cut: float = clamp(1.0 - champ_value("upgrade_cut"), 0.1, 1.0)
+	return base * pow(data.upgrades.cost_growth, lvl) * perk("upgrade_cost") * cut
 
 
 func build_price(key: String) -> float:
 	# A building comes with its first unit; the first dirty building also needs a laundering front
 	var a: Dictionary = data.avenues[key]
-	var p: float = a.building + (a.unit if a.has("unit") else 0.0)
+	var p: float = (a.building + (a.unit if a.has("unit") else 0.0)) * perk("build_cost")
 	if a.get("dirty", false) and not laundering:
 		p += data.laundering.building
 	return p
 
 
+func base_paths(key: String) -> Array:
+	return data.fishing_paths if key == "fish" else data.avenues[key].paths
+
+
 func paths_for(key: String) -> Array:
-	if key == "fish":
-		return data.fishing_paths
-	return data.avenues[key].paths
+	# The avenue's own upgrades, then any champion-only ones (they have an "avenue" field)
+	var extra := champion_paths(key)
+	if extra.is_empty():
+		return base_paths(key)
+	return base_paths(key) + extra
+
+
+func champion() -> Dictionary:
+	return data.champions.list[champion_index] if champion_index >= 0 else {}
+
+
+func champion_paths(key: String) -> Array:
+	if champion_index < 0:
+		return []
+	return champion().paths.filter(func(cp): return cp.avenue == key)
+
+
+func champ_value(effect: String, key: String = "") -> float:
+	# The total of a champion-only effect: per_level x level, over the paths with that effect
+	var total := 0.0
+	if champion_index < 0:
+		return 0.0
+	for k in levels:
+		if key != "" and k != key:
+			continue
+		var ps := paths_for(k)
+		for i in ps.size():
+			if ps[i].has("avenue") and ps[i].effect == effect:
+				total += float(ps[i].per_level) * levels[k][i]
+	return total
 
 
 # ---------- Perks (from visitors' offers) ----------
@@ -329,7 +410,8 @@ func launder_rate() -> float:
 func path_step(key: String, i: int) -> float:
 	# How much one level of this path multiplies income
 	var p: Dictionary = paths_for(key)[i]
-	return p.per_level
+	# Some champions make one kind of upgrade work better (step_bait_add, step_divers_add)
+	return p.per_level + perk("step_" + str(p.name).to_lower() + "_add")
 
 
 func income_mult(key: String) -> float:
@@ -413,7 +495,7 @@ func lighthouse_covers(key: String) -> bool:
 
 func damage_chance(key: String) -> float:
 	# Chance a storm damages one unit; the lighthouse can steer covered ships clear
-	var c: float = float(data.storm_damage.chance.get(key, 0.0)) * risk(key)
+	var c: float = float(data.storm_damage.chance.get(key, 0.0)) * risk(key) * max(0.0, 1.0 - champ_value("damage_cut"))
 	if lighthouse_covers(key):
 		c *= 1.0 - home_chance()
 	return c
@@ -423,7 +505,7 @@ func _fill_forecast() -> void:
 	# Roll the hidden weather for the next two days (in order, so the storm gap rule still works)
 	while upcoming.size() < 2:
 		var d: int = day + 1 + upcoming.size()
-		upcoming.append({"w": roll_weather(d), "u": rng.randf(), "v": rng.randf()})
+		upcoming.append({"w": roll_weather(d), "u": rng.randf(), "v": rng.randf(), "m": rng.randf()})
 
 
 func accuracy() -> float:
@@ -441,13 +523,26 @@ func forecast_call(e: Dictionary) -> String:
 	return others[int(e.v * 2.0) % 2]
 
 
+func warning_chance() -> float:
+	# The Meteorologist's own storm warning (Barometers raise it)
+	return min(0.9, perk("warning_add") + champ_value("warning"))
+
+
+func storm_warning() -> bool:
+	# Only real storms get a warning, and only some of the time
+	return not upcoming.is_empty() and upcoming[0].w == "storm" and float(upcoming[0].get("m", 1.0)) < warning_chance()
+
+
 func forecast_text() -> String:
-	if not built.has("meteo") or upcoming.is_empty():
-		return ""
-	var t := "Forecast: tomorrow %s" % forecast_call(upcoming[0]).capitalize()
-	if path_value("meteo", 1) >= 1 and upcoming.size() > 1:
-		t += ", day after %s" % forecast_call(upcoming[1]).capitalize()
-	return t + " (right %d%% of the time)" % int(round(accuracy() * 100))
+	var t := ""
+	if built.has("meteo") and not upcoming.is_empty():
+		t = "Forecast: tomorrow %s" % forecast_call(upcoming[0]).capitalize()
+		if path_value("meteo", 1) >= 1 and upcoming.size() > 1:
+			t += ", day after %s" % forecast_call(upcoming[1]).capitalize()
+		t += " (right %d%% of the time)" % int(round(accuracy() * 100))
+	if storm_warning():
+		t = ("STORM WARNING from your Meteorologist: a storm is coming tomorrow.  " + t).strip_edges()
+	return t
 
 
 func has_orders() -> bool:
@@ -477,6 +572,8 @@ func path_value(key: String, path: int) -> float:
 func path_max_level(key: String, path: int) -> int:
 	# A path with a max stops once it reaches it (Hull: 20% + 10% a level, max 60% = level 4)
 	var p: Dictionary = paths_for(key)[path]
+	if p.has("levels"):
+		return int(p.levels)
 	if p.has("max"):
 		return int(ceil((p.max - p.get("base", 0.0)) / p.per_level - 0.0001))
 	return max_level_for(key)
@@ -499,7 +596,7 @@ func tier_blockers(t: int) -> Array:
 			if not built.has(key):
 				out.append("Build the " + data.avenues[key].name)
 	for key in keys:
-		var p := paths_for(key)
+		var p := base_paths(key)
 		for i in p.size():
 			var need_here: int = min(need, path_max_level(key, i))
 			if levels[key][i] < need_here:
@@ -517,7 +614,7 @@ func tier_open(t: int) -> bool:
 func rent_for_week(week: int) -> float:
 	var r: Dictionary = data.rent
 	var n: int = max(0, int((week - 1) / int(r.weeks_per_step)))
-	var g: float = r.step_growth
+	var g: float = r.step_growth + perk("rent_growth_add")
 	var steps: float = n if is_equal_approx(g, 1.0) else (pow(g, n) - 1.0) / (g - 1.0)
 	return (r.start + r.first_step * steps) * perk("rent_mult")
 
@@ -564,6 +661,28 @@ func roll_weather(d: int) -> String:
 
 
 func _new_news() -> void:
+	# Next week's headline becomes this week's, and a new one is rolled for next week
+	news = news_next
+	news_next = _roll_news()
+
+
+func news_preview_days() -> int:
+	# The Economist hears next week's headline this many days early
+	return int(perk("news_ahead_add") + champ_value("news_ahead"))
+
+
+func days_to_news() -> int:
+	# News comes the day after the weekly bills
+	return (7 - day % 7) % 7 + 1
+
+
+func news_preview_text() -> String:
+	if news_preview_days() <= 0 or days_to_news() > news_preview_days() or not news_next.has("text"):
+		return ""
+	return "Your Economist hears next week: " + news_next.text
+
+
+func _roll_news() -> Dictionary:
 	# One market moves each week, for any avenue (built or not) or fishing
 	var keys: Array = ["fish"] + data.avenues.keys()
 	keys.erase("deep")
@@ -577,7 +696,7 @@ func _new_news() -> void:
 		text = "%s prices up %d%% this week!" % [name, int(round((data.news.up - 1.0) * 100))]
 	else:
 		text = "%s prices crash: down %d%% this week." % [name, int(round((1.0 - data.news.down) * 100))]
-	news = {"key": key, "mult": data.news.up if up else data.news.down, "text": text}
+	return {"key": key, "mult": data.news.up if up else data.news.down, "text": text}
 
 
 # ---------- The day ----------
@@ -605,6 +724,10 @@ func start_day() -> Dictionary:
 	var clean := 0.0
 	var dirty := 0.0
 	var dirty_risk := 0.0
+	if w == "storm":
+		stats.storms += 1
+	# Yesterday's taken voyages are replaced on the board
+	_fill_board()
 	var h: Dictionary = data.harbor
 	var ds: Dictionary = data.deep_sea
 	var av: Dictionary = data.avenues
@@ -736,6 +859,8 @@ func start_day() -> Dictionary:
 				if x < acc:
 					te += row[2] * income_mult("treasure")
 					finds[row[0]] = finds.get(row[0], 0) + 1
+					if row[0] == "Lost relic":
+						stats.relics += 1
 					break
 		clean += te
 		var names := []
@@ -743,23 +868,61 @@ func start_day() -> Dictionary:
 			names.append("%s x%d" % [k, finds[k]])
 		report.lines.append("Treasure: %s  +$%s" % [", ".join(names), _money(te)])
 
-	# Smuggling and piracy: dirty money, best in storms; on clear days ships can be caught and seized
+	# Smuggling and piracy: dirty money. Ships wait in harbour (a little money, a small risk) or go on voyages
 	_check_hidden()
+	var vg: Dictionary = data.voyages
 	for key in ["smuggle", "piracy"]:
 		var kind: String = SHIP_KIND[key]
-		# Ships hidden in the moorings don't sail: no money, no risk
-		var n: int = count_boats(kind, "deep")
-		if n == 0:
-			continue
 		var a: Dictionary = av[key]
-		var caught_chance: float = float(a.get("caught_" + w, 0.0)) * risk(key)
+		# What one ship would make at sea today (storms pay best)
+		var sea_day: float = a[w] * income_mult(key)
+		var de := 0.0
 		var caught := 0
+		var escaped := 0
 		for i in range(boats.size() - 1, -1, -1):
-			if boats[i].kind == kind and boats[i].zone == "deep" and rng.randf() < caught_chance:
-				report.removed.append(i)
-				boats.remove_at(i)
-				caught += 1
-		var de: float = a[w] * income_mult(key) * (n - caught)
+			var b: Dictionary = boats[i]
+			if b.kind != kind:
+				continue
+			if b.zone == "harbor":
+				# In harbour: a small daily income, and a small chance the patrols catch it
+				if rng.randf() < float(vg.harbour_caught) * risk(key):
+					if rng.randf() < escape_chance(key):
+						escaped += 1
+					else:
+						report.removed.append(i)
+						boats.remove_at(i)
+						caught += 1
+						continue
+				de += sea_day * float(vg.harbour_share)
+			elif b.zone == "voyage":
+				# Away on a voyage: the haul builds up each day and is paid when the ship gets back
+				b.haul = float(b.get("haul", 0.0)) + sea_day
+				if day < int(b.back):
+					continue
+				var vl: Dictionary = vg.lengths[int(b.length)]
+				if rng.randf() < voyage_catch(key, int(b.length)):
+					if rng.randf() < escape_chance(key):
+						escaped += 1
+					else:
+						report.lines.append("Your %s was caught on its %s! Ship and cargo lost." % [a.unit_name.to_lower(), str(vl.name).to_lower()])
+						report.removed.append(i)
+						boats.remove_at(i)
+						caught += 1
+						continue
+				var pay: float = float(b.haul) * float(vl.pay) * float(b.roll) * perk("voyage_pay") * perk("voyage_pay_" + key)
+				de += pay
+				if vl.id == "slow":
+					stats.slow += 1
+				report.lines.append("A %s is back from its %s: $%s dirty." % [a.unit_name.to_lower(), str(vl.name).to_lower(), _money(pay)])
+				b.zone = "harbor"
+				b.erase("haul")
+				b.erase("back")
+				b.erase("length")
+				b.erase("roll")
+		if escaped > 0:
+			report.lines.append("Your lawyer got %d %s(s) off the hook." % [escaped, a.unit_name.to_lower()])
+		if de <= 0.0 and caught == 0:
+			continue
 		# A licensed share of piracy (Queen's Privateer) comes in clean: no laundering, no suspicion
 		var licensed: float = de * clamp(perk(key + "_clean_add"), 0.0, 1.0)
 		clean += licensed
@@ -771,7 +934,7 @@ func start_day() -> Dictionary:
 		else:
 			report.lines.append("%s: +$%s dirty" % [a.name, _money(de)])
 		if caught > 0:
-			report.lines.append("Patrols caught %d of your %s(s)!" % [caught, a.unit_name.to_lower()])
+			report.lines.append("Patrols caught %d of your %s(s) in total today!" % [caught, a.unit_name.to_lower()])
 
 	# Hidden moorings: a flat fee every day for each berth not holding one of your own ships
 	if counts.hiding - hidden_own() > 0:
@@ -790,10 +953,20 @@ func start_day() -> Dictionary:
 		clean += oe
 		if oe > 0:
 			report.lines.append("Oil: +$%s" % _money(oe))
+	# A wildcat well: a trickle of oil before the full platform
+	if wildcat and not built.has("oil"):
+		if day < wildcat_ready_day:
+			report.lines.append("Wildcat well under construction until day %d." % wildcat_ready_day)
+		else:
+			var wwe: float = av.oil[w] * float(data.oil_search.wildcat_share) * income_mult("oil")
+			clean += wwe
+			if wwe > 0:
+				report.lines.append("Wildcat well: +$%s" % _money(wwe))
 
 	# Dirty money is laundered at a flat rate
 	var laundered: float = dirty * launder_rate()
 	var income: float = clean + laundered
+	stats.laundered += laundered
 	if dirty > 0:
 		report.lines.append("Laundered $%s dirty into $%s clean." % [_money(dirty), _money(laundered)])
 
@@ -809,6 +982,9 @@ func start_day() -> Dictionary:
 					hit += 1
 			if hit > 0:
 				var cost: float = hit * sd.repair_share * data.avenues[key].unit
+				# The Oil Engineer's Storm bracing cuts rig repairs
+				if key == "oil":
+					cost *= max(0.0, 1.0 - champ_value("repair_cut"))
 				repairs += cost
 				report.lines.append("Storm damaged %d %s(s): repairs -$%s" % [hit, data.avenues[key].unit_name.to_lower(), _money(cost)])
 
@@ -841,7 +1017,8 @@ func start_day() -> Dictionary:
 		income = 0.0
 		var seized := 0
 		for i in range(boats.size() - 1, -1, -1):
-			if (boats[i].kind == "smuggler" or boats[i].kind == "pirate") and boats[i].zone != "hidden" and rng.randf() < sp.seize:
+			# Hidden ships and ships away on voyages are safe; the Lawyer's Papers can get others off
+			if (boats[i].kind == "smuggler" or boats[i].kind == "pirate") and boats[i].zone != "hidden" and boats[i].zone != "voyage" and rng.randf() < sp.seize and rng.randf() >= min(0.5, champ_value("seize_escape")):
 				report.removed.append(i)
 				boats.remove_at(i)
 				seized += 1
@@ -868,6 +1045,12 @@ func start_day() -> Dictionary:
 		report["bills"] = t + rent
 		last_week = week_income
 		last_week_dirty = week_dirty
+		# The Banker pays interest on clean cash
+		var rate: float = perk("interest_add") + champ_value("interest")
+		if rate > 0 and cash > 0:
+			var interest: float = cash * rate
+			cash += interest
+			report.lines.append("Interest from your Banker: +$%s" % _money(interest))
 
 	# End of a season: the Crown checks the levy, then sets the next one
 	if not over and day % int(data.levy.season_days) == 0:
@@ -910,6 +1093,12 @@ func start_day() -> Dictionary:
 	# A newly opened tier earns a pick of 1 of 3 random boons
 	if not over:
 		_check_tier_boon()
+	# Old Gus turns up in week 2; other advisors arrive when you build their avenue
+	if day == 7:
+		_queue_advisor("fish")
+	if not over:
+		_next_advisor()
+	_check_unlocks(report)
 
 	_fill_forecast()
 	for line in report.lines:
@@ -918,6 +1107,7 @@ func start_day() -> Dictionary:
 	_write("Day %d end: cash %s, loan %s, suspicion %d" % [day, money(cash), money(loan), int(suspicion)])
 	day_finished.emit(report)
 	changed.emit()
+	save_run()
 	return report
 
 
@@ -953,7 +1143,7 @@ func _pay_loan() -> void:
 
 
 func covers_left() -> int:
-	return max(int(data.silent_partner.covers) - warnings, 0)
+	return max(int(data.silent_partner.covers) + int(perk("covers_add")) - warnings, 0)
 
 
 func _cover_shortfall(report: Dictionary) -> void:
@@ -993,7 +1183,7 @@ func oil_approved() -> bool:
 
 func survey_price() -> float:
 	var os: Dictionary = data.oil_search
-	return max(float(os.survey_min), float(os.survey_weeks) * last_week)
+	return max(float(os.survey_min), float(os.survey_weeks) * last_week) * perk("survey_cost")
 
 
 func can_survey() -> bool:
@@ -1156,6 +1346,10 @@ func _end_season(report: Dictionary) -> void:
 	season_log.append(season_earned)
 	if season_earned >= target:
 		report.lines.append("CROWN LEVY MET: you earned $%s this season (needed $%s)." % [_money(season_earned), _money(target)])
+		# Beating it well earns a favour you can spend later
+		if season_earned >= target * float(lv.favour_beat) and favour < int(lv.favour_max):
+			favour += 1
+			report.lines.append("The Crown is impressed. It owes you a favour (%d/%d): spend one to clear a strike or cancel a decree." % [favour, int(lv.favour_max)])
 	else:
 		strikes += 1
 		var fine: float = (target - season_earned) * float(lv.fine_share)
@@ -1245,6 +1439,48 @@ Bad: %s" % [c.good, c.bad], "index": i})
 	pending_pick = {"kind": "crown", "title": "Choose your Crown", "text": "Six Crowns will lease you the rock. Each has its own rules. You can defect later, but only once.", "options": options}
 
 
+func _offer_champions() -> void:
+	# Pick one champion for the run, from those you've unlocked
+	var options := []
+	var locked := []
+	for i in data.champions.list.size():
+		var c: Dictionary = data.champions.list[i]
+		if unlocked.has(c.id):
+			options.append({"name": c.name, "text": "Good: %s\nBad: %s" % [c.good, c.bad], "index": i})
+		else:
+			locked.append("%s (%s)" % [c.name, c.unlock_text])
+	var text := "Your champion helps the whole run, with upgrades only they bring. Pick one."
+	if not locked.is_empty():
+		text += "\n[color=#aaaaaa]Locked: " + ", ".join(locked) + "[/color]"
+	pending_pick = {"kind": "champion", "title": "Choose your champion", "text": text, "options": options}
+
+
+func _take_champion(i: int) -> void:
+	champion_index = i
+	var c: Dictionary = champion()
+	_apply_perks(c.perks)
+	# Make room for the champion-only upgrades
+	for cp in c.paths:
+		levels[cp.avenue].append(0)
+	_say("Your champion: %s. %s %s" % [c.name, c.good, c.bad])
+
+
+func _queue_advisor(key: String) -> void:
+	if data.advisors.list.has(key) and not advisors_met.has(key) and not advisor_queue.has(key):
+		advisor_queue.append(key)
+
+
+func _next_advisor() -> void:
+	# The next advisor waiting comes in, once nothing else is on screen
+	if over or advisor_queue.is_empty() or not pending_pick.is_empty() or pending_offer >= 0 or pending_push >= 0:
+		return
+	var key: String = advisor_queue.pop_front()
+	var ad: Dictionary = data.advisors.list[key]
+	var where: String = "fishing" if key == "fish" else data.avenues[key].name
+	pending_pick = {"kind": "advisor", "key": key, "title": "%s, %s" % [ad.who, ad.role], "text": "An advisor for your %s. Take one; it lasts the whole run, and both have a catch." % where, "options": [{"name": ad.a.name, "text": ad.a.text, "index": 0}, {"name": ad.b.name, "text": ad.b.text, "index": 1}]}
+	changed.emit()
+
+
 func _check_tier_boon() -> void:
 	# The first time each tier opens, offer 1 of 3 random boons not taken yet
 	if not pending_pick.is_empty():
@@ -1260,8 +1496,8 @@ func _check_tier_boon() -> void:
 		_shuffle(pool)
 		var options := []
 		for n in min(int(data.boons.choices), pool.size()):
-			var b: Dictionary = data.boons.list[pool[n]]
-			options.append({"name": b.name, "text": b.text, "index": pool[n]})
+			var bn: Dictionary = data.boons.list[pool[n]]
+			options.append({"name": bn.name, "text": bn.text, "index": pool[n]})
 		if options.size() > 0:
 			pending_pick = {"kind": "boon", "title": "Tier %d is open: pick a boon" % t, "text": "Word of your success spreads. Pick one, free. The others are gone.", "options": options}
 			_write("Tier %d boon offered: %s" % [t, ", ".join(options.map(func(o): return o.name))])
@@ -1275,7 +1511,7 @@ func answer_pick(choice: int) -> bool:
 	if p.kind == "boon":
 		if choice < 0 or choice >= p.options.size():
 			return false
-		var b: Dictionary = data.boons.list[p.options[choice].index]
+		var b: Dictionary = data.boons.list[int(p.options[choice].index)]
 		boons_taken.append(b.id)
 		_apply_perks(b.perks)
 		pending_pick = {}
@@ -1287,8 +1523,35 @@ func answer_pick(choice: int) -> bool:
 		crown = data.crowns.list[choice]
 		served = [choice]
 		price = data.island_price * perk("price_mult")
-		pending_pick = {}
 		_say("You lease the rock from %s. %s %s The island costs %s." % [crown.name, crown.good, crown.bad, money(price)])
+		_offer_champions()
+		changed.emit()
+		return true
+	if p.kind == "champion":
+		if choice < 0 or choice >= p.options.size():
+			return false
+		_take_champion(int(p.options[choice].index))
+		pending_pick = {}
+		_next_advisor()
+		changed.emit()
+		return true
+	if p.kind == "advisor":
+		if choice < 0 or choice >= 2:
+			return false
+		var ad: Dictionary = data.advisors.list[p.key]
+		var pick: Dictionary = ad["a" if choice == 0 else "b"]
+		_apply_perks(pick.perks)
+		advisors_met[p.key] = "a" if choice == 0 else "b"
+		pending_pick = {}
+		_say("%s: %s. %s" % [ad.who, pick.name, pick.text])
+		_next_advisor()
+		return true
+	if p.kind == "continue":
+		if choice == 0 and load_run():
+			return true
+		delete_save()
+		pending_pick = p.stash
+		changed.emit()
 		return true
 	if p.kind == "conditions":
 		_offer_crowns()
@@ -1456,6 +1719,9 @@ func build(key: String) -> bool:
 	if key == "oil":
 		oil_ready_day = day + int(data.oil_search.build_weeks) * 7
 		_say("Construction of the Oil Platform has begun. It starts pumping on day %d." % oil_ready_day)
+		if wildcat:
+			wildcat = false
+			_say("Your wildcat well is folded into the new platform.")
 	if a.get("dirty", false) and not laundering:
 		laundering = true
 		log_lines.append("Opened a laundering front for dirty money.")
@@ -1465,12 +1731,15 @@ func build(key: String) -> bool:
 		_say("Built the %s, with your first %s." % [a.name, a.unit_name])
 	else:
 		_say("Built the %s." % a.name)
+	_queue_advisor(key)
+	_next_advisor()
 	return true
 
 
 func _add_unit(key: String) -> void:
 	if SHIP_KIND.has(key):
-		var zone := "deep" if key in ["whaling", "smuggle", "piracy", "oil"] else "harbor"
+		# Smuggling and pirate ships start in harbour, waiting for a voyage
+		var zone := "deep" if key in ["whaling", "oil"] else "harbor"
 		boats.append({"kind": SHIP_KIND[key], "zone": zone})
 	else:
 		counts[key] += 1
@@ -1480,9 +1749,14 @@ func can_buy_unit(key: String) -> bool:
 	if not built.has(key) or not data.avenues[key].has("unit"):
 		return false
 	var a: Dictionary = data.avenues[key]
-	if a.has("max_units") and units_owned(key) >= int(a.max_units):
+	if a.has("max_units") and units_owned(key) >= max_units(key):
 		return false
 	return can_afford(unit_price(key))
+
+
+func max_units(key: String) -> int:
+	# An avenue's unit cap (an advisor can raise it)
+	return int(data.avenues[key].get("max_units", 999999)) + int(perk("max_" + key + "_add"))
 
 
 func buy_unit(key: String) -> bool:
@@ -1518,10 +1792,14 @@ func set_zone(index: int, zone: String) -> bool:
 		return false
 	var b: Dictionary = boats[index]
 	if b.kind == "smuggler" or b.kind == "pirate":
-		# Dirty ships either sail or hide in a free Hidden Moorings berth
+		# Dirty ships wait in harbour or hide in a free Hidden Moorings berth; a ship on a voyage can't be moved
+		if zone == "deep":
+			zone = "harbor"
+		if b.zone == "voyage":
+			return false
 		if zone == "hidden" and b.zone != "hidden" and hidden_own() >= int(counts.hiding):
 			return false
-		if not (zone == "deep" or zone == "hidden"):
+		if not (zone == "harbor" or zone == "hidden"):
 			return false
 		b.zone = zone
 		changed.emit()
@@ -1549,7 +1827,7 @@ func _check_hidden() -> void:
 	# If berths were lost (defectors), extra hidden ships go back to sailing
 	for b in boats:
 		if b.zone == "hidden" and hidden_own() > int(counts.hiding):
-			b.zone = "deep"
+			b.zone = "harbor"
 
 
 func bribe_price() -> float:
@@ -1573,6 +1851,7 @@ func buy_island() -> bool:
 		return false
 	cash -= island_price()
 	over = true
+	delete_save()
 	_say("You bought the island!")
 	_write("RUN WON on day %d" % day)
 	run_over.emit(true, "You bought the island on day %d. The Crown has no hold on you now." % day)
@@ -1719,3 +1998,238 @@ func _money(x: float) -> String:
 
 func money(x: float) -> String:
 	return "$" + _money(x)
+
+
+# ---------- Voyages and the bounty board ----------
+
+func _fill_board() -> void:
+	# The board always shows board_size voyages; taken ones are replaced the next day
+	var vg: Dictionary = data.voyages
+	while board.size() < int(vg.board_size):
+		var spread: float = float(vg.pay_spread)
+		board.append({"avenue": ["smuggle", "piracy"][rng.randi_range(0, 1)], "length": rng.randi_range(0, vg.lengths.size() - 1), "roll": 1.0 + rng.randf_range(-spread, spread)})
+
+
+func voyage_days(key: String, length: int) -> int:
+	var vl: Dictionary = data.voyages.lengths[length]
+	return max(1, int(vl.days) + int(perk("voyage_days_add")) + int(perk("voyage_days_" + key + "_add")))
+
+
+func voyage_catch(key: String, length: int) -> float:
+	var vl: Dictionary = data.voyages.lengths[length]
+	var c: float = float(vl.caught) + perk("voyage_catch_" + key + "_add") - champ_value("voyage_catch_cut", key)
+	return clamp(c * risk(key), 0.0, 0.95)
+
+
+func escape_chance(key: String) -> float:
+	# The Lawyer's Covers / Name changes: a caught ship gets away clean
+	return min(0.5, champ_value("escape", key))
+
+
+func voyage_estimate(i: int) -> float:
+	# Roughly what this board voyage pays if the ship gets home (an average day at sea x days x pay)
+	var v: Dictionary = board[i]
+	var key: String = v.avenue
+	var a: Dictionary = data.avenues[key]
+	var o := odds()
+	var sea: float = (o.perfect * a.perfect + o.normal * a.normal + o.storm * a.storm) * income_mult(key)
+	var vl: Dictionary = data.voyages.lengths[int(v.length)]
+	return sea * voyage_days(key, int(v.length)) * float(vl.pay) * float(v.roll) * perk("voyage_pay") * perk("voyage_pay_" + key)
+
+
+func _free_ship(kind: String) -> int:
+	# The first ship of this kind waiting in harbour, or -1
+	for i in boats.size():
+		if boats[i].kind == kind and boats[i].zone == "harbor":
+			return i
+	return -1
+
+
+func can_send(i: int) -> bool:
+	if over or i < 0 or i >= board.size():
+		return false
+	var key: String = board[i].avenue
+	return built.has(key) and _free_ship(SHIP_KIND[key]) >= 0
+
+
+func send_voyage(i: int) -> bool:
+	if not can_send(i):
+		return false
+	var v: Dictionary = board[i]
+	var key: String = v.avenue
+	var b: Dictionary = boats[_free_ship(SHIP_KIND[key])]
+	var vl: Dictionary = data.voyages.lengths[int(v.length)]
+	b.zone = "voyage"
+	b.length = int(v.length)
+	b.roll = float(v.roll)
+	b.haul = 0.0
+	b.back = day + voyage_days(key, int(v.length))
+	board.remove_at(i)
+	_say("A %s set off on a %s. Back on day %d (caught chance %d%%)." % [data.avenues[key].unit_name.to_lower(), str(vl.name).to_lower(), int(b.back), int(round(voyage_catch(key, int(b.length)) * 100))])
+	return true
+
+
+# ---------- Wildcat well ----------
+
+func can_build_wildcat() -> bool:
+	return oil_approved() and not built.has("oil") and not wildcat and can_afford(float(data.oil_search.wildcat_price))
+
+
+func build_wildcat() -> bool:
+	if not can_build_wildcat():
+		return false
+	cash -= float(data.oil_search.wildcat_price)
+	wildcat = true
+	wildcat_ready_day = day + int(data.oil_search.build_weeks) * 7
+	_say("Building a wildcat well. It starts pumping on day %d." % wildcat_ready_day)
+	return true
+
+
+# ---------- Crown favour ----------
+
+func can_favour_strike() -> bool:
+	return not over and favour > 0 and strikes > 0
+
+
+func favour_strike() -> bool:
+	if not can_favour_strike():
+		return false
+	favour -= 1
+	strikes -= 1
+	_say("You called in a favour. The Crown forgets a strike (%d left)." % strikes)
+	return true
+
+
+func can_favour_decree() -> bool:
+	return not over and favour > 0 and decree.has("perks")
+
+
+func favour_decree() -> bool:
+	# Cancel this season's decree: undo its effects early
+	if not can_favour_decree():
+		return false
+	favour -= 1
+	for pk in decree.perks:
+		for k in range(active_effects.size() - 1, -1, -1):
+			var a: Dictionary = active_effects[k]
+			if a.perk == pk.perk and int(a.until) == season_end_day():
+				if a.has("mult"):
+					perks[a.perk] = perk(a.perk) / float(a.mult)
+				else:
+					perks[a.perk] = perk(a.perk) - float(a.add)
+				active_effects.remove_at(k)
+				break
+	_say("You called in a favour. The Crown lifts its decree: %s." % decree.name)
+	decree = {}
+	return true
+
+
+# ---------- Unlocks between runs ----------
+
+func _load_meta() -> void:
+	unlocked = []
+	for c in data.champions.list:
+		if c.unlock == "start":
+			unlocked.append(c.id)
+	if FileAccess.file_exists(META_PATH):
+		var f := FileAccess.open(META_PATH, FileAccess.READ)
+		var parsed = JSON.parse_string(f.get_as_text())
+		if parsed is Dictionary:
+			for id in parsed.get("unlocked", []):
+				if not unlocked.has(id):
+					unlocked.append(id)
+
+
+func _save_meta() -> void:
+	if not save_enabled:
+		return
+	var f := FileAccess.open(META_PATH, FileAccess.WRITE)
+	f.store_string(JSON.stringify({"unlocked": unlocked}))
+
+
+func _unlock_met(rule: String) -> bool:
+	match rule:
+		"tier2":
+			return tier_open(2)
+		"relic":
+			return int(stats.relics) > 0
+		"investigated3":
+			return investigations >= 3
+		"slow10":
+			return int(stats.slow) >= 10
+		"oil":
+			return built.has("oil")
+		"storms25":
+			return int(stats.storms) >= 25
+		"launder1m":
+			return float(stats.laundered) >= 1000000.0
+	return false
+
+
+func _check_unlocks(report: Dictionary) -> void:
+	for c in data.champions.list:
+		if unlocked.has(c.id) or c.unlock == "start":
+			continue
+		if _unlock_met(c.unlock):
+			unlocked.append(c.id)
+			report.lines.append("CHAMPION UNLOCKED for future runs: %s." % c.name)
+			_save_meta()
+
+
+# ---------- Saving a run in progress ----------
+
+func has_save() -> bool:
+	return FileAccess.file_exists(SAVE_PATH)
+
+
+func save_run() -> void:
+	# Real games save at the end of every day; a finished run deletes its save
+	if not save_enabled:
+		return
+	if over:
+		delete_save()
+		return
+	var d := {}
+	for n in SAVE_VARS:
+		d[n] = get(n)
+	d["rng_state"] = rng.state
+	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	f.store_string(var_to_str(d))
+
+
+func _read_save() -> Dictionary:
+	if not has_save():
+		return {}
+	var f := FileAccess.open(SAVE_PATH, FileAccess.READ)
+	var d = str_to_var(f.get_as_text())
+	return d if d is Dictionary else {}
+
+
+func load_run() -> bool:
+	var d := _read_save()
+	if d.is_empty():
+		return false
+	for n in SAVE_VARS:
+		if d.has(n):
+			set(n, d[n])
+	rng.state = d.get("rng_state", rng.state)
+	over = false
+	_say("Carried on your saved run (day %d)." % day)
+	loaded.emit()
+	changed.emit()
+	return true
+
+
+func delete_save() -> void:
+	if has_save():
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
+
+
+func _offer_continue() -> void:
+	# Before the new run starts, offer to carry on the saved one
+	var d := _read_save()
+	if d.is_empty():
+		return
+	var crown_name: String = d.get("crown", {}).get("name", "?")
+	pending_pick = {"kind": "continue", "title": "Carry on your run?", "text": "You have a run in progress: day %d, %s in cash, under %s." % [int(d.get("day", 0)), money(float(d.get("cash", 0.0))), crown_name], "options": [{"name": "Continue (day %d)" % int(d.get("day", 0)), "text": "Pick up where you left off.", "index": 0}, {"name": "Start a new run", "text": "The saved run is deleted.", "index": 1}], "stash": pending_pick}
+

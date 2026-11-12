@@ -59,9 +59,9 @@
 				"tax_bands": [[1000, 0.0], [2500, 0.10], [10000, 0.20], [50000, 0.25], [1000000000000, 0.30]]},
 			{"id": "queens_privateer", "name": "The Queen's Privateer", "inspired_by": "Francis Drake (England)",
 				"pitch": "Piracy with a licence. Half of what your pirates take comes in clean, and the Crown takes its cut.",
-				"good": "Half of all piracy money comes in clean (no laundering, no suspicion).", "bad": "Taxed hard: up to 55%.",
+				"good": "Half of all piracy money comes in clean (no laundering, no suspicion).", "bad": "Taxed hard: up to 48%.",
 				"buffs": {}, "perks": {"piracy_clean_add": 0.5},
-				"tax_bands": [[1000, 0.0], [2500, 0.20], [10000, 0.35], [50000, 0.45], [1000000000000, 0.55]]},
+				"tax_bands": [[1000, 0.0], [2500, 0.18], [10000, 0.32], [50000, 0.40], [1000000000000, 0.48]]},
 			{"id": "treasure_admiral", "name": "The Treasure Fleet Admiral", "inspired_by": "Zheng He (Ming China)",
 				"pitch": "Great fleets bring great riches, and great riches cost a great deal.",
 				"good": "Treasure earns 30% more, pearls 25% more.", "bad": "The island costs 50% more.",
@@ -74,8 +74,8 @@
 				"tax_bands": [[1000, 0.0], [2500, 0.16], [10000, 0.30], [50000, 0.37], [1000000000000, 0.45]]},
 			{"id": "iron_admiral", "name": "The Iron Fleet Admiral", "inspired_by": "Togo Heihachiro (Japan)",
 				"pitch": "Industry and steel. Builds fast, and expects you to keep up.",
-				"good": "Oil rigs and whaling ships cost 25% less.", "bad": "Rent is 25% higher.",
-				"buffs": {}, "perks": {"unit_cost_oil": 0.75, "unit_cost_whaling": 0.75, "rent_mult": 1.25},
+				"good": "Oil rigs and whaling ships cost 25% less.", "bad": "Rent grows faster (each 2-week step is x1.44, not x1.4): fine early, painful late.",
+				"buffs": {}, "perks": {"unit_cost_oil": 0.75, "unit_cost_whaling": 0.75, "rent_growth_add": 0.04},
 				"tax_bands": [[1000, 0.0], [2500, 0.16], [10000, 0.30], [50000, 0.37], [1000000000000, 0.45]]}
 		],
 		"push_at": [0.02, 0.1, 0.3],
@@ -393,7 +393,10 @@
 		"bribe_suspicion": 15,
 		"_crooked_note": "Players with dirty money can pay a crooked surveyor instead (same price): a better chance to find oil, but it adds suspicion.",
 		"crooked_find_chance": 0.5,
-		"crooked_suspicion": 10
+		"crooked_suspicion": 10,
+		"_wildcat_note": "Once the permit is through you can build a small wildcat well instead of waiting for the full platform: cheap, earns wildcat_share x a full rig, also takes build_weeks to build. Building the Oil Platform later replaces it.",
+		"wildcat_price": 15000,
+		"wildcat_share": 0.005
 	},
 
 	"levy": {
@@ -405,6 +408,9 @@
 		"fine_share": 1.0,
 		"max_strikes": 3,
 		"decree_from_season": 6,
+		"_favour_note": "Beat a season's levy by favour_beat x and the Crown owes you a favour (up to favour_max). Spend one to clear a strike or cancel this season's decree.",
+		"favour_beat": 1.5,
+		"favour_max": 3,
 		"decrees": [
 			{"id": "blockade", "name": "Navy blockade", "needs": "deep", "text": "Deep-sea fishing earns 90% less this season.", "perks": [{"perk": "zone_fish_deep", "mult": 0.1}]},
 			{"id": "pearl_ban", "name": "Pearl ban", "needs": "pearl", "text": "Pearls earn 90% less this season.", "perks": [{"perk": "income_pearl", "mult": 0.1}]},
@@ -418,6 +424,98 @@
 			{"id": "lean_year", "name": "Lean year", "needs": "any", "text": "Everything earns 20% less this season.", "perks": [{"perk": "income_all", "mult": 0.8}]}
 		]
 	},
+
+	"voyages": {
+		"_note": "Smuggling and pirate ships wait in harbour (earning harbour_share of what they'd make at sea, with harbour_caught chance a day of being caught, and they can be seized) or go on voyages from the bounty board. On a voyage a ship earns what it would each day at sea (storms pay best), paid in one lump when it returns, times the voyage's pay. It is caught (lost, no pay) with the voyage's caught chance, and can't be seized by investigators while away. The board shows board_size voyages; each pays +-pay_spread.",
+		"lengths": [
+			{"id": "fast", "name": "Fast run", "days": 2, "pay": 1.0, "caught": 0.05},
+			{"id": "medium", "name": "Medium run", "days": 4, "pay": 1.2, "caught": 0.10},
+			{"id": "slow", "name": "Long haul", "days": 7, "pay": 1.45, "caught": 0.18}
+		],
+		"board_size": 3,
+		"pay_spread": 0.2,
+		"harbour_share": 0.3,
+		"harbour_caught": 0.01
+	},
+
+	"champions": {
+		"_note": "Pick one champion at the start of a run, from those you've unlocked. Each has a good side, a bad side and champion-only upgrades (paths added to an avenue's upgrades). perks work like Visitors' perks. unlock = how a locked champion is unlocked (saved between runs). Numbers Proposed.",
+		"list": [
+			{"id": "master_baiter", "name": "The Master Baiter", "good": "Bait upgrades work better (x1.21 a level, not x1.14). Champion-only: Champion bait for cray ships and whaling.", "bad": "His wages: rent +15%.", "unlock": "start", "unlock_text": "",
+				"perks": [{"perk": "step_bait_add", "add": 0.07}, {"perk": "rent_mult", "mult": 1.15}],
+				"paths": [{"avenue": "cray", "name": "Champion bait", "effect": "income", "per_level": 1.14, "levels": 5}, {"avenue": "whaling", "name": "Champion bait", "effect": "income", "per_level": 1.14, "levels": 5}]},
+			{"id": "scientist", "name": "The Famous Scientist", "good": "All upgrades 15% cheaper. Champion-only: Experiments (a further 3% cheaper a level).", "bad": "Fussy about buildings: every building costs 20% more.", "unlock": "start", "unlock_text": "",
+				"perks": [{"perk": "upgrade_cost", "mult": 0.85}, {"perk": "build_cost", "mult": 1.2}],
+				"paths": [{"avenue": "fish", "name": "Experiments", "effect": "upgrade_cut", "per_level": 0.03, "levels": 5, "text": "all upgrades 3% cheaper"}]},
+			{"id": "economist", "name": "The Economist", "good": "Tells you next week's headline 2 days early. Champion-only: Brokers (+1 day earlier a level).", "bad": "Gets everyone excited: news moves prices 30% further.", "unlock": "start", "unlock_text": "",
+				"perks": [{"perk": "news_ahead_add", "add": 2}, {"perk": "news_swing", "mult": 1.3}],
+				"paths": [{"avenue": "fish", "name": "Brokers", "effect": "news_ahead", "per_level": 1, "levels": 4, "text": "headlines 1 day earlier"}]},
+			{"id": "hull_master", "name": "The Hull Master", "good": "Deep boats survive storms 10% more often. Champion-only: Ironclad hulls (storm damage to every ship -10% a level).", "bad": "Heavy boats: all fishing earns 10% less.", "unlock": "tier2", "unlock_text": "Open tier 2.",
+				"perks": [{"perk": "survive_add", "add": 0.1}, {"perk": "income_fish", "mult": 0.9}],
+				"paths": [{"avenue": "deep", "name": "Ironclad hulls", "effect": "damage_cut", "per_level": 0.1, "levels": 5, "text": "storm damage to ships -10%"}]},
+			{"id": "old_diver", "name": "The Old Diver", "good": "Divers upgrades work better (x1.21 a level). Champion-only: Salvage divers (salvage x1.14 a level).", "bad": "Hates boats: deep-sea fishing earns 10% less.", "unlock": "relic", "unlock_text": "Find a Lost relic.",
+				"perks": [{"perk": "step_divers_add", "add": 0.07}, {"perk": "zone_fish_deep", "mult": 0.9}],
+				"paths": [{"avenue": "salvage", "name": "Salvage divers", "effect": "income", "per_level": 1.14, "levels": 5}]},
+			{"id": "lawyer", "name": "The Lawyer", "good": "Champion-only: Covers (smugglers), Name changes (pirates), Papers (any ship facing seizure). Each level +10% chance to get away clean, up to 50%.", "bad": "Bills you for every defence: fines x1.5.", "unlock": "investigated3", "unlock_text": "Be investigated 3 times in one run.",
+				"perks": [{"perk": "fine", "mult": 1.5}],
+				"paths": [{"avenue": "smuggle", "name": "Covers", "effect": "escape", "per_level": 0.1, "levels": 5, "text": "+10% chance a caught smuggler gets away"}, {"avenue": "piracy", "name": "Name changes", "effect": "escape", "per_level": 0.1, "levels": 5, "text": "+10% chance a caught pirate gets away"}, {"avenue": "hiding", "name": "Papers", "effect": "seize_escape", "per_level": 0.1, "levels": 5, "text": "+10% chance a ship escapes seizure"}]},
+			{"id": "quartermaster", "name": "The Quartermaster", "good": "Voyages come back 1 day sooner. Champion-only: Fast rigging (voyage catch chance -2% a level).", "bad": "Short-changes the crews: voyages pay 10% less.", "unlock": "slow10", "unlock_text": "Finish 10 long hauls in one run.",
+				"perks": [{"perk": "voyage_days_add", "add": -1}, {"perk": "voyage_pay", "mult": 0.9}],
+				"paths": [{"avenue": "smuggle", "name": "Fast rigging", "effect": "voyage_catch_cut", "per_level": 0.02, "levels": 5, "text": "voyage catch chance -2%"}, {"avenue": "piracy", "name": "Fast rigging", "effect": "voyage_catch_cut", "per_level": 0.02, "levels": 5, "text": "voyage catch chance -2%"}]},
+			{"id": "oil_engineer", "name": "The Oil Engineer", "good": "Rigs earn 15% more. Champion-only: Storm bracing (oil storm repairs -15% a level).", "bad": "Picky about sites: oil surveys cost 50% more.", "unlock": "oil", "unlock_text": "Build an Oil Platform.",
+				"perks": [{"perk": "income_oil", "mult": 1.15}, {"perk": "survey_cost", "mult": 1.5}],
+				"paths": [{"avenue": "oil", "name": "Storm bracing", "effect": "repair_cut", "per_level": 0.15, "levels": 5, "text": "oil storm repairs -15%"}]},
+			{"id": "meteorologist", "name": "The Meteorologist", "good": "50% chance of a storm warning the day before. Champion-only: Barometers (+10% warning chance a level, up to 90%).", "bad": "Keeps boats in: harbour fishing earns 15% less.", "unlock": "storms25", "unlock_text": "Live through 25 storms in one run.",
+				"perks": [{"perk": "warning_add", "add": 0.5}, {"perk": "zone_fish_harbor", "mult": 0.85}],
+				"paths": [{"avenue": "fish", "name": "Barometers", "effect": "warning", "per_level": 0.1, "levels": 4, "text": "storm warning chance +10%"}]},
+			{"id": "banker", "name": "The Banker", "good": "Laundering keeps 15% more, and clean cash earns 0.5% interest a week. Champion-only: Vaults (+0.25% interest a level).", "bad": "The Silent Partner doesn't trust him: covers you one time fewer.", "unlock": "launder1m", "unlock_text": "Launder $1,000,000 in one run.",
+				"perks": [{"perk": "launder_add", "add": 0.15}, {"perk": "interest_add", "add": 0.005}, {"perk": "covers_add", "add": -1}],
+				"paths": [{"avenue": "fish", "name": "Vaults", "effect": "interest", "per_level": 0.0025, "levels": 5, "text": "+0.25% interest a week"}]}
+		]
+	},
+
+	"advisors": {
+		"_note": "One named advisor per avenue. They turn up once a run when you build their avenue (Old Gus, fishing, on day 7) and offer A or B. Both have a catch. Your choice lasts the whole run. Numbers Proposed.",
+		"list": {
+			"fish": {"who": "Old Gus", "role": "the harbour's oldest angler",
+				"a": {"name": "Longlines", "text": "Harbour fishing +30%, but fishing boats cost 20% more.", "perks": [{"perk": "zone_fish_harbor", "mult": 1.3}, {"perk": "unit_cost_fish", "mult": 1.2}]},
+				"b": {"name": "Storm nets", "text": "Deep boats survive storms 10% more, but harbour fishing -10%.", "perks": [{"perk": "survive_add", "add": 0.1}, {"perk": "zone_fish_harbor", "mult": 0.9}]}},
+			"deep": {"who": "Captain Ida Storm", "role": "deep-sea skipper",
+				"a": {"name": "Bold runs", "text": "Deep-sea catch +40%, but survival -10%.", "perks": [{"perk": "zone_fish_deep", "mult": 1.4}, {"perk": "survive_add", "add": -0.1}]},
+				"b": {"name": "Careful charts", "text": "Survival +15%, but deep-sea catch -15%.", "perks": [{"perk": "survive_add", "add": 0.15}, {"perk": "zone_fish_deep", "mult": 0.85}]}},
+			"pearl": {"who": "Marina Shell", "role": "free diver",
+				"a": {"name": "Big pearls", "text": "Pearls +40%, but pearl spots cost 50% more.", "perks": [{"perk": "income_pearl", "mult": 1.4}, {"perk": "unit_cost_pearl", "mult": 1.5}]},
+				"b": {"name": "Shallow beds", "text": "+1 pearl spot, but pearls earn 10% less.", "perks": [{"perk": "max_pearl_add", "add": 1}, {"perk": "income_pearl", "mult": 0.9}]}},
+			"crab": {"who": "Pinchy Pete", "role": "crabber",
+				"a": {"name": "Storm pots", "text": "Crab boats +25%, but storms wreck gear twice as often.", "perks": [{"perk": "income_crab", "mult": 1.25}, {"perk": "risk_crab", "mult": 2.0}]},
+				"b": {"name": "Steady pots", "text": "Storms wreck gear half as often, but crab boats -10%.", "perks": [{"perk": "risk_crab", "mult": 0.5}, {"perk": "income_crab", "mult": 0.9}]}},
+			"cray": {"who": "Cray-Cray Kev", "role": "cray potter",
+				"a": {"name": "Extra pot", "text": "+1 pot per ship, but storms lose 50% more pots.", "perks": [{"perk": "pots_add", "add": 1}, {"perk": "risk_cray", "mult": 1.5}]},
+				"b": {"name": "Quick runs", "text": "Cray +20%, but cray ships cost 25% more.", "perks": [{"perk": "income_cray", "mult": 1.2}, {"perk": "unit_cost_cray", "mult": 1.25}]}},
+			"salvage": {"who": "Rusty Morgan", "role": "scrap dealer",
+				"a": {"name": "Heavy cranes", "text": "+1 wreck every storm, but barges cost 30% more.", "perks": [{"perk": "wrecks_add", "add": 1}, {"perk": "unit_cost_salvage", "mult": 1.3}]},
+				"b": {"name": "Scrap sorters", "text": "Salvage +25%, but his yard fee puts rent up 5%.", "perks": [{"perk": "income_salvage", "mult": 1.25}, {"perk": "rent_mult", "mult": 1.05}]}},
+			"treasure": {"who": "Doubloon Dot", "role": "treasure hunter",
+				"a": {"name": "Map collector", "text": "Treasure +30%, but divers cost 30% more.", "perks": [{"perk": "income_treasure", "mult": 1.3}, {"perk": "unit_cost_treasure", "mult": 1.3}]},
+				"b": {"name": "The fence", "text": "Treasure +50%, but no questions asked: suspicion builds 15% faster.", "perks": [{"perk": "income_treasure", "mult": 1.5}, {"perk": "suspicion", "mult": 1.15}]}},
+			"whaling": {"who": "Harpoon Hattie", "role": "whaler",
+				"a": {"name": "Big game", "text": "Whaling +40%, but storms damage whalers twice as often.", "perks": [{"perk": "income_whaling", "mult": 1.4}, {"perk": "risk_whaling", "mult": 2.0}]},
+				"b": {"name": "Rendering", "text": "Whaling +15% and oil +10%, but whaling ships cost 25% more.", "perks": [{"perk": "income_whaling", "mult": 1.15}, {"perk": "income_oil", "mult": 1.1}, {"perk": "unit_cost_whaling", "mult": 1.25}]}},
+			"smuggle": {"who": "Silk Sully", "role": "smuggler",
+				"a": {"name": "Fast boats", "text": "Smuggling voyages 1 day shorter, but pay 10% less.", "perks": [{"perk": "voyage_days_smuggle_add", "add": -1}, {"perk": "voyage_pay_smuggle", "mult": 0.9}]},
+				"b": {"name": "Big holds", "text": "Smuggling voyages pay 30% more, but are caught 3% more often.", "perks": [{"perk": "voyage_pay_smuggle", "mult": 1.3}, {"perk": "voyage_catch_smuggle_add", "add": 0.03}]}},
+			"hiding": {"who": "Foggy Fen", "role": "cove keeper",
+				"a": {"name": "More berths", "text": "Mooring fees +30%, but they draw 30% more suspicion.", "perks": [{"perk": "income_hiding", "mult": 1.3}, {"perk": "risk_hiding", "mult": 1.3}]},
+				"b": {"name": "Fog cover", "text": "Suspicion builds 20% slower, but fees -20%.", "perks": [{"perk": "suspicion", "mult": 0.8}, {"perk": "income_hiding", "mult": 0.8}]}},
+			"piracy": {"who": "Black Nell", "role": "pirate captain",
+				"a": {"name": "Raiders", "text": "Pirate voyages pay 40% more, but are caught 5% more often.", "perks": [{"perk": "voyage_pay_piracy", "mult": 1.4}, {"perk": "voyage_catch_piracy_add", "add": 0.05}]},
+				"b": {"name": "Ghost flags", "text": "Pirate voyages are caught 5% less often, but pay 15% less.", "perks": [{"perk": "voyage_catch_piracy_add", "add": -0.05}, {"perk": "voyage_pay_piracy", "mult": 0.85}]}},
+			"oil": {"who": "Gusher Grant", "role": "oil man",
+				"a": {"name": "Deep drilling", "text": "Oil +30%, but storms damage rigs twice as often.", "perks": [{"perk": "income_oil", "mult": 1.3}, {"perk": "risk_oil", "mult": 2.0}]},
+				"b": {"name": "Storm-proof rigs", "text": "Storms never damage rigs, but oil -15%.", "perks": [{"perk": "risk_oil", "mult": 0.0}, {"perk": "income_oil", "mult": 0.85}]}}
+		}
+	},
+
 
 	"conditions": {
 		"_note": "Sea conditions: 2 drawn at random at the start of a run, shown before day 1, last the whole run. Perks: mult multiplies, add adds (same as Visitors).",

@@ -50,6 +50,7 @@ func _ready() -> void:
 	buoy_mesh.height = 0.9
 	Game.changed.connect(_on_changed)
 	Game.run_over.connect(_on_run_over)
+	Game.loaded.connect(func(): _rebuild_boats(); refresh())
 	$UI/Actions/StartDay.pressed.connect(_on_start_day)
 	$UI/Actions/BuyIsland.pressed.connect(func(): Game.buy_island())
 	$UI/EndScreen/Box/Restart.pressed.connect(_on_restart)
@@ -130,6 +131,20 @@ func _oil_search_rows() -> void:
 		_text(menu_body, "Players with dirty money (smuggling, piracy or hidden moorings) could bribe the permit office to speed this up.")
 
 
+func _wildcat_rows() -> void:
+	# A cheap wildcat well, so a lucky early strike can start earning before you can afford the platform
+	var os: Dictionary = Game.data.oil_search
+	if Game.wildcat:
+		if Game.day < Game.wildcat_ready_day:
+			_text(menu_body, "Your wildcat well is being built. It starts pumping on day %d." % Game.wildcat_ready_day)
+		else:
+			_text(menu_body, "Your wildcat well is pumping (%s%% of a full rig). Building the full platform replaces it." % str(os.wildcat_share * 100.0))
+		return
+	_header(menu_body, "Wildcat well")
+	_text(menu_body, "Can't afford the platform yet? A small wildcat well earns %s%% of a full rig, takes %d weeks to build, and is replaced when you build the platform." % [str(os.wildcat_share * 100.0), int(os.build_weeks)])
+	_button(menu_body, "Build a wildcat well  " + Game.money(os.wildcat_price), os.wildcat_price, Game.can_build_wildcat(), func(): Game.build_wildcat())
+
+
 func close_menu() -> void:
 	open_menu = ""
 	$UI/BuildingMenu.visible = false
@@ -166,6 +181,8 @@ func _fill_menu() -> void:
 		if key == "oil" and not Game.oil_approved():
 			_oil_search_rows()
 			return
+		if key == "oil":
+			_wildcat_rows()
 		var bp := Game.build_price(key)
 		var what := ("Build + first %s  " % a.unit_name) if a.has("unit") else "Build  "
 		var earns := ("  (~%s/day)" % Game.money(Game.avg_per_day(key))) if a.has("unit") else ""
@@ -197,7 +214,9 @@ func _fill_menu() -> void:
 		"salvage":
 			_text(menu_body, "Wrecks waiting: %d" % Game.wrecks)
 		"smuggle", "piracy":
-			_text(menu_body, "Dirty money, laundered at %d%%. Best in storms. Patrols catch sailing ships on clear days (perfect days most). Suspicion: %d / 100. To cool off: hide ships in the Hidden Moorings, or pay off officials (button by the suspicion bar)." % [int(Game.launder_rate() * 100), int(Game.suspicion)])
+			var vg: Dictionary = Game.data.voyages
+			_text(menu_body, "Dirty money, laundered at %d%%. Ships in port earn %d%% of a day at sea, can be caught (%d%% a day) and can be seized by investigators. Send them on voyages from the bounty board for real money: a voyage earns every day at sea (storms pay best), paid when the ship gets back, and ships away can't be seized. Suspicion: %d / 100." % [int(Game.launder_rate() * 100), int(vg.harbour_share * 100), int(vg.harbour_caught * 100), int(Game.suspicion)])
+			_bounty_rows(key)
 		"hiding":
 			_text(menu_body, "Dirty money, laundered at %d%%. Each berth earns a fee from other captains, OR hides one of your own smuggling or pirate ships (Hide button in the Boats list). Hidden ships earn nothing but add no suspicion, can't be caught and are never seized. Berths: %d, your ships hidden: %d." % [int(Game.launder_rate() * 100), int(Game.counts.hiding), Game.hidden_own()])
 		"oil":
@@ -209,14 +228,31 @@ func _fill_menu() -> void:
 			_text(menu_body, "Finds right now: " + ",  ".join(odds))
 	if a.has("unit"):
 		var owned := Game.units_owned(key)
-		var cap_text := (" / %d" % int(a.max_units)) if a.has("max_units") else ""
-		if a.has("max_units") and owned >= int(a.max_units):
+		var cap_text := (" / %d" % Game.max_units(key)) if a.has("max_units") else ""
+		if a.has("max_units") and owned >= Game.max_units(key):
 			_text(menu_body, "%s: %d%s (all owned)" % [a.unit_name, owned, cap_text])
 		else:
 			var up := Game.unit_price(key)
 			_button(menu_body, "Buy %s  %s  (~%s/day)   own %d%s" % [a.unit_name, Game.money(up), Game.money(Game.avg_per_day(key)), owned, cap_text], up, Game.can_buy_unit(key), func(): Game.buy_unit(key))
 	_header(menu_body, "Upgrades")
 	_upgrade_rows(menu_body, key)
+
+
+func _bounty_rows(key: String) -> void:
+	# The bounty board: send a waiting ship on one of the voyages listed
+	_header(menu_body, "Bounty board")
+	var shown := 0
+	for i in Game.board.size():
+		var v: Dictionary = Game.board[i]
+		if v.avenue != key:
+			continue
+		shown += 1
+		var vl: Dictionary = Game.data.voyages.lengths[int(v.length)]
+		var days: int = Game.voyage_days(key, int(v.length))
+		var label := "%s: %d days, pays ~%s, caught %d%%" % [vl.name, days, Game.money(Game.voyage_estimate(i)), int(round(Game.voyage_catch(key, int(v.length)) * 100))]
+		_button(menu_body, "Send a ship   " + label, 0.0, Game.can_send(i), func(): Game.send_voyage(i))
+	if shown == 0:
+		_text(menu_body, "No %s voyages on the board today. New ones come in each day." % ("smuggling" if key == "smuggle" else "pirate"))
 
 
 func _lift_text(into: Control, key: String) -> void:
@@ -255,6 +291,10 @@ func _upgrade_rows(into: Control, key: String) -> void:
 				effect = "also forecast the day after"
 			"orders":
 				effect = "deep boats stay in port when a storm is forecast"
+			_:
+				effect = str(paths[i].get("text", ""))
+		if paths[i].has("avenue"):
+			effect += ", champion only"
 		_button(into, "%s  %d -> %d   %s  (%s)" % [paths[i].name, lvl, lvl + 1, Game.money(price), effect], price, Game.can_upgrade(key, i), func(): Game.upgrade(key, i))
 
 
@@ -275,9 +315,12 @@ func _update_top_bar() -> void:
 	$UI/Actions/StartDay.disabled = animating or Game.over or Game.pending_push >= 0 or Game.pending_offer >= 0 or not Game.pending_pick.is_empty()
 	$UI/StatusBar/Row/Forecast.text = Game.forecast_text()
 	$UI/StatusBar/Row/Crown.text = "Crown: %s. Good: %s Bad: %s" % [Game.crown.name, Game.crown.good, Game.crown.bad]
+	if Game.champion_index >= 0:
+		$UI/StatusBar/Row/Crown.text += "   |   Champion: " + Game.champion().name
 	# The Crown's levy for this season, strikes and the season's decree
 	$UI/StatusBar/Row/Crown.text += "   |   " + Game.levy_text()
 	$UI/StatusBar/Row/Crown.modulate = Color(1, 0.6, 0.4) if Game.strikes > 0 else Color(1, 1, 1)
+	_update_favour_buttons()
 	var sus := int(Game.suspicion)
 	$UI/StatusBar/Row/Suspicion.text = "Suspicion %d/100 (investigation %d%% a day)" % [sus, int(round(Game.investigation_chance() * 100))]
 	$UI/StatusBar/Row/Suspicion.modulate = Color(1, 0.5, 0.4) if sus >= 60 else (Color(1, 0.85, 0.4) if sus >= 30 else Color(0.8, 0.8, 0.8))
@@ -292,9 +335,31 @@ func _update_top_bar() -> void:
 	# A warned event shows next to the news, in orange
 	if Game.event_text() != "":
 		$UI/StatusBar/Row/News.text += "   |   COMING: " + Game.event_text()
+	if Game.news_preview_text() != "":
+		$UI/StatusBar/Row/News.text += "   |   " + Game.news_preview_text()
 	$UI/StatusBar/Row/News.modulate = Color(1, 0.7, 0.4) if Game.event_text() != "" else Color(1, 1, 1)
 	_update_crown_choice()
 	_update_offer_choice()
+
+
+func _update_favour_buttons() -> void:
+	# Crown favours (from beating levies): made once, shown only when there's a favour to spend
+	var row: HBoxContainer = $UI/StatusBar/Row
+	if not row.has_node("FavourStrike"):
+		var b1 := Button.new()
+		b1.name = "FavourStrike"
+		b1.pressed.connect(func(): Game.favour_strike())
+		row.add_child(b1)
+		var b2 := Button.new()
+		b2.name = "FavourDecree"
+		b2.pressed.connect(func(): Game.favour_decree())
+		row.add_child(b2)
+	var fs: Button = row.get_node("FavourStrike")
+	var fd: Button = row.get_node("FavourDecree")
+	fs.visible = Game.can_favour_strike()
+	fs.text = "Favour (%d): clear a strike" % Game.favour
+	fd.visible = Game.can_favour_decree()
+	fd.text = "Favour (%d): cancel the decree" % Game.favour
 
 
 func _update_crown_choice() -> void:
@@ -337,11 +402,12 @@ func _update_pick() -> bool:
 	for o in p.options:
 		text += "[b]%s[/b]\n[color=#9fe39f]%s[/color]\n\n" % [o.name, o.text]
 	$UI/OfferChoice/Box/Text.text = text
-	# The Crown pick has six choices, so it uses its own grid of buttons instead of the usual three
-	var grid := _crown_grid()
-	grid.visible = p.kind == "crown"
-	$UI/OfferChoice/Box/Buttons.visible = p.kind != "crown"
-	if p.kind == "crown":
+	# Picks with more than three choices (Crowns, champions) use a grid of buttons instead of the usual three
+	var big: bool = p.options.size() > 3
+	var grid := _pick_grid(p.options.size())
+	grid.visible = big
+	$UI/OfferChoice/Box/Buttons.visible = not big
+	if big:
 		for i in grid.get_child_count():
 			var cb: Button = grid.get_child(i)
 			cb.visible = i < p.options.size()
@@ -359,22 +425,25 @@ func _update_pick() -> bool:
 		else:
 			b.visible = i < p.options.size()
 			if b.visible:
-				b.text = "Take " + p.options[i].name
+				b.text = p.options[i].name if p.kind == "continue" else "Take " + p.options[i].name
 	return true
 
 
-func _crown_grid() -> GridContainer:
-	# Made once, the first time it's needed: six buttons, three to a row
+func _pick_grid(n: int) -> GridContainer:
+	# Made the first time it's needed, three buttons to a row; grows if a pick has more choices
 	var box: VBoxContainer = $UI/OfferChoice/Box
-	if box.has_node("CrownGrid"):
-		return box.get_node("CrownGrid")
-	var grid := GridContainer.new()
-	grid.name = "CrownGrid"
-	grid.columns = 3
-	grid.add_theme_constant_override("h_separation", 12)
-	grid.add_theme_constant_override("v_separation", 12)
-	box.add_child(grid)
-	for i in Game.data.crowns.list.size():
+	var grid: GridContainer
+	if box.has_node("PickGrid"):
+		grid = box.get_node("PickGrid")
+	else:
+		grid = GridContainer.new()
+		grid.name = "PickGrid"
+		grid.columns = 3
+		grid.add_theme_constant_override("h_separation", 12)
+		grid.add_theme_constant_override("v_separation", 12)
+		box.add_child(grid)
+	while grid.get_child_count() < n:
+		var i := grid.get_child_count()
 		var b := Button.new()
 		b.custom_minimum_size = Vector2(260, 44)
 		b.pressed.connect(func(): Game.answer_pick(i))
@@ -386,7 +455,7 @@ func _update_offer_choice() -> void:
 	if _update_pick():
 		return
 	# Not a pick: put the usual three buttons back
-	_crown_grid().visible = false
+	_pick_grid(0).visible = false
 	$UI/OfferChoice/Box/Buttons.visible = true
 	var box := $UI/OfferChoice
 	for b in [$UI/OfferChoice/Box/Buttons/PickA, $UI/OfferChoice/Box/Buttons/PickB, $UI/OfferChoice/Box/Buttons/Later]:
@@ -490,10 +559,17 @@ func _boat_row(i: int, number: int) -> void:
 	# Smuggling and pirate ships sail, or hide in a free Hidden Moorings berth (safe, but earn nothing)
 	var dirty: bool = b.kind == "smuggler" or b.kind == "pirate"
 	if dirty:
-		zones = ["deep", "hidden"]
+		zones = ["harbor", "hidden"]
+	# A ship away on a voyage can't be moved until it's back
+	if b.zone == "voyage":
+		var away := Label.new()
+		away.text = "away on a voyage, back day %d" % int(b.back)
+		row.add_child(away)
+		list.add_child(row)
+		return
 	for z in zones:
 		var btn := Button.new()
-		btn.text = ({"deep": "Sail", "hidden": "Hide"}[z]) if dirty else z.capitalize()
+		btn.text = ({"harbor": "In port", "hidden": "Hide"}[z]) if dirty else z.capitalize()
 		btn.toggle_mode = true
 		# The boat's current zone shows as pressed (highlighted); unavailable zones are greyed out
 		btn.button_pressed = b.zone == z
@@ -562,6 +638,9 @@ func _spot_for(zone: String, kind: String, index_in_zone: int) -> Vector3:
 		return $Spots/DeepSpot.position + Vector3((i % 8) * 6.0, 0, 9.0)
 	if kind == "barge":
 		return Vector3(-11.0 + (i % 4) * 3.2, 0, 29.0)
+	if zone == "voyage":
+		# Away on a voyage: far out to sea, off the edge of the view
+		return Vector3(90.0 + (i % 4) * 6.0, 0, 90.0 + (i / 4) * 6.0)
 	if zone == "hidden":
 		# Tucked into a cove on the east coast
 		return Vector3(17.0 + (i % 3) * 2.6, 0, -4.0 + (i / 3) * 3.4)
