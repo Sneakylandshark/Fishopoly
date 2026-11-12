@@ -1,4 +1,4 @@
-﻿{
+{
 	"_read_me": "Every number in the game lives here. Change a number, save, and press Play again. Money is in dollars. Chances are 0 to 1 (0.25 = 25%).",
 
 	"start": {
@@ -54,7 +54,9 @@
 			"name": "The Lord Admiral",
 			"inspired_by": "Horatio Nelson",
 			"pitch": "Strong navy, strict on smugglers. Pays well for whale oil and crude.",
-			"buffs": {"whaling": 1.25, "oil": 1.25},
+			"buffs": {"whaling": 1.25, "oil": 1.25, "smuggle": 0.8, "piracy": 0.8, "hiding": 0.8},
+			"_drawback": "Strict on smugglers: fines x1.5, suspicion builds 30% faster.",
+			"perks": {"fine": 1.5, "suspicion": 1.3},
 			"greed": 0.02,
 			"tax_bands": [[1000, 0.0], [2500, 0.16], [10000, 0.30], [50000, 0.37], [1000000000000, 0.45]]
 		},
@@ -62,7 +64,9 @@
 			"name": "The Queen's Privateer",
 			"inspired_by": "Francis Drake",
 			"pitch": "Turns a blind eye to smugglers and pirates, taxes lightly, and asks for less.",
-			"buffs": {"smuggle": 1.25, "piracy": 1.25, "hiding": 1.25},
+			"buffs": {"smuggle": 1.25, "piracy": 1.25, "hiding": 1.25, "whaling": 0.75, "oil": 0.75},
+			"_drawback": "No navy to call on: deep-sea boats are 10% less likely to survive storms.",
+			"perks": {"survive_add": -0.1},
 			"greed": 0.01,
 			"tax_bands": [[1000, 0.0], [2500, 0.12], [10000, 0.25], [50000, 0.30], [1000000000000, 0.35]]
 		},
@@ -136,8 +140,8 @@
 		"investigation_rate": 0.08,
 		"safe_below": 20,
 		"after_investigation": 20,
-		"fine_weeks": [0.2, 0.4, 0.6],
-		"seize": 0.3,
+		"fine_weeks": [0.1, 0.2, 0.3],
+		"seize": 0.2,
 		"tipoff_days": 2,
 		"calloff_drop": 25,
 		"_bribe_note": "Pay off officials: suspicion -drop. Price = share of last week's income (at least min), x growth every time you bribe.",
@@ -145,8 +149,8 @@
 	},
 
 	"storm_damage": {
-		"_note": "In a storm, each oil rig / whaling ship / pirate ship may be damaged. Repairs cost this share of its price, paid at once.",
-		"chance": {"oil": 0.25, "whaling": 0.1, "piracy": 0.1},
+		"_note": "In a storm, each oil rig / whaling ship may be damaged (pirates rely on storms, so they are never damaged). Repairs cost this share of its price, paid at once.",
+		"chance": {"oil": 0.25, "whaling": 0.1},
 		"repair_share": 0.3
 	},
 
@@ -303,9 +307,9 @@
 			"building": 31250,
 			"unit": 24500,
 			"unit_name": "Smuggling boat",
-			"perfect": 3938,
-			"normal": 4923,
-			"storm": 13784,
+			"perfect": 5907,
+			"normal": 7385,
+			"storm": 20676,
 			"caught_perfect": 0.3,
 			"caught_normal": 0.03,
 			"lifts": ["cray"],
@@ -322,9 +326,9 @@
 			"building": 37500,
 			"unit": 30000,
 			"unit_name": "Hiding berth",
-			"perfect": 3428,
-			"normal": 3428,
-			"storm": 3428,
+			"perfect": 5142,
+			"normal": 5142,
+			"storm": 5142,
 			"lifts": ["treasure"],
 			"paths": [
 				{"name": "Coves", "effect": "income", "per_level": 1.2},
@@ -335,13 +339,13 @@
 			"name": "Pirate Haven",
 			"tier": 3,
 			"dirty": true,
-			"blurb": "Dirty money. Huge hauls in storms. On clear days a pirate ship can be caught and seized; storms can damage it.",
+			"blurb": "Dirty money. Huge hauls in storms. On clear days a pirate ship can be caught and seized. Storms never damage pirate ships.",
 			"building": 43750,
 			"unit": 39375,
 			"unit_name": "Pirate ship",
-			"perfect": 5279,
-			"normal": 7390,
-			"storm": 25336,
+			"perfect": 7919,
+			"normal": 11085,
+			"storm": 38004,
 			"caught_perfect": 0.25,
 			"caught_normal": 0.05,
 			"lifts": ["salvage"],
@@ -373,10 +377,36 @@
 		"survey_min": 20000,
 		"find_chance": 0.2,
 		"permit_weeks": 8,
-		"bribe_cut_weeks": 2,
+		"bribe_cut_weeks": 3,
 		"bribe_dirty_weeks": 0.5,
 		"bribe_min": 10000,
-		"bribe_suspicion": 15
+		"bribe_suspicion": 15,
+		"_crooked_note": "Players with dirty money can pay a crooked surveyor instead (same price): a better chance to find oil, but it adds suspicion.",
+		"crooked_find_chance": 0.5,
+		"crooked_suspicion": 10
+	},
+
+	"levy": {
+		"_note": "The run is split into seasons. Each season the Crown sets a levy: earn at least targets[season-1] in the season (a target, not a bill; after the list ends each season is growth_after x the last). Miss it and you're fined the shortfall times fine_share and get a strike; at max_strikes the Crown takes the island back. From decree_from_season, each season also has a random decree (a twist that lasts the season, only for things you own).",
+		"season_days": 28,
+		"_targets_note": "Set 12 Nov from robot runs with no levy: about half of what the bottom quarter of runs earn each season.",
+		"targets": [1000, 1000, 1500, 3000, 25000, 150000, 400000, 800000, 1200000, 2500000, 5000000, 8000000, 10000000, 12000000],
+		"growth_after": 1.1,
+		"fine_share": 1.0,
+		"max_strikes": 3,
+		"decree_from_season": 6,
+		"decrees": [
+			{"id": "blockade", "name": "Navy blockade", "needs": "deep", "text": "Deep-sea fishing earns 90% less this season.", "perks": [{"perk": "zone_fish_deep", "mult": 0.1}]},
+			{"id": "pearl_ban", "name": "Pearl ban", "needs": "pearl", "text": "Pearls earn 90% less this season.", "perks": [{"perk": "income_pearl", "mult": 0.1}]},
+			{"id": "whaling_ban", "name": "Whaling ban", "needs": "whaling", "text": "Whaling earns 90% less this season.", "perks": [{"perk": "income_whaling", "mult": 0.1}]},
+			{"id": "harbour_toll", "name": "Harbour toll", "needs": "fish", "text": "Harbour fishing earns 40% less this season.", "perks": [{"perk": "zone_fish_harbor", "mult": 0.6}]},
+			{"id": "crab_quota", "name": "Crab quota", "needs": "crab", "text": "Crab boats earn half this season.", "perks": [{"perk": "income_crab", "mult": 0.5}]},
+			{"id": "salvage_claim", "name": "Salvage claim", "needs": "salvage", "text": "The Crown claims half of all salvage this season.", "perks": [{"perk": "income_salvage", "mult": 0.5}]},
+			{"id": "oil_embargo", "name": "Oil embargo", "needs": "oil", "text": "Oil earns half this season.", "perks": [{"perk": "income_oil", "mult": 0.5}]},
+			{"id": "crackdown", "name": "Crackdown", "needs": "dirty", "text": "Fines are doubled and suspicion builds 50% faster this season.", "perks": [{"perk": "fine", "mult": 2.0}, {"perk": "suspicion", "mult": 1.5}]},
+			{"id": "storm_season", "name": "Storm season", "needs": "any", "text": "Storms come 10% more often this season.", "perks": [{"perk": "storm_add", "add": 0.1}]},
+			{"id": "lean_year", "name": "Lean year", "needs": "any", "text": "Everything earns 20% less this season.", "perks": [{"perk": "income_all", "mult": 0.8}]}
+		]
 	},
 
 	"conditions": {

@@ -114,6 +114,11 @@ func _oil_search_rows() -> void:
 		_text(menu_body, "Each survey has a %d%% chance to find oil. Surveys so far: %d. Once oil is found, the Crown takes %d weeks to approve the platform." % [int(round(os.find_chance * 100)), Game.surveys, int(os.permit_weeks)])
 		var sp: float = Game.survey_price()
 		_button(menu_body, "Pay for a survey  " + Game.money(sp), sp, Game.can_survey(), func(): Game.survey())
+		if Game.laundering:
+			_text(menu_body, "Or pay a crooked surveyor with dirty money: %d%% chance to find oil, but each one adds %d suspicion." % [int(round(os.crooked_find_chance * 100)), int(os.crooked_suspicion)])
+			_button(menu_body, "Pay a crooked surveyor  " + Game.money(sp), sp, Game.can_survey_crooked(), func(): Game.survey(true))
+		else:
+			_text(menu_body, "Players with dirty money (smuggling, piracy or hidden moorings) could pay a crooked surveyor for better odds.")
 		return
 	_header(menu_body, "Oil found! Waiting for the Crown's permit")
 	_text(menu_body, "The permit comes through on day %d (%d days from now)." % [Game.permit_day, Game.permit_day - Game.day])
@@ -267,6 +272,11 @@ func _update_top_bar() -> void:
 	$UI/Actions/StartDay.disabled = animating or Game.over or Game.pending_push >= 0 or Game.pending_offer >= 0 or not Game.pending_pick.is_empty()
 	$UI/StatusBar/Row/Forecast.text = Game.forecast_text()
 	$UI/StatusBar/Row/Crown.text = "Crown: %s (%s)" % [Game.crown.name, _buff_text(Game.crown.buffs)]
+	if Game.crown.has("_drawback"):
+		$UI/StatusBar/Row/Crown.text += " " + Game.crown._drawback
+	# The Crown's levy for this season, strikes and the season's decree
+	$UI/StatusBar/Row/Crown.text += "   |   " + Game.levy_text()
+	$UI/StatusBar/Row/Crown.modulate = Color(1, 0.6, 0.4) if Game.strikes > 0 else Color(1, 1, 1)
 	var sus := int(Game.suspicion)
 	$UI/StatusBar/Row/Suspicion.text = "Suspicion %d/100 (investigation %d%% a day)" % [sus, int(round(Game.investigation_chance() * 100))]
 	$UI/StatusBar/Row/Suspicion.modulate = Color(1, 0.5, 0.4) if sus >= 60 else (Color(1, 0.85, 0.4) if sus >= 30 else Color(0.8, 0.8, 0.8))
@@ -375,7 +385,7 @@ func _perk_text(into: Control, key: String) -> void:
 func _buff_text(buffs: Dictionary) -> String:
 	var parts := []
 	for k in buffs:
-		parts.append("%s +%d%%" % [Game.data.avenues[k].name, int(round((buffs[k] - 1.0) * 100))])
+		parts.append("%s %+d%%" % [Game.data.avenues[k].name, int(round((buffs[k] - 1.0) * 100))])
 	return ", ".join(parts)
 
 

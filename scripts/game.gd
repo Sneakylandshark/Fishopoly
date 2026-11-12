@@ -44,6 +44,17 @@ var event_due: Dictionary = {}
 var active_effects: Array = []
 var forced_storm_until := -1
 var week_income := 0.0
+# Crown levies: the season number, what you've earned this season, strikes so far and this season's decree
+var season := 1
+var season_earned := 0.0
+var strikes := 0
+var decree: Dictionary = {}
+# What you earned in each finished season (for tests and the run log)
+var season_log: Array = []
+# Tests can scale every levy target (1 = as in balance.json)
+var levy_scale := 1.0
+# Clean money earned this week (only clean money is taxed)
+var week_taxable := 0.0
 var last_week := 0.0
 var last_storm := 0
 # Weather rolled ahead of time so the Weather Bureau can forecast it: [{w, u, v}] for tomorrow, the day after
@@ -128,6 +139,7 @@ func new_run(seed: int = -1, write_log: bool = true) -> void:
 	week_dirty = 0.0
 	last_week_dirty = 0.0
 	week_income = 0.0
+	week_taxable = 0.0
 	last_week = 0.0
 	last_storm = 0
 	harbor_spaces = int(data.start.harbor_spaces)
@@ -174,7 +186,13 @@ func new_run(seed: int = -1, write_log: bool = true) -> void:
 	_fill_forecast()
 	_open_log(write_log)
 	log_lines = []
+	season = 1
+	season_earned = 0.0
+	strikes = 0
+	decree = {}
+	season_log = []
 	_say("Day 0. You own one small boat and a rock. %s owns the island and wants %s for it." % [crown.name, money(price)])
+	_say("CROWN LEVY: earn %s by day %d. Miss a levy and you're fined and get a strike; %d strikes and the Crown takes the island back." % [money(levy_target()), season_end_day(), int(data.levy.max_strikes)])
 	_draw_conditions()
 
 
@@ -280,7 +298,13 @@ func paths_for(key: String) -> Array:
 
 func perk(name: String) -> float:
 	# "_add" perks start at 0, the rest are multipliers that start at 1
-	return float(perks.get(name, 0.0 if name.ends_with("_add") else 1.0))
+	var adds := name.ends_with("_add")
+	var v := float(perks.get(name, 0.0 if adds else 1.0))
+	# The current Crown's drawbacks (and any other Crown perks) count too
+	var cp: Dictionary = crown.get("perks", {})
+	if cp.has(name):
+		v = v + float(cp[name]) if adds else v * float(cp[name])
+	return v
 
 
 func risk(key: String) -> float:
@@ -521,7 +545,7 @@ func storm_gap(d: int) -> int:
 
 func roll_weather(d: int) -> String:
 	var allowed := (d - last_storm) >= storm_gap(d)
-	if allowed and rng.randf() < data.weather.storm_chance:
+	if allowed and rng.randf() < data.weather.storm_chance + perk("storm_add"):
 		last_storm = d
 		return "storm"
 	# The other five faces: 1 perfect, 2-5 normal
@@ -810,17 +834,25 @@ func start_day() -> Dictionary:
 	report.income = income - repairs - fine
 	cash += income - repairs - fine
 	week_income = income if (day - 1) % 7 == 0 else week_income + income
+	# Dirty money is off the books, so only clean money counts for tax
+	var taxable: float = 0.0 if investigate else clean
+	week_taxable = taxable if (day - 1) % 7 == 0 else week_taxable + taxable
 	week_dirty = dirty if (day - 1) % 7 == 0 else week_dirty + dirty
+	season_earned += income
 
 	# Weekly bills
 	if day % 7 == 0:
-		var t := tax_on(max(week_income, 0.0))
+		var t := tax_on(max(week_taxable, 0.0))
 		var rent := rent_for_week(day / 7)
 		cash -= t + rent
-		report.lines.append("Bills: rent $%s + tax $%s (tax on the $%s you earned this week)" % [_money(rent), _money(t), _money(week_income)])
+		report.lines.append("Bills: rent $%s + tax $%s (tax on the $%s clean money you earned this week; dirty money isn't taxed)" % [_money(rent), _money(t), _money(week_taxable)])
 		report["bills"] = t + rent
 		last_week = week_income
 		last_week_dirty = week_dirty
+
+	# End of a season: the Crown checks the levy, then sets the next one
+	if not over and day % int(data.levy.season_days) == 0:
+		_end_season(report)
 
 	# Interest on any loan, then the Silent Partner covers a shortfall (if you have warnings left)
 	if loan > 0:
@@ -963,14 +995,26 @@ func can_survey() -> bool:
 	return tier_open(4) and not oil_found and can_afford(survey_price())
 
 
-func survey() -> bool:
+func can_survey_crooked() -> bool:
+	# A crooked surveyor needs dirty money: you must run a dirty avenue (which opens your laundering front)
+	return laundering and can_survey()
+
+
+func survey(crooked: bool = false) -> bool:
 	# Pay for a survey; it may find oil, which starts the Crown's permit wait
 	if not can_survey():
+		return false
+	if crooked and not laundering:
 		return false
 	var os: Dictionary = data.oil_search
 	cash -= survey_price()
 	surveys += 1
-	if rng.randf() < float(os.find_chance) + perk("oil_find_add"):
+	var chance: float = float(os.find_chance)
+	# A crooked surveyor knows where the oil is, but word gets around
+	if crooked:
+		chance = float(os.crooked_find_chance)
+		suspicion += float(os.crooked_suspicion)
+	if rng.randf() < chance + perk("oil_find_add"):
 		oil_found = true
 		permit_day = day + int(os.permit_weeks) * 7
 		_say("Survey %d struck oil! The Crown's permit will take until day %d." % [surveys, permit_day])
@@ -1051,6 +1095,69 @@ func resolve_push(defect: bool) -> void:
 		_say("You stayed with %s and paid %s in tribute to keep the rival away." % [crown.name, money(t)])
 		for line in rep.lines:
 			_say(line)
+
+
+# ---------- Crown levies ----------
+
+func levy_target(s: int = -1) -> float:
+	# What the Crown wants you to earn in season s (grows every season)
+	var lv: Dictionary = data.levy
+	var n: int = season if s < 0 else s
+	var t: Array = lv.targets
+	if n <= t.size():
+		return float(t[n - 1]) * levy_scale
+	# After the table ends, each season asks growth_after times the last
+	return float(t[-1]) * pow(float(lv.growth_after), n - t.size()) * levy_scale
+
+
+func season_end_day() -> int:
+	return season * int(data.levy.season_days)
+
+
+func levy_text() -> String:
+	# For the top bar
+	var t := "Levy: earn %s by day %d (%s so far)  Strikes %d/%d" % [money(levy_target()), season_end_day(), money(season_earned), strikes, int(data.levy.max_strikes)]
+	if not decree.is_empty():
+		t += "  |  Decree: %s (%s)" % [decree.name, decree.text]
+	return t
+
+
+func _end_season(report: Dictionary) -> void:
+	var lv: Dictionary = data.levy
+	var target := levy_target()
+	season_log.append(season_earned)
+	if season_earned >= target:
+		report.lines.append("CROWN LEVY MET: you earned $%s this season (needed $%s)." % [_money(season_earned), _money(target)])
+	else:
+		strikes += 1
+		var fine: float = (target - season_earned) * float(lv.fine_share)
+		cash -= fine
+		report["levy_missed"] = true
+		report.lines.append("CROWN LEVY MISSED: you earned $%s of $%s. Fined $%s. Strike %d of %d." % [_money(season_earned), _money(target), _money(fine), strikes, int(lv.max_strikes)])
+		if strikes >= int(lv.max_strikes):
+			over = true
+			_write("RUN LOST on day %d (levy strikes)" % day)
+			run_over.emit(false, "You missed %d Crown levies. The Crown takes back the island." % strikes)
+			return
+	season += 1
+	season_earned = 0.0
+	decree = {}
+	if season >= int(lv.decree_from_season):
+		_draw_decree(report)
+	report.lines.append("NEXT LEVY: earn $%s by day %d." % [_money(levy_target()), season_end_day()])
+
+
+func _draw_decree(report: Dictionary) -> void:
+	# A random twist for the season, only for things you own
+	var pool := []
+	for i in data.levy.decrees.size():
+		if _event_ok(data.levy.decrees[i]):
+			pool.append(i)
+	if pool.is_empty():
+		return
+	decree = data.levy.decrees[pool[rng.randi_range(0, pool.size() - 1)]]
+	_apply_perks(decree.perks, season_end_day())
+	report.lines.append("CROWN DECREE for this season: %s. %s" % [decree.name, decree.text])
 
 
 # ---------- Roguelite luck: sea conditions, boons, random events ----------
@@ -1459,12 +1566,14 @@ func avg_per_day(key: String) -> float:
 	return 0.0
 
 
-func income_estimate() -> float:
-	# Roughly what everything you own earns on an average day
+func income_estimate(clean_only: bool = false) -> float:
+	# Roughly what everything you own earns on an average day (clean_only skips dirty avenues)
 	var total: float = avg_per_day("fish") * min(count_boats("fish", "harbor"), harbor_spaces)
 	total += max(avg_per_day("fish_deep"), 0.0) * count_boats("fish", "deep")
 	for key in data.avenues:
 		if key == "deep" or not built.has(key):
+			continue
+		if clean_only and data.avenues[key].get("dirty", false):
 			continue
 		if key == "salvage":
 			if count_boats("barge") > 0:
@@ -1487,9 +1596,14 @@ func week_earned_so_far() -> float:
 	return week_income if day % 7 != 0 else 0.0
 
 
+func week_taxable_so_far() -> float:
+	# Clean income since the last bill (resets the day after bills)
+	return week_taxable if day % 7 != 0 else 0.0
+
+
 func tax_estimate() -> float:
-	# Tax on this week's income: what you've earned so far plus a guess for the days left
-	return tax_on(max(week_earned_so_far() + income_estimate() * days_to_bills(), 0.0))
+	# Tax on this week's clean income: what you've earned so far plus a guess for the days left
+	return tax_on(max(week_taxable_so_far() + income_estimate(true) * days_to_bills(), 0.0))
 
 
 func next_bill() -> float:

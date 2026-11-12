@@ -467,14 +467,15 @@ text = "[font_size=26][b]How to play[/b][/font_size]
    [b]Harbor[/b]: safe (never sinks), small catch, limited spaces.  [b]Deep[/b] (needs the Deep Sea Dock): big catch on calm days, but storms can sink it; the dock's Hull raises survival (20% up to 60%).  [b]Dock[/b]: parked.
 The weather is secret until the boats head out: perfect days pay most, normal days less, storms are dangerous.
 
-[b]Every 7 days[/b] you pay rent [b]and tax[/b]. Tax is taken from what you earned that week: the first $1,000 is tax-free, then 16%, 30%, 37% and 45% as you earn more. The top bar shows the next bill and how much is safe to spend; buttons turn orange if a buy leaves you short. If you can't pay, the Silent Partner lends the rest at 5% a day; repay within 7 days or your things are sold.
+[b]Every 7 days[/b] you pay rent [b]and tax[/b]. Tax is taken from the clean money you earned that week (dirty money isn't taxed): the first $1,000 is tax-free, then 16%, 30%, 37% and 45% as you earn more. The top bar shows the next bill and how much is safe to spend; buttons turn orange if a buy leaves you short. If you can't pay, the Silent Partner lends the rest at 5% a day; repay within 7 days or your things are sold.
 
 [b]Buildings:[/b] click any building (or the dock) to build, buy and upgrade. Faint ones aren't built yet. 
 [b]Visitors:[/b] after the weekly bills, two people may come with rival offers for something you own (for example stronger hulls OR better nets). Pay for one and the other leaves for good, or say Not now and they come back later.
 [b]Weather tools[/b] (optional, never needed to unlock a tier): the [b]Lighthouse[/b] (tier 1) can guide storm-caught deep boats home instead of sinking. The [b]Weather Bureau[/b] (tier 3) forecasts tomorrow, but is only right some of the time.
 [b]Tiers:[/b] 1 fishing, pearls, crab, cray, deep sea  ->  2 salvage, treasure, whaling  ->  3 smuggling, hidden moorings, piracy  ->  4 oil. A tier opens when you own every building in the tier below and their upgrades reach a set level (the locked building's menu lists what's missing). Later avenues boost earlier ones (supply chains).
 [b]Dirty money[/b] (tier 3) is laundered at 70% but raises [b]suspicion[/b]. The higher it is, the likelier an investigation. An informant tips you off 2 days ahead: get suspicion 25 lower by then and they find nothing. Otherwise: no earnings that day, a fine, and sailing ships seized. To cool off, [b]Hide[/b] your smuggling and pirate ships in the Hidden Moorings (one per berth; hidden ships earn nothing but are safe), or [b]Pay off officials[/b] (button by the suspicion bar; dearer each time).
-[b]Crowns:[/b] as you get rich a rival Crown pushes for the island. Stay and pay tribute, or defect once to the rival (new buffs, dearer island, some crews leave).
+[b]Crown levy:[/b] every 4 weeks the Crown sets a target: earn at least that much this season (you keep the money). Miss it and you're fined the shortfall and get a strike. 3 strikes and you lose the island. From season 6 each season also has a [b]decree[/b], a twist that lasts the season (status bar).
+[b]Crowns:[/b] each Crown has buffs AND drawbacks. As you get rich a rival Crown pushes for the island. Stay and pay tribute, or defect once to the rival (new buffs and drawbacks, dearer island, some crews leave).
 [b]News:[/b] each week one market goes up or down 50% (status bar).
 "
 

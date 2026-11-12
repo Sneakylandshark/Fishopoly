@@ -41,7 +41,8 @@ WHAT'S IN (everything from the economy tests)
 - Visitors (replaced safe / greedy): after weekly bills, two people offer rival upgrades for something you own.
   Pay for one (the other leaves for good) or say Not now. All 12 offers are in data/balance.json under "offers".
 - Suspicion and investigations (lose a day's earnings, rising fines, ships seized; hidden ships safe).
-- Storm damage to oil rigs, whaling and pirate ships (repairs cost money).
+- Storm damage to oil rigs and whaling ships (repairs cost money). Pirate ships are never damaged; they need storms.
+- Dirty money is not taxed (only clean income counts for tax).
 - Crowns: you start under The Lord Admiral (inspired by Nelson). The Queen's Privateer (inspired by Drake)
   pushes as you get rich: stay and pay tribute, or defect once (new buffs, dearer island, 10% of crews leave).
 - Crown greed, Australian-style tax bands, weekly news (one market up or down 50%), the Silent Partner.

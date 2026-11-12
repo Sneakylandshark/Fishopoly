@@ -14,6 +14,12 @@ const DIRTY := ["smuggle", "piracy", "hiding"]
 var STRAT := "plain"
 var RUNS := 50
 var SEED := 1000
+# storm= overrides the daily storm chance for this test only (-1 = use balance.json)
+var STORM := -1.0
+# levy_scale= multiplies every Crown levy target for this test only (0 = levy off)
+var LEVY_SCALE := 1.0
+# decree_from= sets the first season with a decree for this test only (-1 = use balance.json)
+var DECREE_FROM := -1
 var step := 0
 var game: Node
 var dice := RandomNumberGenerator.new()
@@ -27,6 +33,12 @@ func _initialize() -> void:
 			RUNS = int(a.substr(5))
 		elif a.begins_with("seed="):
 			SEED = int(a.substr(5))
+		elif a.begins_with("storm="):
+			STORM = float(a.substr(6))
+		elif a.begins_with("levy_scale="):
+			LEVY_SCALE = float(a.substr(11))
+		elif a.begins_with("decree_from="):
+			DECREE_FROM = int(a.substr(12))
 	game = root.get_node_or_null("/root/Game")
 	if game == null:
 		game = load("res://scripts/game.gd").new()
@@ -43,6 +55,11 @@ func _process(_delta: float) -> bool:
 	if step < 2:
 		return false
 	dice.seed = SEED * 17 + 3
+	if STORM >= 0.0:
+		game.data.weather.storm_chance = STORM
+	game.levy_scale = LEVY_SCALE
+	if DECREE_FROM >= 0:
+		game.data.levy.decree_from_season = DECREE_FROM
 	for r in RUNS:
 		game.new_run(SEED + r, false)
 		var t_open := {2: -1, 3: -1, 4: -1}
@@ -85,6 +102,8 @@ func _process(_delta: float) -> bool:
 					end_cause = "overdue_after_" + last_cause
 				elif str(line).contains("refuses"):
 					end_cause = "refused_" + last_cause
+				elif str(line).contains("CROWN LEVY MISSED") and game.over:
+					end_cause = "levy_strikes"
 			for t in [2, 3, 4]:
 				if t_open[t] < 0 and game.tier_open(t):
 					t_open[t] = game.day
@@ -99,7 +118,8 @@ func _process(_delta: float) -> bool:
 		for t in [2, 3, 4]:
 			if t_open[t] >= 0:
 				tier = t
-		print("RUN strat=%s seed=%d %s day=%d tier=%d t2=%d t3=%d t4=%d covers=%d defected=%s invest=%d peak=%d end=%s surveys=%d oilbuilt=%d pbribes=%d" % [STRAT, SEED + r, result, game.day, tier, t_open[2], t_open[3], t_open[4], covers, str(game.defected), game.investigations, int(peak), end_cause, game.surveys, oil_day, game.permit_bribes])
+		print("RUN strat=%s seed=%d %s day=%d tier=%d t2=%d t3=%d t4=%d covers=%d defected=%s invest=%d peak=%d end=%s surveys=%d oilbuilt=%d pbribes=%d strikes=%d season=%d" % [STRAT, SEED + r, result, game.day, tier, t_open[2], t_open[3], t_open[4], covers, str(game.defected), game.investigations, int(peak), end_cause, game.surveys, oil_day, game.permit_bribes, game.strikes, game.season])
+		print("SEASONS seed=%d %s" % [SEED + r, " ".join(game.season_log.map(func(x): return str(int(x))))])
 	return true
 
 
@@ -120,7 +140,8 @@ func _pick_boon() -> int:
 func _find_oil() -> void:
 	# Survey whenever it leaves the reserve intact; dirty-money strategies bribe the permit office
 	if game.can_survey() and game.cash - game.survey_price() >= _reserve():
-		game.survey()
+		# Dirty-money strategies use the crooked surveyor when they can
+		game.survey(STRAT != "plain" and STRAT != "clean" and game.can_survey_crooked())
 	if STRAT != "plain" and STRAT != "clean" and game.can_bribe_permit() and game.cash - game.permit_bribe_price() >= _reserve():
 		game.bribe_permit()
 
