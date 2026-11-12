@@ -81,4 +81,4 @@ FISHING BUFF (11 Nov 2026, after Liam's run)
 - 12 Nov: safe/greedy removed, replaced by Visitors' offers. Island $170,000,000 (careful robot 31% wins, median day 303).
 - 12 Nov: Island $190,000,000. Careful robot 36% wins (median win day 335). Liam: keep it.
 - 12 Nov: Silent Partner warnings: 3 covers a run, each dearer with less time; a warning wears off after 8 quiet weeks. Robot that saves for the full bill wins 45%; robot that relies on loans 0-3%.
-- 12 Nov: Oil surveys + permit bribes (oil opens after tier 2). Luck: 2 sea conditions per run, pick 1 of 3 boons when a tier opens, Visitors in random order, 12 random events with 3-day warnings. All in balance.json: oil_search, conditions, boons, events.
+- 12 Nov: Oil surveys + permit bribes. Later 12 Nov: oil can be hunted from day 1 ($5,000 surveys), platform takes 4 weeks to build. Luck: 2 sea conditions per run, pick 1 of 3 boons when a tier opens, Visitors in random order, 12 random events with 3-day warnings. All in balance.json: oil_search, conditions, boons, events.

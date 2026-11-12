@@ -8,6 +8,7 @@ extends SceneTree
 ##   dirty  - smart, rushes the dirty avenues and defects to the rival Crown
 ##   saver  - smart, keeps 1.5x the bill, only buys things that pay back within 40 days
 ##   rusher - smart, puts everything into opening the next tier as fast as possible
+##   wildcat - plain, but pours every spare dollar into oil surveys from day 1
 
 const DIRTY := ["smuggle", "piracy", "hiding"]
 
@@ -72,6 +73,9 @@ func _process(_delta: float) -> bool:
 		var end_cause := "-"
 		var peak := 0.0
 		var oil_day := -1
+		# The day cash first passes $1M and $10M (where a run snowballs)
+		var m1 := -1
+		var m10 := -1
 		while not game.over and game.day < 600:
 			if game.pending_push >= 0:
 				var cb: int = game.covers_left()
@@ -112,6 +116,10 @@ func _process(_delta: float) -> bool:
 				if t_open[t] < 0 and game.tier_open(t):
 					t_open[t] = game.day
 			peak = max(peak, game.cash)
+			if m1 < 0 and game.cash >= 1000000.0:
+				m1 = game.day
+			if m10 < 0 and game.cash >= 10000000.0:
+				m10 = game.day
 			if oil_day < 0 and game.built.has("oil"):
 				oil_day = game.day
 			if game.can_afford(game.island_price()):
@@ -122,7 +130,7 @@ func _process(_delta: float) -> bool:
 		for t in [2, 3, 4]:
 			if t_open[t] >= 0:
 				tier = t
-		print("RUN strat=%s seed=%d %s day=%d tier=%d t2=%d t3=%d t4=%d covers=%d defected=%s invest=%d peak=%d end=%s surveys=%d oilbuilt=%d pbribes=%d strikes=%d season=%d crown=%s" % [STRAT, SEED + r, result, game.day, tier, t_open[2], t_open[3], t_open[4], covers, str(game.defected), game.investigations, int(peak), end_cause, game.surveys, oil_day, game.permit_bribes, game.strikes, game.season, game.crown.id])
+		print("RUN strat=%s seed=%d %s day=%d tier=%d t2=%d t3=%d t4=%d covers=%d defected=%s invest=%d peak=%d end=%s surveys=%d oilbuilt=%d pbribes=%d strikes=%d season=%d crown=%s start_crown=%s m1=%d m10=%d" % [STRAT, SEED + r, result, game.day, tier, t_open[2], t_open[3], t_open[4], covers, str(game.defected), game.investigations, int(peak), end_cause, game.surveys, oil_day, game.permit_bribes, game.strikes, game.season, game.crown.id, game.data.crowns.list[game.served[0]].id, m1, m10])
 		print("SEASONS seed=%d %s" % [SEED + r, " ".join(game.season_log.map(func(x): return str(int(x))))])
 	return true
 
@@ -150,6 +158,9 @@ func _pick_boon() -> int:
 
 func _find_oil() -> void:
 	# Survey whenever it leaves the reserve intact; dirty-money strategies bribe the permit office
+	# Most robots only hunt for oil once tier 2 is done (as before); the wildcat hunts from day 1
+	if STRAT != "wildcat" and not game.tier_open(4):
+		return
 	if game.can_survey() and game.cash - game.survey_price() >= _reserve():
 		# Dirty-money strategies use the crooked surveyor when they can
 		game.survey(STRAT != "plain" and STRAT != "clean" and game.can_survey_crooked())

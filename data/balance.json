@@ -381,9 +381,10 @@
 	},
 
 	"oil_search": {
-		"_note": "Oil opens when tier 3 would open (tier 2 done); smuggling, piracy and hiding are optional. Pay for surveys until one finds oil, then wait for the Crown's permit. Dirty-money bribes cut the wait but add suspicion. Only players with dirty avenues can bribe.",
+		"_note": "Oil can be hunted from day 1, at any tier: a costly gamble. 1) Pay for drilling surveys until one finds oil. 2) Wait for the Crown's permit (dirty-money bribes cut the paperwork, but add suspicion; only players with dirty avenues can bribe). 3) Build the Oil Platform; it takes build_weeks to construct before any rig earns.",
 		"survey_weeks": 1.0,
-		"survey_min": 20000,
+		"survey_min": 5000,
+		"build_weeks": 4,
 		"find_chance": 0.2,
 		"permit_weeks": 8,
 		"bribe_cut_weeks": 3,

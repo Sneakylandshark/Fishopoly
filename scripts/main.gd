@@ -111,7 +111,7 @@ func _oil_search_rows() -> void:
 	var os: Dictionary = Game.data.oil_search
 	if not Game.oil_found:
 		_header(menu_body, "Find oil first")
-		_text(menu_body, "Each survey has a %d%% chance to find oil. Surveys so far: %d. Once oil is found, the Crown takes %d weeks to approve the platform." % [int(round(os.find_chance * 100)), Game.surveys, int(os.permit_weeks)])
+		_text(menu_body, "Each survey has a %d%% chance to find oil. Surveys so far: %d. Once oil is found, the Crown takes %d weeks to approve the platform, then it takes %d weeks to build. You can hunt for oil at any tier." % [int(round(os.find_chance * 100)), Game.surveys, int(os.permit_weeks), int(os.build_weeks)])
 		var sp: float = Game.survey_price()
 		_button(menu_body, "Pay for a survey  " + Game.money(sp), sp, Game.can_survey(), func(): Game.survey())
 		if Game.laundering:
@@ -155,6 +155,9 @@ func _fill_menu() -> void:
 	_text(menu_body, a.blurb)
 	if not Game.built.has(key):
 		var blockers: Array = Game.tier_blockers(int(a.tier))
+		# Oil can be hunted at any tier, so the oil menu skips the tier lock
+		if key == "oil":
+			blockers = []
 		if blockers.size() > 0:
 			_header(menu_body, "Locked. Tier %d opens when you:" % int(a.tier))
 			for b in blockers:

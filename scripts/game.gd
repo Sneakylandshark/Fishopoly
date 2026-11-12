@@ -28,6 +28,8 @@ var loan_mult := 1.0
 # Finding oil: surveys paid for, whether oil was found, and the day the Crown's permit comes through
 var surveys := 0
 var oil_found := false
+# The oil platform is under construction until this day; rigs earn nothing before it
+var oil_ready_day := -1
 var permit_day := -1
 var permit_bribes := 0
 # Dirty money earned this week and last week (sets the price of permit bribes)
@@ -137,6 +139,7 @@ func new_run(seed: int = -1, write_log: bool = true) -> void:
 	loan_mult = 1.0
 	surveys = 0
 	oil_found = false
+	oil_ready_day = -1
 	permit_day = -1
 	permit_bribes = 0
 	week_dirty = 0.0
@@ -779,6 +782,9 @@ func start_day() -> Dictionary:
 
 	# Oil rigs: mostly perfect days
 	var n_rig := count_boats("rig")
+	if n_rig > 0 and day < oil_ready_day:
+		report.lines.append("Oil platform under construction until day %d. No oil yet." % oil_ready_day)
+		n_rig = 0
 	if n_rig > 0:
 		var oe: float = av.oil[w] * income_mult("oil") * n_rig
 		clean += oe
@@ -991,7 +997,8 @@ func survey_price() -> float:
 
 
 func can_survey() -> bool:
-	return tier_open(4) and not oil_found and can_afford(survey_price())
+	# Open from day 1: an early, costly gamble for anyone who wants it
+	return not oil_found and can_afford(survey_price())
 
 
 func can_survey_crooked() -> bool:
@@ -1426,14 +1433,18 @@ func expand_harbor() -> bool:
 
 
 func can_build(key: String) -> bool:
-	return not built.has(key) and tier_open(tier_of(key)) and (key != "oil" or oil_approved()) and can_afford(build_price(key))
+	# The oil platform needs only oil found and the permit, at any tier
+	var open := oil_approved() if key == "oil" else tier_open(tier_of(key))
+	return not built.has(key) and open and can_afford(build_price(key))
 
 
 func build(key: String) -> bool:
-	if built.has(key) or not tier_open(tier_of(key)):
+	if built.has(key):
 		return false
-	# The oil platform needs oil found and the Crown's permit
+	# The oil platform needs oil found and the Crown's permit (at any tier); everything else needs its tier open
 	if key == "oil" and not oil_approved():
+		return false
+	if key != "oil" and not tier_open(tier_of(key)):
 		return false
 	var p := build_price(key)
 	if not can_afford(p):
@@ -1441,6 +1452,10 @@ func build(key: String) -> bool:
 	cash -= p
 	built[key] = true
 	var a: Dictionary = data.avenues[key]
+	# The oil platform takes weeks to build before any rig earns
+	if key == "oil":
+		oil_ready_day = day + int(data.oil_search.build_weeks) * 7
+		_say("Construction of the Oil Platform has begun. It starts pumping on day %d." % oil_ready_day)
 	if a.get("dirty", false) and not laundering:
 		laundering = true
 		log_lines.append("Opened a laundering front for dirty money.")
