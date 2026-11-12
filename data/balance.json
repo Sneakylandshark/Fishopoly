@@ -1,0 +1,443 @@
+﻿{
+	"_read_me": "Every number in the game lives here. Change a number, save, and press Play again. Money is in dollars. Chances are 0 to 1 (0.25 = 25%).",
+
+	"start": {
+		"cash": 500,
+		"fishing_boats": 1,
+		"harbor_spaces": 2
+	},
+
+	"island_price": 190000000,
+
+	"weather": {
+		"_note": "A hidden six-sided die each day: 1 = perfect, 2-5 = normal, 6 = storm. No storms until the gap since the last storm is long enough.",
+		"storm_chance": 0.1667,
+		"storm_gap_by_day": [[1, 6], [6, 5], [10, 4], [12, 3], [13, 2], [15, 0]]
+	},
+
+	"harbor": {
+		"_note": "Fishing boats in the harbor are safe but earn less. Each harbor space holds one fishing boat.",
+		"catch": 100,
+		"perfect": 1.0,
+		"normal": 0.5,
+		"storm": 0.5,
+		"boat_price": 500,
+		"boat_price_growth": 1.15,
+		"space_price": 2000,
+		"space_price_growth": 2.0
+	},
+
+	"deep_sea": {
+		"_note": "Boats sent deep earn double on calm days, nothing in storms, and sink in a storm unless they survive. Survival starts at the Hull base (20%) once the Deep Sea Dock is built, +10% per Hull level, up to the Hull max (60%).",
+		"fishing_perfect": 400,
+		"fishing_normal": 220,
+		"crab_perfect": 134,
+		"crab_normal": 156
+	},
+
+	"rent": {
+		"_note": "Paid every 7 days. Every 2 weeks rent rises by a step; each step is 1.4x the last.",
+		"start": 100,
+		"first_step": 30,
+		"step_growth": 1.4,
+		"weeks_per_step": 2
+	},
+
+	"greed": {
+		"_note": "Each time your cash first passes a milestone ($10k, $100k, ...), weekly rent rises for good by this share of it (times the Crown's greed).",
+		"first_milestone": 10000
+	},
+
+	"crowns": {
+		"_note": "You start under the first Crown. As you get rich, the rival pushes for the island (at these shares of the island price). Stay = pay tribute (weeks of income, rising each push). Defect (once, one-way) = the island is re-appraised dearer, you lose the old Crown's buffs and gain the new one's, and some of your people stay loyal to the old Crown and leave. Characters are inspired by real admirals; names and portraits are our own.",
+		"start": {
+			"name": "The Lord Admiral",
+			"inspired_by": "Horatio Nelson",
+			"pitch": "Strong navy, strict on smugglers. Pays well for whale oil and crude.",
+			"buffs": {"whaling": 1.25, "oil": 1.25},
+			"greed": 0.02,
+			"tax_bands": [[1000, 0.0], [2500, 0.16], [10000, 0.30], [50000, 0.37], [1000000000000, 0.45]]
+		},
+		"rival": {
+			"name": "The Queen's Privateer",
+			"inspired_by": "Francis Drake",
+			"pitch": "Turns a blind eye to smugglers and pirates, taxes lightly, and asks for less.",
+			"buffs": {"smuggle": 1.25, "piracy": 1.25, "hiding": 1.25},
+			"greed": 0.01,
+			"tax_bands": [[1000, 0.0], [2500, 0.12], [10000, 0.25], [50000, 0.30], [1000000000000, 0.35]]
+		},
+		"push_at": [0.02, 0.1, 0.3],
+		"tribute_weeks": [0.2, 0.4, 0.6],
+		"appraisal": 1.1,
+		"defectors": 0.1
+	},
+
+	"silent_partner": {
+		"_note": "If you can't pay, the Silent Partner lends the rest. Repay within the days, interest every day on the growing total. Miss it and your boats and units are sold at half price. If that isn't enough, the run is lost.",
+		"daily_interest": 0.05,
+		"days_to_repay": 7,
+		"sale_share": 0.5,
+		"_warnings_note": "The Silent Partner covers you only this many times. Each cover is a warning, costs more interest and gives less time to repay. A warning wears off after clear_after_weeks with no cover. With no covers left, a shortfall means your things are sold straight away.",
+		"covers": 3,
+		"interest_mult": [1.0, 1.5, 2.0],
+		"repay_days": [7, 6, 5],
+		"clear_after_weeks": 8
+	},
+
+	"upgrades": {
+		"_note": "Each path's first level costs the building price (or upgrade_base) split across its paths. Each level after costs double. Upgrades make that avenue's future units dearer.",
+		"cost_growth": 2.0,
+		"unit_price_per_level": 0.25,
+		"fishing_first_level_cost": 267
+	},
+
+	"offers": {
+		"_note": "Visitors. At the end of each week (after bills), one person comes with an offer for something you own, and a rival makes a different offer. Pay for ONE of them (the other is gone for good), or say Later and the offer comes back after the others. needs = the building it needs (fish = always). Perks: mult multiplies, add adds.",
+		"list": [
+			{"id": "boats_or_buyers", "needs": "fish", "cost": 400, "a": {"who": "Tom Bell", "role": "shipwright", "pitch": "I can build your boats faster and cheaper, if you pay for my new slipway.", "effect": "Fishing boats cost 20% less.", "perks": [{"perk": "unit_cost_fish", "mult": 0.8}]}, "b": {"who": "Rosa Quint", "role": "fishmonger", "pitch": "Forget boats. Pay for my stall in town and I'll sell your harbor catch for more.", "effect": "Harbor fishing earns 15% more.", "perks": [{"perk": "zone_fish_harbor", "mult": 1.15}]}},
+			{"id": "hull_or_nets", "needs": "deep", "cost": 600, "a": {"who": "Dr. Ada Ferris", "role": "metallurgist", "pitch": "A new steel for the hulls. Your boats out at sea will come home from storms far more often.", "effect": "Deep boats survive storms 20% more often (on top of Hull, can go past 60%).", "perks": [{"perk": "survive_add", "add": 0.2}]}, "b": {"who": "Prof. Owen Hale", "role": "her colleague", "pitch": "Nonsense. Spend it on steel wire for the nets. A bigger catch every single day.", "effect": "Fishing catch +5% in the harbor and +10% at sea.", "perks": [{"perk": "zone_fish_harbor", "mult": 1.05}, {"perk": "zone_fish_deep", "mult": 1.1}]}},
+			{"id": "pearl_pick", "needs": "pearl", "cost": 1000, "a": {"who": "Kai Mahina", "role": "free diver", "pitch": "Train your divers my way and they'll stay down longer.", "effect": "Pearls earn 15% more.", "perks": [{"perk": "income_pearl", "mult": 1.15}]}, "b": {"who": "Ines Faro", "role": "jeweller", "pitch": "Sell your pearls through my shop, and I'll buy your treasure too.", "effect": "Pearls and treasure both earn 10% more.", "perks": [{"perk": "income_pearl", "mult": 1.1}, {"perk": "income_treasure", "mult": 1.1}]}},
+			{"id": "crab_pick", "needs": "crab", "cost": 900, "a": {"who": "Dr. Lena Moss", "role": "bait chemist", "pitch": "My new bait brings the crabs in by the hundred.", "effect": "Crab boats earn 15% more.", "perks": [{"perk": "income_crab", "mult": 1.15}]}, "b": {"who": "Bram Holt", "role": "rigger", "pitch": "Your gear keeps going overboard. Let me lash it down properly.", "effect": "Storms wreck crab gear half as often.", "perks": [{"perk": "risk_crab", "mult": 0.5}]}},
+			{"id": "cray_pick", "needs": "cray", "cost": 1500, "a": {"who": "Jack Rourke", "role": "pot designer", "pitch": "My folding pots stack tighter. Every ship carries one more.", "effect": "+1 pot on every cray ship.", "perks": [{"perk": "pots_add", "add": 1}]}, "b": {"who": "Mei Lin", "role": "restaurant buyer", "pitch": "Sell your cray to my restaurants instead of the market.", "effect": "Cray earns 20% more.", "perks": [{"perk": "income_cray", "mult": 1.2}]}},
+			{"id": "salvage_pick", "needs": "salvage", "cost": 2400, "a": {"who": "Hugo Brandt", "role": "crane engineer", "pitch": "A bigger crane lifts more off every wreck.", "effect": "Salvage earns 20% more.", "perks": [{"perk": "income_salvage", "mult": 1.2}]}, "b": {"who": "Nell Price", "role": "storm chaser", "pitch": "I know where the wrecks wash up. Pay me and you'll find more.", "effect": "+1 wreck after every storm.", "perks": [{"perk": "wrecks_add", "add": 1}]}},
+			{"id": "treasure_pick", "needs": "treasure", "cost": 3200, "a": {"who": "Pieter Vos", "role": "cartographer", "pitch": "My charts lead to richer finds.", "effect": "Treasure earns 20% more.", "perks": [{"perk": "income_treasure", "mult": 1.2}]}, "b": {"who": "Lloyd Grey", "role": "insurance broker", "pitch": "Treasure is a gamble. Insure the whole fleet instead.", "effect": "Every storm loss and repair costs 25% less (all avenues).", "perks": [{"perk": "risk_all", "mult": 0.75}]}},
+			{"id": "whaling_pick", "needs": "whaling", "cost": 4000, "a": {"who": "Ingrid Sol", "role": "harpoon smith", "pitch": "My harpoons don't miss.", "effect": "Whaling earns 20% more.", "perks": [{"perk": "income_whaling", "mult": 1.2}]}, "b": {"who": "Ned Carver", "role": "ship's carpenter", "pitch": "A whaler lives or dies by her ribs. Let me brace them.", "effect": "Storms damage whaling ships half as often.", "perks": [{"perk": "risk_whaling", "mult": 0.5}]}},
+			{"id": "smuggle_pick", "needs": "smuggle", "cost": 30000, "a": {"who": "Captain Reyes", "role": "customs officer", "pitch": "For a fee, my patrols look the other way.", "effect": "Smugglers are caught half as often, and add less suspicion.", "perks": [{"perk": "risk_smuggle", "mult": 0.5}]}, "b": {"who": "Silk Morrow", "role": "fence", "pitch": "I can move goods your buyers can't. Better prices.", "effect": "Smuggling earns 20% more.", "perks": [{"perk": "income_smuggle", "mult": 1.2}]}},
+			{"id": "piracy_pick", "needs": "piracy", "cost": 40000, "a": {"who": "Black Annie", "role": "gunner", "pitch": "Heavier guns, faster prizes.", "effect": "Piracy earns 20% more.", "perks": [{"perk": "income_piracy", "mult": 1.2}]}, "b": {"who": "Whisper", "role": "spy", "pitch": "I'll tell you where the navy sails. Your ships will never meet them.", "effect": "Pirate ships are caught half as often, and add less suspicion.", "perks": [{"perk": "risk_piracy", "mult": 0.5}]}},
+			{"id": "hiding_pick", "needs": "hiding", "cost": 35000, "a": {"who": "Edda Crane", "role": "forger", "pitch": "Clean papers for every ship. Nobody looks twice.", "effect": "Suspicion builds 25% slower.", "perks": [{"perk": "suspicion", "mult": 0.75}]}, "b": {"who": "Mr. Lusk", "role": "banker", "pitch": "Use my bank to launder. I take a smaller cut.", "effect": "Laundering keeps 10% more (70% to 80%).", "perks": [{"perk": "launder_add", "add": 0.1}]}},
+			{"id": "oil_pick", "needs": "oil", "cost": 1000000, "a": {"who": "Dr. Hal Pike", "role": "geologist", "pitch": "I've found a richer seam. Drill here.", "effect": "Oil earns 15% more.", "perks": [{"perk": "income_oil", "mult": 1.15}]}, "b": {"who": "Vera Stone", "role": "rig engineer", "pitch": "Storm-proof the rigs before the next big blow.", "effect": "Storms damage rigs half as often.", "perks": [{"perk": "risk_oil", "mult": 0.5}]}},
+			{"id": "lighthouse_pick", "needs": "lighthouse", "cost": 3000, "a": {"who": "Agnes Ward", "role": "lighthouse keeper", "pitch": "Give me a bigger lamp and I'll bring every boat home.", "effect": "+15% chance storm-caught boats get home.", "perks": [{"perk": "home_add", "add": 0.15}]}, "b": {"who": "Dutch Van Rijn", "role": "smuggler", "pitch": "Dim the lamp on the nights my boats run, and I'll make it worth your while.", "effect": "Smugglers caught 40% less often, but -10% chance boats get home.", "perks": [{"perk": "risk_smuggle", "mult": 0.6}, {"perk": "home_add", "add": -0.1}]}},
+			{"id": "meteo_pick", "needs": "meteo", "cost": 60000, "a": {"who": "Prof. Ilse Brandt", "role": "meteorologist", "pitch": "Better instruments, better forecasts. Simple as that.", "effect": "Forecasts are right 10% more often.", "perks": [{"perk": "accuracy_add", "add": 0.1}]}, "b": {"who": "Fred Mason", "role": "newspaper editor", "pitch": "Sell me your forecasts for the morning paper. Everyone reads the weather.", "effect": "+$5,000 a day from the paper.", "perks": [{"perk": "daily_add", "add": 5000}]}}
+		]
+	},
+
+	"tiers": {
+		"_note": "A tier opens when you own every avenue in the tier below AND every upgrade path there (fishing too, for tier 2) is at least min_level. max_level is how far each path can go.",
+		"min_level": {"2": 1, "3": 6, "4": 7},
+		"max_level": {"1": 6, "2": 8, "3": 9, "4": 5}
+	},
+
+	"supply_chains": {
+		"_note": "Each unit of a later avenue lifts the avenues it buys from (see 'lifts'): +gain per unit, up to cap units.",
+		"gain": 0.25,
+		"cap": 10
+	},
+
+	"laundering": {
+		"_note": "Smuggling, hiding ships and piracy earn dirty money. Your first dirty building comes with a laundering front, which turns dirty money clean at this rate.",
+		"building": 15000,
+		"rate": 0.7
+	},
+
+	"suspicion": {
+		"_note": "Each day suspicion rises with the share of your income that is dirty, and fades a little. The higher it is, the likelier an investigation. An informant tips you off tipoff_days ahead; if suspicion has dropped by calloff_drop since the tip-off when they arrive, they leave. Otherwise you earn nothing that day, pay a fine (weeks of income, rising each time) and some sailing smuggling and pirate ships are seized. Your own ships hidden in the Hidden Moorings are safe.",
+		"gain": 15.0,
+		"fade_per_day": 0.04,
+		"investigation_rate": 0.08,
+		"safe_below": 20,
+		"after_investigation": 20,
+		"fine_weeks": [0.2, 0.4, 0.6],
+		"seize": 0.3,
+		"tipoff_days": 2,
+		"calloff_drop": 25,
+		"_bribe_note": "Pay off officials: suspicion -drop. Price = share of last week's income (at least min), x growth every time you bribe.",
+		"bribe": {"share": 0.15, "min": 2000, "drop": 25, "growth": 1.5}
+	},
+
+	"storm_damage": {
+		"_note": "In a storm, each oil rig / whaling ship / pirate ship may be damaged. Repairs cost this share of its price, paid at once.",
+		"chance": {"oil": 0.25, "whaling": 0.1, "piracy": 0.1},
+		"repair_share": 0.3
+	},
+
+	"news": {
+		"_note": "Each week the newspaper reports one market: that avenue earns more or less for the week.",
+		"up": 1.5,
+		"down": 0.5
+	},
+
+	"fishing_paths": [
+		{"name": "Nets", "effect": "income", "per_level": 1.14},
+		{"name": "Crew", "effect": "income", "per_level": 1.14},
+		{"name": "Bait", "effect": "income", "per_level": 1.14}
+	],
+
+	"avenues": {
+		"deep": {
+			"name": "Deep Sea Dock",
+			"tier": 1,
+			"blurb": "Lets fishing and crab boats go deep sea.",
+			"building": 400,
+			"paths": [
+				{"name": "Hull", "effect": "survive", "base": 0.2, "per_level": 0.1, "max": 0.6}
+			]
+		},
+		"lighthouse": {
+			"name": "Lighthouse",
+			"tier": 1,
+			"optional": true,
+			"blurb": "Optional. When a storm would sink a deep boat, the lighthouse may guide it home instead: no catch, but not lost. The boat comes back to the harbor (or the dock if the harbor is full).",
+			"building": 3000,
+			"paths": [
+				{"name": "Lamp", "effect": "home", "base": 0.2, "per_level": 0.1, "max": 0.5},
+				{"name": "Range", "effect": "range", "base": 0, "per_level": 1, "max": 2},
+				{"name": "Keeper", "effect": "keep", "base": 0, "per_level": 0.25, "max": 0.5}
+			]
+		},
+		"meteo": {
+			"name": "Weather Bureau",
+			"tier": 3,
+			"optional": true,
+			"blurb": "Optional. Forecasts tomorrow's weather. Never certain: the forecast is only right some of the time.",
+			"building": 60000,
+			"paths": [
+				{"name": "Accuracy", "effect": "accuracy", "base": 0.6, "per_level": 0.1, "max": 0.85},
+				{"name": "Lookahead", "effect": "ahead", "base": 0, "per_level": 1, "max": 1},
+				{"name": "Standing orders", "effect": "orders", "base": 0, "per_level": 1, "max": 1}
+			]
+		},
+		"pearl": {
+			"name": "Pearl Diving",
+			"tier": 1,
+			"blurb": "Small but steady. Shallow water only.",
+			"building": 300,
+			"unit": 990,
+			"unit_name": "Pearl spot",
+			"max_units": 2,
+			"upgrade_base": 1500,
+			"perfect": 120,
+			"normal": 120,
+			"storm": 60,
+			"paths": [
+				{"name": "Divers", "effect": "income", "per_level": 1.14},
+				{"name": "Gear", "effect": "income", "per_level": 1.14},
+				{"name": "Buyers", "effect": "income", "per_level": 1.14}
+			]
+		},
+		"crab": {
+			"name": "Crab Boats",
+			"tier": 1,
+			"blurb": "Red boats that work the harbor. Big hauls in storms, but a storm can wreck a boat's gear ($150 to replace). Harbor crab boats never sink; crab boats sent deep can.",
+			"building": 900,
+			"unit": 720,
+			"unit_name": "Crab boat",
+			"perfect": 67,
+			"normal": 78,
+			"storm": 280,
+			"storm_pot_loss": 0.25,
+			"pot_cost": 150,
+			"paths": [
+				{"name": "Gear", "effect": "income", "per_level": 1.14},
+				{"name": "Bait", "effect": "income", "per_level": 1.14},
+				{"name": "Crew", "effect": "income", "per_level": 1.14}
+			]
+		},
+		"cray": {
+			"name": "Cray Potting",
+			"tier": 1,
+			"blurb": "Orange ships left of the harbor. Each ship drops 3 pots (the yellow buoys). Earns on calm days, nothing in storms, and storms wash pots away ($100 each to replace).",
+			"building": 1500,
+			"unit": 1500,
+			"unit_name": "Cray ship",
+			"pots": 3,
+			"pot_perfect": 82,
+			"pot_normal": 62,
+			"pot_storm_loss": 0.3,
+			"pot_cost": 100,
+			"paths": [
+				{"name": "Pots per ship", "effect": "pots", "per_level": 1},
+				{"name": "Pot space", "effect": "income", "per_level": 1.10},
+				{"name": "Speed", "effect": "income", "per_level": 1.10}
+			]
+		},
+		"salvage": {
+			"name": "Salvage Yard",
+			"tier": 2,
+			"blurb": "Wrecks wash up after storms (more if your own boats sank). Each barge hauls in one wreck a day.",
+			"building": 2400,
+			"unit": 1200,
+			"unit_name": "Salvage barge",
+			"wrecks_per_storm": 3,
+			"wreck_value": 560,
+			"lifts": ["crab"],
+			"paths": [
+				{"name": "Cranes", "effect": "income", "per_level": 1.25},
+				{"name": "Barges", "effect": "income", "per_level": 1.25}
+			]
+		},
+		"treasure": {
+			"name": "Treasure Hunters",
+			"tier": 2,
+			"blurb": "On perfect days each diver finds something: junk, coins, silver, gold, jewels or a lost relic.",
+			"building": 3200,
+			"unit": 2880,
+			"unit_name": "Treasure diver",
+			"lifts": ["pearl"],
+			"loot": [["Junk", 0.40, 180], ["Old coins", 0.30, 540], ["Silver", 0.17, 1350], ["Gold", 0.09, 3610], ["Jewels", 0.035, 10830], ["Lost relic", 0.005, 54170]],
+			"paths": [
+				{"name": "Maps", "effect": "odds", "per_level": 1.12},
+				{"name": "Divers", "effect": "income", "per_level": 1.25}
+			]
+		},
+		"whaling": {
+			"name": "Whaling Station",
+			"tier": 2,
+			"blurb": "Whaling ships work the deep sea. Big catches on calm days; in storms they come home empty and can be damaged.",
+			"building": 4000,
+			"unit": 4680,
+			"unit_name": "Whaling ship",
+			"perfect": 720,
+			"normal": 360,
+			"storm": 0,
+			"lifts": ["fish"],
+			"paths": [
+				{"name": "Harpoons", "effect": "income", "per_level": 1.25},
+				{"name": "Processing", "effect": "income", "per_level": 1.25}
+			]
+		},
+		"smuggle": {
+			"name": "Smugglers' Cove",
+			"tier": 3,
+			"dirty": true,
+			"blurb": "Dirty money. Best in storms (no patrols). On clear days a smuggling boat can be caught and seized.",
+			"building": 31250,
+			"unit": 24500,
+			"unit_name": "Smuggling boat",
+			"perfect": 3938,
+			"normal": 4923,
+			"storm": 13784,
+			"caught_perfect": 0.3,
+			"caught_normal": 0.03,
+			"lifts": ["cray"],
+			"paths": [
+				{"name": "Routes", "effect": "income", "per_level": 1.2},
+				{"name": "Contacts", "effect": "income", "per_level": 1.2}
+			]
+		},
+		"hiding": {
+			"name": "Hidden Moorings",
+			"tier": 3,
+			"dirty": true,
+			"blurb": "Dirty money. Other captains pay a flat fee to hide their ships here. Hidden ships are never seized.",
+			"building": 37500,
+			"unit": 30000,
+			"unit_name": "Hiding berth",
+			"perfect": 3428,
+			"normal": 3428,
+			"storm": 3428,
+			"lifts": ["treasure"],
+			"paths": [
+				{"name": "Coves", "effect": "income", "per_level": 1.2},
+				{"name": "Bribes", "effect": "income", "per_level": 1.2}
+			]
+		},
+		"piracy": {
+			"name": "Pirate Haven",
+			"tier": 3,
+			"dirty": true,
+			"blurb": "Dirty money. Huge hauls in storms. On clear days a pirate ship can be caught and seized; storms can damage it.",
+			"building": 43750,
+			"unit": 39375,
+			"unit_name": "Pirate ship",
+			"perfect": 5279,
+			"normal": 7390,
+			"storm": 25336,
+			"caught_perfect": 0.25,
+			"caught_normal": 0.05,
+			"lifts": ["salvage"],
+			"paths": [
+				{"name": "Ships", "effect": "income", "per_level": 1.2},
+				{"name": "Crews", "effect": "income", "per_level": 1.2}
+			]
+		},
+		"oil": {
+			"name": "Oil Platform",
+			"tier": 4,
+			"blurb": "Drills only on perfectly clear days, a little on normal days, nothing in storms (and storms can damage rigs).",
+			"building": 1200000,
+			"unit": 576000,
+			"unit_name": "Oil rig",
+			"perfect": 656840,
+			"normal": 75790,
+			"storm": 0,
+			"lifts": ["whaling", "piracy"],
+			"paths": [
+				{"name": "Rigs", "effect": "income", "per_level": 1.5}
+			]
+		}
+	},
+
+	"oil_search": {
+		"_note": "Oil opens when tier 3 would open (tier 2 done); smuggling, piracy and hiding are optional. Pay for surveys until one finds oil, then wait for the Crown's permit. Dirty-money bribes cut the wait but add suspicion. Only players with dirty avenues can bribe.",
+		"survey_weeks": 1.0,
+		"survey_min": 20000,
+		"find_chance": 0.2,
+		"permit_weeks": 8,
+		"bribe_cut_weeks": 2,
+		"bribe_dirty_weeks": 0.5,
+		"bribe_min": 10000,
+		"bribe_suspicion": 15
+	},
+
+	"conditions": {
+		"_note": "Sea conditions: 2 drawn at random at the start of a run, shown before day 1, last the whole run. Perks: mult multiplies, add adds (same as Visitors).",
+		"draw": 2,
+		"list": [
+			{"id": "corrupt_harbourmaster", "name": "Corrupt harbourmaster", "text": "Investigation fines are halved and suspicion builds 20% slower.", "perks": [{"perk": "fine", "mult": 0.5}, {"perk": "suspicion", "mult": 0.8}]},
+			{"id": "navy_crackdown", "name": "Navy crackdown", "text": "Smugglers and pirates are caught twice as often, but pay 50% more.", "perks": [{"perk": "risk_smuggle", "mult": 2.0}, {"perk": "risk_piracy", "mult": 2.0}, {"perk": "income_smuggle", "mult": 1.5}, {"perk": "income_piracy", "mult": 1.5}]},
+			{"id": "oil_rich", "name": "Oil-rich waters", "text": "Oil surveys are twice as likely to strike.", "perks": [{"perk": "oil_find_add", "add": 0.2}]},
+			{"id": "barren_seas", "name": "Barren seas", "text": "Fishing earns 20% less, but pearls earn 30% more.", "perks": [{"perk": "income_fish", "mult": 0.8}, {"perk": "income_pearl", "mult": 1.3}]},
+			{"id": "stormy_season", "name": "Stormy season", "text": "Storms do 30% more harm, but leave 2 extra wrecks to salvage.", "perks": [{"perk": "risk_all", "mult": 1.3}, {"perk": "wrecks_add", "add": 2}]},
+			{"id": "whale_year", "name": "Year of the whale", "text": "Whaling earns 40% more; crabs earn 15% less.", "perks": [{"perk": "income_whaling", "mult": 1.4}, {"perk": "income_crab", "mult": 0.85}]},
+			{"id": "strict_crown", "name": "Strict Crown", "text": "Suspicion builds 40% faster and fines are 25% bigger, but honest fishing earns 10% more.", "perks": [{"perk": "suspicion", "mult": 1.4}, {"perk": "fine", "mult": 1.25}, {"perk": "income_fish", "mult": 1.1}]},
+			{"id": "crab_boom", "name": "Crab boom", "text": "Crab boats earn 30% more and cray pots 20% more.", "perks": [{"perk": "income_crab", "mult": 1.3}, {"perk": "income_cray", "mult": 1.2}]},
+			{"id": "calm_year", "name": "Calm year", "text": "Storms do 20% less harm, but salvage earns 30% less.", "perks": [{"perk": "risk_all", "mult": 0.8}, {"perk": "income_salvage", "mult": 0.7}]},
+			{"id": "pirate_waters", "name": "Pirate waters", "text": "Piracy earns 30% more; deep-sea fishing earns 15% less.", "perks": [{"perk": "income_piracy", "mult": 1.3}, {"perk": "zone_fish_deep", "mult": 0.85}]},
+			{"id": "gold_rumours", "name": "Gold rumours", "text": "Treasure hunters earn 40% more.", "perks": [{"perk": "income_treasure", "mult": 1.4}]},
+			{"id": "pearl_beds", "name": "Rich pearl beds", "text": "Pearls earn 25% more.", "perks": [{"perk": "income_pearl", "mult": 1.25}]}
+		]
+	},
+
+	"boons": {
+		"_note": "When a new tier opens, pick 1 of 3 random boons (free). Some have a catch. A boon can only be taken once a run.",
+		"choices": 3,
+		"list": [
+			{"id": "pirates_charter", "name": "Pirate's charter", "text": "Piracy earns 40% more, but suspicion builds 20% faster.", "perks": [{"perk": "income_piracy", "mult": 1.4}, {"perk": "suspicion", "mult": 1.2}]},
+			{"id": "smugglers_map", "name": "Smuggler's map", "text": "Smuggling earns 30% more and its ships are caught 20% less.", "perks": [{"perk": "income_smuggle", "mult": 1.3}, {"perk": "risk_smuggle", "mult": 0.8}]},
+			{"id": "friendly_magistrate", "name": "Friendly magistrate", "text": "Investigation fines are halved.", "perks": [{"perk": "fine", "mult": 0.5}]},
+			{"id": "geologists_notes", "name": "Geologist's notes", "text": "Oil surveys strike 20% more often.", "perks": [{"perk": "oil_find_add", "add": 0.2}]},
+			{"id": "master_shipwright", "name": "Master shipwright", "text": "Deep boats survive storms 10% more often and fishing boats cost 15% less.", "perks": [{"perk": "survive_add", "add": 0.1}, {"perk": "unit_cost_fish", "mult": 0.85}]},
+			{"id": "pearl_merchant", "name": "Pearl merchant", "text": "Pearls earn 30% more and treasure 10% more.", "perks": [{"perk": "income_pearl", "mult": 1.3}, {"perk": "income_treasure", "mult": 1.1}]},
+			{"id": "whaling_contract", "name": "Whaling contract", "text": "Whaling earns 30% more, but storms hit whalers 30% harder.", "perks": [{"perk": "income_whaling", "mult": 1.3}, {"perk": "risk_whaling", "mult": 1.3}]},
+			{"id": "insurance_broker", "name": "Insurance broker", "text": "Storms, damage and seizures hurt 25% less.", "perks": [{"perk": "risk_all", "mult": 0.75}]},
+			{"id": "laundry_man", "name": "The laundry man", "text": "Laundering keeps 10% more, but suspicion builds 15% faster.", "perks": [{"perk": "launder_add", "add": 0.1}, {"perk": "suspicion", "mult": 1.15}]},
+			{"id": "salvage_rights", "name": "Salvage rights", "text": "Every storm leaves 2 extra wrecks.", "perks": [{"perk": "wrecks_add", "add": 2}]},
+			{"id": "lighthouse_keeper", "name": "Old lighthouse keeper", "text": "The lighthouse guides 15% more boats home.", "perks": [{"perk": "home_add", "add": 0.15}]},
+			{"id": "silver_tongue", "name": "Silver-tongued clerk", "text": "Suspicion builds 25% slower.", "perks": [{"perk": "suspicion", "mult": 0.75}]},
+			{"id": "oil_baron", "name": "Oil baron's backing", "text": "Oil earns 25% more, but storms damage rigs 50% more.", "perks": [{"perk": "income_oil", "mult": 1.25}, {"perk": "risk_oil", "mult": 1.5}]},
+			{"id": "crab_king", "name": "Crab king", "text": "Crab boats and cray pots earn 25% more.", "perks": [{"perk": "income_crab", "mult": 1.25}, {"perk": "income_cray", "mult": 1.25}]}
+		]
+	},
+
+	"events": {
+		"_note": "After the weekly bills, chance of a random event. You get warned warn_days ahead, then it hits. needs = a building it needs (any = always, dirty = any dirty avenue). Temporary perks last 'days'. cost_weeks = pay that many weeks of income. wrecks = extra wrecks to salvage. storm_days = forced storms. suspicion = added suspicion.",
+		"chance": 0.3,
+		"warn_days": 3,
+		"list": [
+			{"id": "pearl_blight", "name": "Pearl blight", "needs": "pearl", "warn": "Divers report sick oysters spreading along the reef.", "hit": "Pearl blight! Pearls earn 70% less for 3 weeks.", "days": 21, "perks": [{"perk": "income_pearl", "mult": 0.3}]},
+			{"id": "fish_sickness", "name": "Fish sickness", "needs": "any", "warn": "Fishermen are pulling up sickly fish.", "hit": "Fish sickness! Fishing earns half for 2 weeks.", "days": 14, "perks": [{"perk": "income_fish", "mult": 0.5}]},
+			{"id": "crab_plague", "name": "Crab plague", "needs": "crab", "warn": "Empty crab shells are washing up on the beach.", "hit": "Crab plague! Crab boats earn half for 2 weeks.", "days": 14, "perks": [{"perk": "income_crab", "mult": 0.5}]},
+			{"id": "crown_audit", "name": "Crown audit", "needs": "dirty", "warn": "The Crown's auditors are on their way to check your books.", "hit": "Crown audit! You pay a week of income and suspicion jumps by 30.", "days": 0, "perks": [], "cost_weeks": 1.0, "suspicion": 30},
+			{"id": "hurricane", "name": "Hurricane", "needs": "any", "warn": "The barometer is falling fast. A hurricane is coming.", "hit": "Hurricane! Three days of storms, and storms do double harm.", "days": 3, "perks": [{"perk": "risk_all", "mult": 2.0}], "storm_days": 3},
+			{"id": "naval_battle", "name": "Naval battle", "needs": "any", "warn": "Two navies are gathering off the coast.", "hit": "A naval battle! Pirates and smugglers are caught twice as often for a week, but the battle leaves 6 wrecks to salvage.", "days": 7, "perks": [{"perk": "risk_piracy", "mult": 2.0}, {"perk": "risk_smuggle", "mult": 2.0}], "wrecks": 6},
+			{"id": "oil_leak", "name": "Oil leak", "needs": "oil", "warn": "A rig crew reports a crack in a pipe.", "hit": "Oil leak! Oil earns half for 10 days, and the clean-up costs half a week of income.", "days": 10, "perks": [{"perk": "income_oil", "mult": 0.5}], "cost_weeks": 0.5},
+			{"id": "whale_migration", "name": "Whale migration", "needs": "whaling", "warn": "Sailors have spotted huge pods heading this way.", "hit": "Whale migration! Whaling earns double for a week.", "days": 7, "perks": [{"perk": "income_whaling", "mult": 2.0}]},
+			{"id": "treasure_wreck", "name": "Treasure galleon sighted", "needs": "treasure", "warn": "An old map shows a sunken galleon nearby.", "hit": "Treasure galleon! Treasure hunters earn double for a week.", "days": 7, "perks": [{"perk": "income_treasure", "mult": 2.0}]},
+			{"id": "red_tide", "name": "Red tide", "needs": "cray", "warn": "The water near the cray pots is turning red.", "hit": "Red tide! Cray pots earn half for 10 days.", "days": 10, "perks": [{"perk": "income_cray", "mult": 0.5}]},
+			{"id": "smuggling_boom", "name": "Shortage in town", "needs": "smuggle", "warn": "Town has run short of rum and tobacco.", "hit": "Shortage! Smuggling earns 60% more for a week.", "days": 7, "perks": [{"perk": "income_smuggle", "mult": 1.6}]},
+			{"id": "press_gang", "name": "Press gang", "needs": "any", "warn": "The navy's press gang is roaming the docks.", "hit": "Press gang! Your crews are taken: everything earns 25% less for a week.", "days": 7, "perks": [{"perk": "income_all", "mult": 0.75}]}
+		]
+	},
+
+	"unit_price_growth": 1.2
+}

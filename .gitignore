@@ -1,0 +1,4 @@
+# Godot 4 cache and import files (rebuilt automatically when the project opens)
+.godot/
+*.tmp
+export_presets.cfg
