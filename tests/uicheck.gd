@@ -10,6 +10,13 @@ func _ready() -> void:
 	main = load("res://scenes/main.tscn").instantiate()
 	add_child(main)
 	await _frames(3)
+	# The camera rig must start exactly where main.tscn puts the camera (6, 45, 64)
+	print("camera start: ", main.get_node("Camera3D").global_position, " looking at ", main.cam_target)
+	main.cam_dist = main.ZOOM_MIN
+	main.cam_yaw += PI
+	main._apply_camera()
+	print("camera zoomed in, other side: ", main.get_node("Camera3D").global_position)
+	main._setup_camera()
 
 	# Sea conditions, then the Crown pick (grid), then the champion pick (grid)
 	_step("conditions")

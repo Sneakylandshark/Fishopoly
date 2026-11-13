@@ -5,6 +5,8 @@ extends Node3D
 
 const BOAT_SCENE := preload("res://scenes/boat.tscn")
 const SAIL_TIME := 1.0
+# Seconds a pirate or smuggler takes to sail out to (or back from) the horizon
+const VOYAGE_SAIL := 7.0
 const BOAT_COLORS := {
 	"fish": Color(0.85, 0.85, 0.8),
 	"crab": Color(0.85, 0.3, 0.2),
@@ -66,6 +68,7 @@ func _ready() -> void:
 	$UI/OfferChoice/Box/Buttons/PickA.pressed.connect(func(): _on_choice(0))
 	$UI/OfferChoice/Box/Buttons/PickB.pressed.connect(func(): _on_choice(1))
 	$UI/OfferChoice/Box/Buttons/Later.pressed.connect(func(): _on_choice(2))
+	_setup_camera()
 	_make_graphs_panel()
 	_make_mail_props()
 	_make_newspaper_panel()
@@ -102,6 +105,8 @@ func refresh() -> void:
 # ---------- Clicking buildings ----------
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _camera_input(event):
+		return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		var cam: Camera3D = $Camera3D
 		var from := cam.project_ray_origin(event.position)
@@ -664,8 +669,8 @@ func _spot_for(zone: String, kind: String, index_in_zone: int) -> Vector3:
 	if kind == "barge":
 		return Vector3(-11.0 + (i % 4) * 3.2, 0, 29.0)
 	if zone == "voyage":
-		# Away on a voyage: far out to sea, off the edge of the view
-		return Vector3(90.0 + (i % 4) * 6.0, 0, 90.0 + (i / 4) * 6.0)
+		# Away on a voyage: over the western horizon
+		return Vector3(-160.0 - (i % 4) * 6.0, 0, -30.0 + (i / 4) * 6.0)
 	if zone == "hidden":
 		# Tucked into a cove on the east coast
 		return Vector3(17.0 + (i % 3) * 2.6, 0, -4.0 + (i / 3) * 3.4)
@@ -735,8 +740,27 @@ func _place_boats(seconds: float) -> void:
 		var key: String = zone + "_" + b.kind
 		var idx: int = counts.get(key, 0)
 		counts[key] = idx + 1
-		boat_nodes[i].set_color(BOAT_COLORS[b.kind])
-		boat_nodes[i].sail_to(_spot_for(zone, b.kind, idx), seconds)
+		var n: Node3D = boat_nodes[i]
+		n.set_color(BOAT_COLORS[b.kind])
+		var was: String = n.get_meta("zone", zone)
+		n.set_meta("zone", zone)
+		var spot := _spot_for(zone, b.kind, idx)
+		if zone == "voyage" and was != "voyage":
+			# Setting off: a slow sail out to the horizon, then out of sight
+			n.set_meta("busy_until", Time.get_ticks_msec() + VOYAGE_SAIL * 1000)
+			n.sail_to(spot, VOYAGE_SAIL).finished.connect(func():
+				if n.get_meta("zone", "") == "voyage":
+					n.visible = false)
+		elif was == "voyage" and zone != "voyage":
+			# Home from a voyage: appears on the horizon and sails back in
+			n.visible = true
+			n.position = _spot_for("voyage", b.kind, idx)
+			n.set_meta("busy_until", Time.get_ticks_msec() + VOYAGE_SAIL * 1000)
+			n.sail_to(spot, VOYAGE_SAIL)
+		elif Time.get_ticks_msec() >= int(n.get_meta("busy_until", 0)):
+			# Not mid-voyage-sail: move to its spot as usual
+			n.visible = zone != "voyage"
+			n.sail_to(spot, seconds)
 
 
 # ---------- The day ----------
@@ -748,7 +772,8 @@ func _on_start_day() -> void:
 	$UI/Actions/StartDay.disabled = true
 	# Boats head out a little before the weather shows
 	for n in boat_nodes:
-		n.sail_to(n.position + Vector3(0, 0, 3), SAIL_TIME * 0.6)
+		if n.visible and Time.get_ticks_msec() >= int(n.get_meta("busy_until", 0)):
+			n.sail_to(n.position + Vector3(0, 0, 3), SAIL_TIME * 0.6)
 	await get_tree().create_timer(SAIL_TIME * 0.6).timeout
 	var report: Dictionary = Game.start_day()
 	_show_weather(report.weather)
@@ -1472,3 +1497,79 @@ func open_newspaper() -> void:
 	t += "\n\n[font_size=14][i]Open Graphs (top bar) for every number of every day.[/i][/font_size]"
 	paper_text.text = t
 	$UI/Newspaper.visible = true
+
+
+# ---------- Camera: scroll to zoom, right-drag (or Q / E) to turn around the island ----------
+
+# Closest and furthest the camera may be from the point it looks at
+const ZOOM_MIN := 30.0
+const ZOOM_MAX := 130.0
+const ZOOM_STEP := 0.1
+# Degrees turned per pixel of right-drag, and per second holding Q or E
+const TURN_DRAG := 0.3
+const TURN_KEYS := 70.0
+var cam_target := Vector3.ZERO
+var cam_dist := 60.0
+var cam_yaw := 0.0
+var cam_pitch := 0.0
+var cam_dragging := false
+# The look point at the start, and the turn at the start (turning swings the look point around the island centre)
+var cam_target0 := Vector3.ZERO
+var cam_yaw0 := 0.0
+
+
+func _setup_camera() -> void:
+	# Start from wherever the camera sits in main.tscn: find the sea-level point it looks at
+	var cam: Camera3D = $Camera3D
+	var fwd: Vector3 = -cam.global_transform.basis.z
+	var pos: Vector3 = cam.global_position
+	var t: float = -pos.y / fwd.y if abs(fwd.y) > 0.01 else 60.0
+	cam_target = pos + fwd * t
+	var off: Vector3 = pos - cam_target
+	cam_dist = off.length()
+	cam_yaw = atan2(off.x, off.z)
+	cam_pitch = asin(off.y / cam_dist)
+	cam_target0 = cam_target
+	cam_yaw0 = cam_yaw
+	_apply_camera()
+
+
+func _apply_camera() -> void:
+	var cam: Camera3D = $Camera3D
+	# The island centre is (0, 0, 0), so the whole view circles the island
+	cam_target = cam_target0.rotated(Vector3.UP, cam_yaw - cam_yaw0)
+	var off := Vector3(sin(cam_yaw) * cos(cam_pitch), sin(cam_pitch), cos(cam_yaw) * cos(cam_pitch)) * cam_dist
+	cam.global_position = cam_target + off
+	cam.look_at(cam_target, Vector3.UP)
+
+
+func _camera_input(event: InputEvent) -> bool:
+	# Returns true when the event was used by the camera
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
+			cam_dist = clamp(cam_dist * (1.0 - ZOOM_STEP), ZOOM_MIN, ZOOM_MAX)
+			_apply_camera()
+			return true
+		if event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
+			cam_dist = clamp(cam_dist * (1.0 + ZOOM_STEP), ZOOM_MIN, ZOOM_MAX)
+			_apply_camera()
+			return true
+		if event.button_index == MOUSE_BUTTON_RIGHT:
+			cam_dragging = event.pressed
+			return true
+	if event is InputEventMouseMotion and cam_dragging:
+		cam_yaw -= deg_to_rad(event.relative.x * TURN_DRAG)
+		_apply_camera()
+		return true
+	return false
+
+
+func _process(delta: float) -> void:
+	var turn := 0.0
+	if Input.is_physical_key_pressed(KEY_Q):
+		turn += 1.0
+	if Input.is_physical_key_pressed(KEY_E):
+		turn -= 1.0
+	if turn != 0.0:
+		cam_yaw += deg_to_rad(turn * TURN_KEYS * delta)
+		_apply_camera()

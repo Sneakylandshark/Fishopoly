@@ -6,6 +6,7 @@ extends Node3D
 var bob_phase := 0.0
 var bob_strength := 0.08
 var home := Vector3.ZERO
+var move_tween: Tween
 
 
 func _ready() -> void:
@@ -27,7 +28,11 @@ func _process(delta: float) -> void:
 
 
 func sail_to(target: Vector3, seconds: float) -> Tween:
+	# A new order replaces the old one, so two moves never fight over the boat
+	if move_tween and move_tween.is_valid():
+		move_tween.kill()
 	var t := create_tween()
+	move_tween = t
 	t.tween_property(self, "position", target, seconds).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	return t
 

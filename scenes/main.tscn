@@ -636,6 +636,8 @@ layout_mode = 2
 bbcode_enabled = true
 text = "[font_size=26][b]How to play[/b][/font_size]
 
+[b]Camera:[/b] mouse wheel zooms in and out. Hold the right mouse button and drag (or hold Q / E) to turn around the island.
+
 [b]Goal:[/b] save enough to buy the island (top bar) and press [b]Buy the Island[/b].
 
 [b]Each day[/b] choose where each boat works (right panel), then press [b]Start Day[/b].
