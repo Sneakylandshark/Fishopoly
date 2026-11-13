@@ -138,6 +138,21 @@ func _process(_delta: float) -> bool:
 				tier = t
 		print("RUN strat=%s seed=%d %s day=%d tier=%d t2=%d t3=%d t4=%d covers=%d defected=%s invest=%d peak=%d end=%s surveys=%d oilbuilt=%d pbribes=%d strikes=%d season=%d crown=%s start_crown=%s m1=%d m10=%d champion=%s favour=%d slow=%d wildcat=%s" % [STRAT, SEED + r, result, game.day, tier, t_open[2], t_open[3], t_open[4], covers, str(game.defected), game.investigations, int(peak), end_cause, game.surveys, oil_day, game.permit_bribes, game.strikes, game.season, game.crown.id, game.data.crowns.list[game.served[0]].id, m1, m10, game.champion().get("id", "-"), game.favour, int(game.stats.slow), str(game.wildcat or game.wildcat_ready_day > 0)])
 		print("SEASONS seed=%d %s" % [SEED + r, " ".join(game.season_log.map(func(x): return str(int(x))))])
+		# The champion's own building: when it was built, its upgrade levels, what it earned and its share of all earnings
+		var cbk: String = game.champion_building()
+		if cbk != "":
+			var cbn: String = game.data.avenues[cbk].name
+			var series: Array = game.history.get(cbn, [])
+			var first := -1
+			for d in series.size():
+				if float(series[d]) > 0.0:
+					first = d + 1
+					break
+			var earned: float = game.history_total(cbn)
+			var all: float = game.history_total("Clean money") + game.history_total("Laundered")
+			print("CB seed=%d champion=%s building=%s %s built=%s first_pay=%d levels=%s earned=%d share=%.4f upg_spent=%d" % [SEED + r, game.champion().id, cbk, result, str(game.built.has(cbk)), first, str(game.levels[cbk]), int(earned), earned / max(all, 1.0), int(game.stats.get("upgrade_spent", 0.0))])
+			if tier < 4:
+				print("BLOCKERS seed=%d tier%d: %s" % [SEED + r, tier + 1, "; ".join(game.tier_blockers(tier + 1))])
 	return true
 
 
@@ -321,11 +336,16 @@ func _shop() -> void:
 			if not game.built.has(key):
 				# The oil platform needs the permit (at any tier); everything else needs its tier
 				var can_open: bool = game.oil_approved() if key == "oil" else game.tier_open(int(a.tier))
+				# Champion buildings: only yours, and what it's built on
+				if game.is_champion_building(key):
+					can_open = game.build_blockers(key).is_empty()
 				if not can_open:
 					continue
 				var c: float = game.build_price(key)
 				var v: float = game.avg_per_day(key) if a.has("unit") else 20.0
-				var push: float = unlock_push if blocking.size() > 0 and int(a.tier) == next_tier - 1 else 1.0
+				if game.is_champion_building(key):
+					v = game.cb_estimate(key)
+				var push: float = unlock_push if blocking.size() > 0 and int(a.tier) == next_tier - 1 and not a.get("optional", false) else 1.0
 				options.append([c / max(v, 1.0) * push * _weight(key), c, func(): game.build(key), c / max(v, 1.0)])
 				continue
 			if a.has("unit") and game.can_buy_unit(key):
@@ -340,8 +360,14 @@ func _shop() -> void:
 					continue
 				var path: Dictionary = game.paths_for(key)[i]
 				var gain: float = inc * (path.per_level - 1.0) if path.effect == "income" or path.effect == "odds" else inc * 0.2
-				var push: float = unlock_push if blocking.size() > 0 and game.tier_of(key) == next_tier - 1 and game.levels[key][i] < int(game.data.tiers.min_level[str(next_tier)]) else 1.0
+				if game.is_champion_building(key):
+					gain = game.cb_estimate(key, i) - game.cb_estimate(key)
+				var unlocking: bool = blocking.size() > 0 and game.tier_of(key) == next_tier - 1 and game.levels[key][i] < int(game.data.tiers.min_level[str(next_tier)]) and not (key != "fish" and game.data.avenues[key].get("optional", false))
+				var push: float = unlock_push if unlocking else 1.0
 				var pb2: float = game.upgrade_price(key, i) / max(gain, 0.5)
+				# An upgrade that earns nothing itself (like Hull) but is needed for the next tier: treat it as a 20-day payback
+				if unlocking and gain < 1.0:
+					pb2 = 20.0
 				options.append([pb2 * push * _weight(key), game.upgrade_price(key, i), func(): game.upgrade(key, i), pb2])
 		if STRAT == "saver":
 			# Savers skip anything slower than 40 days to pay back, unless it opens the next tier

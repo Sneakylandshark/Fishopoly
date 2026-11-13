@@ -377,6 +377,137 @@
 			"paths": [
 				{"name": "Rigs", "effect": "income", "per_level": 1.5}
 			]
+		},
+		"bank": {
+			"name": "Bank",
+			"champion": "banker",
+			"tier": 2,
+			"optional": true,
+			"blurb": "The Banker's own building. Takes a cut of every clean dollar the island earns, every day.",
+			"building": 10000,
+			"upgrade_base": 40000,
+			"paths": [
+				{"name": "Vaults", "effect": "share", "of": ["clean"], "base": 0.05, "per_level": 0.025, "max": 0.175, "show": "pct", "what": "of clean income"},
+				{"name": "Ledgers", "effect": "launder", "base": 0.0, "per_level": 0.02, "max": 0.1, "show": "pct", "what": "more kept when laundering"}
+			]
+		},
+		"bait_works": {
+			"name": "Bait Works",
+			"champion": "master_baiter",
+			"tier": 1,
+			"optional": true,
+			"blurb": "The Master Baiter's own building. Sells bait to every ship that catches: fishing, crabs, cray and whales.",
+			"building": 1200,
+			"upgrade_base": 2400,
+			"paths": [
+				{"name": "Bait vats", "effect": "share", "of": ["Harbour fishing", "Deep-sea fishing", "Crab Boats", "Cray Potting", "Whaling"], "base": 0.1, "per_level": 0.05, "max": 0.35, "show": "pct", "what": "of fishing, crab, cray and whaling income"},
+				{"name": "Cold store", "effect": "boost", "of": ["fish", "crab", "cray"], "base": 0.0, "per_level": 0.04, "max": 0.2, "show": "pct", "what": "more from fishing, crabs and cray"}
+			]
+		},
+		"research_lab": {
+			"name": "Research Lab",
+			"champion": "scientist",
+			"tier": 1,
+			"optional": true,
+			"blurb": "The Famous Scientist's own building. Earns royalties every day on everything you've spent on upgrades.",
+			"building": 2500,
+			"upgrade_base": 5000,
+			"paths": [
+				{"name": "Patents", "effect": "royalty", "of": ["upgrades"], "base": 0.004, "per_level": 0.002, "max": 0.014, "show": "pct", "what": "a day of all upgrade spending"},
+				{"name": "Field trials", "effect": "upgrade_cut", "base": 0.0, "per_level": 0.02, "max": 0.1, "show": "pct", "what": "off every upgrade"}
+			]
+		},
+		"exchange": {
+			"name": "Exchange",
+			"champion": "economist",
+			"tier": 2,
+			"optional": true,
+			"blurb": "The Economist's own building. Trades on the week's headline: earns a share of that market's income every day, up or down.",
+			"building": 8000,
+			"upgrade_base": 20000,
+			"paths": [
+				{"name": "Trading desk", "effect": "trade", "base": 0.1, "per_level": 0.05, "max": 0.35, "show": "pct", "what": "of the headline market's income"},
+				{"name": "Hedges", "effect": "hedge", "base": 0.0, "per_level": 0.1, "max": 0.5, "show": "pct", "what": "of bad news on your markets cancelled"}
+			]
+		},
+		"shipyard": {
+			"name": "Shipyard",
+			"champion": "hull_master",
+			"tier": 1,
+			"optional": true,
+			"blurb": "The Hull Master's own building. Builds every boat and unit you buy, and keeps earning on the work, and builds yours cheaper.",
+			"building": 1500,
+			"upgrade_base": 3000,
+			"paths": [
+				{"name": "Slipways", "effect": "royalty", "of": ["ships"], "base": 0.0006, "per_level": 0.0003, "max": 0.0021, "show": "pct", "what": "a day of all you've spent on boats and units"},
+				{"name": "Yard prices", "effect": "boat_cut", "base": 0.0, "per_level": 0.03, "max": 0.15, "show": "pct", "what": "off new boats and units"}
+			]
+		},
+		"diving_school": {
+			"name": "Diving School",
+			"champion": "old_diver",
+			"tier": 1,
+			"optional": true,
+			"blurb": "The Old Diver's own building. Students dive alongside your crews: a share of pearl, salvage and treasure income.",
+			"building": 1000,
+			"upgrade_base": 2000,
+			"paths": [
+				{"name": "Lessons", "effect": "share", "of": ["Pearl Diving", "Salvage", "Treasure Hunting"], "base": 0.06, "per_level": 0.028, "max": 0.2, "show": "pct", "what": "of pearl, salvage and treasure income"},
+				{"name": "Wreck charts", "effect": "wrecks", "base": 0, "per_level": 1, "max": 3, "show": "count", "what": "extra wrecks every storm (needs Salvage)"}
+			]
+		},
+		"law_office": {
+			"name": "Law Office",
+			"champion": "lawyer",
+			"tier": 3,
+			"optional": true,
+			"blurb": "The Lawyer's own building. Charges your dirty trades clean legal fees, and keeps investigators busy.",
+			"building": 40000,
+			"upgrade_base": 80000,
+			"paths": [
+				{"name": "Retainers", "effect": "share", "of": ["dirty"], "base": 0.03, "per_level": 0.014, "max": 0.1, "show": "pct", "what": "of dirty income paid to you clean"},
+				{"name": "Friends in court", "effect": "fade", "base": 0.0, "per_level": 0.01, "max": 0.05, "show": "pct", "what": "more suspicion fades each day"}
+			]
+		},
+		"supply_depot": {
+			"name": "Supply Depot",
+			"champion": "quartermaster",
+			"tier": 3,
+			"optional": true,
+			"blurb": "The Quartermaster's own building. Sells supplies to every voyage as it sets out: paid up front, even if the ship is caught.",
+			"building": 40000,
+			"upgrade_base": 80000,
+			"paths": [
+				{"name": "Provisions", "effect": "outfit", "base": 0.05, "per_level": 0.025, "max": 0.175, "show": "pct", "what": "of a voyage's expected haul, paid when it sails"},
+				{"name": "Fresh crews", "effect": "voyage_pay", "base": 0.0, "per_level": 0.03, "max": 0.15, "show": "pct", "what": "more from every voyage"}
+			]
+		},
+		"refinery": {
+			"name": "Refinery",
+			"champion": "oil_engineer",
+			"tier": 4,
+			"needs_built": "oil",
+			"optional": true,
+			"blurb": "The Oil Engineer's own building. Refines part of your oil into fuel, and renders whale oil too. Needs the Oil Platform.",
+			"building": 500000,
+			"upgrade_base": 1000000,
+			"paths": [
+				{"name": "Cracking towers", "effect": "share", "of": ["Oil", "Wildcat well"], "base": 0.05, "per_level": 0.02, "max": 0.15, "show": "pct", "what": "of oil income"},
+				{"name": "Whale oil", "effect": "share", "of": ["Whaling"], "base": 0.0, "per_level": 0.05, "max": 0.25, "show": "pct", "what": "of whaling income"}
+			]
+		},
+		"weather_station": {
+			"name": "Weather Station",
+			"champion": "meteorologist",
+			"tier": 1,
+			"optional": true,
+			"blurb": "The Meteorologist's own building. Sells storm insurance: pays out on storm days, when everything else is losing money.",
+			"building": 1500,
+			"upgrade_base": 3000,
+			"paths": [
+				{"name": "Storm cover", "effect": "storm_pay", "base": 0.15, "per_level": 0.07, "max": 0.5, "show": "days", "what": "of last week's average daily income on storm days"},
+				{"name": "Harbour forecasts", "effect": "share", "of": ["Harbour fishing"], "base": 0.05, "per_level": 0.03, "max": 0.2, "show": "pct", "what": "of harbour fishing income"}
+			]
 		}
 	},
 
@@ -441,6 +572,7 @@
 	},
 
 	"champions": {
+		"_buildings_note": "Champion buildings: only the champion named in 'champion' can build one. Optional, never block a tier. Each upgrade path has base + per_level a level, up to max. Effects: share (a share of today's income in the 'of' series; 'clean' / 'dirty' = all of it), per_boat ($ a day per boat of the 'of' kinds; 'any' = every ship), royalty (each day, a share of all you've spent on 'upgrades' or 'ships'), trade (a share of today's income from the market in the news), storm_pay (on storm days, this many average days of last week's income), outfit (paid when a voyage sets out: a share of what it should bring home). The rest change other numbers: launder, boost, upgrade_cut, hedge, boat_cut, wrecks, fade, voyage_pay. All numbers Proposed.",
 		"_note": "Pick one champion at the start of a run, from those you've unlocked. Each has a good side, a bad side and champion-only upgrades (paths added to an avenue's upgrades). perks work like Visitors' perks. unlock = how a locked champion is unlocked (saved between runs). Numbers Proposed.",
 		"list": [
 			{"id": "master_baiter", "name": "The Master Baiter", "good": "Bait upgrades work better (x1.21 a level, not x1.14). Champion-only: Champion bait for cray ships and whaling.", "bad": "His wages: rent +15%.", "unlock": "start", "unlock_text": "",
@@ -470,9 +602,9 @@
 			{"id": "meteorologist", "name": "The Meteorologist", "good": "50% chance of a storm warning the day before. Champion-only: Barometers (+10% warning chance a level, up to 90%).", "bad": "Keeps boats in: harbour fishing earns 15% less.", "unlock": "storms25", "unlock_text": "Live through 25 storms in one run.",
 				"perks": [{"perk": "warning_add", "add": 0.5}, {"perk": "zone_fish_harbor", "mult": 0.85}],
 				"paths": [{"avenue": "fish", "name": "Barometers", "effect": "warning", "per_level": 0.1, "levels": 4, "text": "storm warning chance +10%"}]},
-			{"id": "banker", "name": "The Banker", "good": "Laundering keeps 15% more, and clean cash earns 0.5% interest a week. Champion-only: Vaults (+0.25% interest a level).", "bad": "The Silent Partner doesn't trust him: covers you one time fewer.", "unlock": "launder1m", "unlock_text": "Launder $1,000,000 in one run.",
-				"perks": [{"perk": "launder_add", "add": 0.15}, {"perk": "interest_add", "add": 0.005}, {"perk": "covers_add", "add": -1}],
-				"paths": [{"avenue": "fish", "name": "Vaults", "effect": "interest", "per_level": 0.0025, "levels": 5, "text": "+0.25% interest a week"}]}
+			{"id": "banker", "name": "The Banker", "good": "Laundering keeps 15% more. Only the Banker can build the Bank: a cut of every clean dollar you earn.", "bad": "The Silent Partner doesn't trust him: covers you one time fewer.", "unlock": "launder1m", "unlock_text": "Launder $1,000,000 in one run.",
+				"perks": [{"perk": "launder_add", "add": 0.15}, {"perk": "covers_add", "add": -1}],
+				"paths": []}
 		]
 	},
 

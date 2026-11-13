@@ -14,15 +14,17 @@ const BALANCE_PATH := "res://data/balance.json"
 const META_PATH := "user://meta.json"
 const SAVE_PATH := "user://save_run.txt"
 # Everything a saved run needs to carry on where it left off
-const SAVE_VARS := ["day", "cash", "loan", "loan_due", "warnings", "warning_day", "loan_mult", "surveys", "oil_found", "oil_ready_day", "permit_day", "permit_bribes", "week_dirty", "last_week_dirty", "conditions_now", "boons_taken", "pending_pick", "tiers_rewarded", "event_due", "active_effects", "forced_storm_until", "week_income", "season", "season_earned", "strikes", "decree", "season_log", "levy_mult", "week_taxable", "last_week", "last_storm", "upcoming", "harbor_spaces", "harbor_buys", "price", "boats", "counts", "built", "laundering", "perks", "offers_done", "offer_order", "pending_offer", "levels", "wrecks", "crown", "defected", "served", "rival_index", "push_index", "pending_push", "suspicion", "investigations", "investigation_due", "calloff_at", "bribes", "news", "log_lines", "champion_index", "stats", "advisor_queue", "advisors_met", "board", "favour", "wildcat", "wildcat_ready_day", "news_next", "history", "story", "news_unread"]
+const SAVE_VARS := ["day", "cash", "loan", "loan_due", "warnings", "warning_day", "loan_mult", "surveys", "oil_found", "oil_ready_day", "permit_day", "permit_bribes", "week_dirty", "last_week_dirty", "conditions_now", "boons_taken", "pending_pick", "tiers_rewarded", "event_due", "active_effects", "forced_storm_until", "week_income", "season", "season_earned", "strikes", "decree", "season_log", "levy_mult", "week_taxable", "last_week", "last_storm", "upcoming", "harbor_spaces", "harbor_buys", "price", "boats", "counts", "built", "laundering", "perks", "offers_done", "offer_order", "pending_offer", "levels", "wrecks", "crown", "defected", "served", "rival_index", "push_index", "pending_push", "suspicion", "investigations", "investigation_due", "calloff_at", "bribes", "news", "log_lines", "champion_index", "stats", "advisor_queue", "advisors_met", "board", "favour", "wildcat", "wildcat_ready_day", "news_next", "history", "story", "news_unread", "outfit_cash"]
 # Graph series, grouped for the Graphs panel. Days with nothing count as 0.
 const HISTORY_GROUPS := {
 	"Money": ["Cash", "Earned today", "Clean money", "Dirty money", "Laundered", "Loan", "Island price"],
 	"Income by avenue": ["Harbour fishing", "Deep-sea fishing", "Newspaper", "Crab Boats", "Pearl Diving", "Cray Potting", "Salvage", "Whaling", "Treasure Hunting", "Smuggling", "Piracy", "Hidden Moorings", "Oil", "Wildcat well"],
 	"Bills and losses": ["Rent", "Tax", "Repairs", "Fines", "Gear lost", "Levy fines", "Loan interest", "Paid to Silent Partner"],
-	"Gains": ["Banker interest"],
+	"Champion buildings": ["Bank", "Bait Works", "Research Lab", "Exchange", "Shipyard", "Diving School", "Law Office", "Supply Depot", "Refinery", "Weather Station"],
 	"Crown and risk": ["Levy target", "Earned this season", "Suspicion", "Strikes", "Boats sunk", "Ships caught"],
 }
+# Which income series each news market's money lands in (for the Economist's Exchange)
+const NEWS_SERIES := {"fish": ["Harbour fishing", "Deep-sea fishing"], "pearl": ["Pearl Diving"], "crab": ["Crab Boats"], "cray": ["Cray Potting"], "salvage": ["Salvage"], "treasure": ["Treasure Hunting"], "whaling": ["Whaling"], "smuggle": ["Smuggling"], "piracy": ["Piracy"], "hiding": ["Hidden Moorings"], "oil": ["Oil", "Wildcat well"]}
 # Avenues whose units are ships on the water (stored in "boats"), and the boat kind for each
 const SHIP_KIND := {"crab": "crab", "salvage": "barge", "whaling": "whale", "smuggle": "smuggler", "piracy": "pirate", "oil": "rig"}
 # Avenues whose units are just counted (not ships you can see)
@@ -143,6 +145,8 @@ var history: Dictionary = {}
 var story: Array = []
 # This week's newspaper is in the letterbox, not read yet
 var news_unread := false
+# Supply Depot money from voyages that set out today, paid with the next day's earnings
+var outfit_cash := 0.0
 
 var log_lines: Array = []
 var log_file: FileAccess = null
@@ -225,7 +229,7 @@ func new_run(seed: int = -1, write_log: bool = true) -> void:
 	news = {}
 	news_next = _roll_news()
 	champion_index = -1
-	stats = {"storms": 0, "laundered": 0.0, "slow": 0, "relics": 0}
+	stats = {"storms": 0, "laundered": 0.0, "slow": 0, "relics": 0, "upgrade_spent": 0.0}
 	advisor_queue = []
 	advisors_met = {}
 	board = []
@@ -259,6 +263,7 @@ func new_run(seed: int = -1, write_log: bool = true) -> void:
 	history = {}
 	story = []
 	news_unread = false
+	outfit_cash = 0.0
 	_say("Day 0. You own one small boat and a rock. %s owns the island and wants %s for it." % [crown.name, money(price)])
 	_say("CROWN LEVY: earn %s by day %d. Miss a levy and you're fined and get a strike; %d strikes and the Crown takes the island back." % [money(levy_target()), season_end_day(), int(data.levy.max_strikes)])
 	_fill_board()
@@ -329,7 +334,7 @@ func avg_level(key: String) -> float:
 func fishing_boat_price() -> float:
 	var n := count_boats("fish")
 	var h: Dictionary = data.harbor
-	return h.boat_price * pow(h.boat_price_growth, max(n - 1, 0)) * (1.0 + data.upgrades.unit_price_per_level * avg_level("fish")) * perk("unit_cost_fish")
+	return h.boat_price * pow(h.boat_price_growth, max(n - 1, 0)) * (1.0 + data.upgrades.unit_price_per_level * avg_level("fish")) * perk("unit_cost_fish") * (1.0 - cb_value("boat_cut"))
 
 
 func harbor_space_price() -> float:
@@ -339,7 +344,7 @@ func harbor_space_price() -> float:
 func unit_price(key: String) -> float:
 	var a: Dictionary = data.avenues[key]
 	var n := units_owned(key)
-	return a.unit * pow(data.unit_price_growth, max(n - 1, 0)) * (1.0 + data.upgrades.unit_price_per_level * avg_level(key)) * perk("unit_cost_" + key)
+	return a.unit * pow(data.unit_price_growth, max(n - 1, 0)) * (1.0 + data.upgrades.unit_price_per_level * avg_level(key)) * perk("unit_cost_" + key) * (1.0 - cb_value("boat_cut"))
 
 
 func upgrade_price(key: String, path: int) -> float:
@@ -351,7 +356,7 @@ func upgrade_price(key: String, path: int) -> float:
 		# An avenue can set its own upgrade_base; otherwise upgrades are priced from its building
 		base = data.avenues[key].get("upgrade_base", data.avenues[key].building) / float(data.avenues[key].paths.size())
 	# The Scientist makes every upgrade cheaper (and Experiments more so)
-	var cut: float = clamp(1.0 - champ_value("upgrade_cut"), 0.1, 1.0)
+	var cut: float = clamp(1.0 - champ_value("upgrade_cut") - cb_value("upgrade_cut"), 0.1, 1.0)
 	return base * pow(data.upgrades.cost_growth, lvl) * perk("upgrade_cost") * cut
 
 
@@ -420,7 +425,7 @@ func risk(key: String) -> float:
 
 
 func launder_rate() -> float:
-	return data.laundering.rate + perk("launder_add")
+	return data.laundering.rate + perk("launder_add") + cb_value("launder")
 
 
 # ---------- Income multipliers ----------
@@ -442,10 +447,206 @@ func income_mult(key: String) -> float:
 	m *= perk("income_" + key)
 	m *= perk("income_all")
 	m *= float(crown.buffs.get(key, 1.0))
+	# The Master Baiter's Cold store
+	m *= 1.0 + cb_boost(key)
 	if news.get("key", "") == key:
-		# Some Crowns make news move prices further
-		m *= 1.0 + (float(news.mult) - 1.0) * perk("news_swing")
+		# Some Crowns make news move prices further; the Economist's Hedges soften bad news
+		var swing: float = (float(news.mult) - 1.0) * perk("news_swing")
+		if swing < 0.0:
+			swing *= 1.0 - cb_value("hedge")
+		m *= 1.0 + swing
 	return m
+
+
+# ---------- Champion buildings (only your champion can build theirs) ----------
+
+func champion_building() -> String:
+	# Your champion's own building ("" if no champion yet)
+	if champion_index < 0:
+		return ""
+	var id: String = champion().id
+	for key in data.avenues:
+		if data.avenues[key].get("champion", "") == id:
+			return key
+	return ""
+
+
+func is_champion_building(key: String) -> bool:
+	return key != "fish" and data.avenues.has(key) and data.avenues[key].has("champion")
+
+
+func cb_value(effect: String) -> float:
+	# The total of one effect over your champion building's upgrades (0 until it's built)
+	var key := champion_building()
+	if key == "" or not built.has(key):
+		return 0.0
+	var total := 0.0
+	var ps: Array = data.avenues[key].paths
+	for i in ps.size():
+		if ps[i].effect == effect:
+			total += path_value(key, i)
+	return total
+
+
+func cb_boost(avenue: String) -> float:
+	# Extra income for one avenue from a "boost" upgrade on your champion building
+	var key := champion_building()
+	if key == "" or not built.has(key):
+		return 0.0
+	var total := 0.0
+	var ps: Array = data.avenues[key].paths
+	for i in ps.size():
+		if ps[i].effect == "boost" and avenue in ps[i].of:
+			total += path_value(key, i)
+	return total
+
+
+func cb_path_text(key: String, i: int) -> String:
+	# "now -> next" for one champion building upgrade, e.g. "3% -> 4.5% of clean income"
+	var p: Dictionary = data.avenues[key].paths[i]
+	var now := path_value(key, i) if built.has(key) else float(p.base)
+	var next: float = min(float(p.max), now + float(p.per_level))
+	var show: String = p.get("show", "pct")
+	var f := func(v: float) -> String:
+		match show:
+			"money":
+				return money(v)
+			"count":
+				return str(int(round(v)))
+			"days":
+				return "%s days" % str(snapped(v, 0.01))
+		return "%s%%" % str(snapped(v * 100.0, 0.1))
+	return "%s -> %s %s" % [f.call(now), f.call(next), p.get("what", "")]
+
+
+func _recent(series: String, days := 7) -> float:
+	# Average a day of one graph series over the last few days
+	var a: Array = history.get(series, [])
+	if a.is_empty():
+		return 0.0
+	var n: int = min(days, a.size())
+	var t := 0.0
+	for i in range(a.size() - n, a.size()):
+		t += float(a[i])
+	return t / n
+
+
+func _add_spent(stat: String, amount: float) -> void:
+	# Running totals the Research Lab (upgrades) and Shipyard (ships and units) earn royalties on
+	stats[stat] = float(stats.get(stat, 0.0)) + amount
+
+
+func _spent(p: Dictionary) -> float:
+	# What a royalty upgrade earns on: everything spent on "upgrades" or on "ships" (boats and units)
+	var t := 0.0
+	for s in p.get("of", ["upgrades"]):
+		t += float(stats.get(("ships" if s == "ships" else "upgrade") + "_spent", 0.0))
+	return t
+
+
+func cb_estimate(key: String, extra_path: int = -1) -> float:
+	# Roughly what this champion building earns (or saves) a day, from the last week's numbers.
+	# extra_path >= 0 adds one level to that upgrade, so you can see what an upgrade is worth.
+	var a: Dictionary = data.avenues[key]
+	var total := 0.0
+	for i in a.paths.size():
+		var p: Dictionary = a.paths[i]
+		var lvl: int = levels[key][i] + (1 if i == extra_path else 0)
+		var v: float = min(float(p.max), float(p.base) + float(p.per_level) * lvl)
+		if v <= 0.0:
+			continue
+		match p.effect:
+			"share":
+				for s in p.of:
+					var series: String = {"clean": "Clean money", "dirty": "Dirty money"}.get(s, s)
+					var base := _recent(series)
+					# Today's clean money already includes this building's own cut
+					if s == "clean":
+						base -= _recent(a.name)
+					total += max(base, 0.0) * v
+			"per_boat":
+				var n := 0
+				for b in boats:
+					if "any" in p.of or b.kind in p.of:
+						n += 1
+				if "any" in p.of or "cray" in p.of:
+					n += int(counts.cray)
+				total += n * v
+			"royalty":
+				total += _spent(p) * v
+			"trade":
+				# A headline lands on one of the markets; on average about one market's share of the day
+				var markets := 1
+				for k in NEWS_SERIES:
+					if k != "fish" and built.has(k):
+						markets += 1
+				total += max(_recent("Earned today") - _recent(a.name), 0.0) / markets * v
+			"storm_pay":
+				total += odds().storm * max(last_week, 0.0) / 7.0 * v
+			"outfit", "voyage_pay":
+				total += (_recent("Smuggling") + _recent("Piracy")) * v
+			"launder":
+				total += _recent("Dirty money") * v
+			"boost":
+				for k in p.of:
+					for s in NEWS_SERIES.get(k, []):
+						total += _recent(s) * v
+			"wrecks":
+				if built.has("salvage"):
+					total += odds().storm * v * float(data.avenues.salvage.wreck_value) * income_mult("salvage")
+	return total
+
+
+func _champion_building_day(w: String, clean: float, dirty: float, got: Dictionary, report: Dictionary) -> float:
+	# Your champion's building earns clean money from today's work. Returns what it earned.
+	var key := champion_building()
+	if key == "" or not built.has(key):
+		return 0.0
+	var a: Dictionary = data.avenues[key]
+	var earned := 0.0
+	for i in a.paths.size():
+		var p: Dictionary = a.paths[i]
+		var v := path_value(key, i)
+		if v <= 0.0:
+			continue
+		match p.effect:
+			"share":
+				var base := 0.0
+				for s in p.of:
+					if s == "clean":
+						base += max(clean, 0.0)
+					elif s == "dirty":
+						base += max(dirty, 0.0)
+					else:
+						base += max(float(got.get(s, 0.0)), 0.0)
+				earned += base * v
+			"per_boat":
+				var n := 0
+				if "any" in p.of:
+					n = boats.size() + int(counts.cray)
+				else:
+					for b in boats:
+						if b.kind in p.of:
+							n += 1
+					if "cray" in p.of:
+						n += int(counts.cray)
+				earned += n * v
+			"royalty":
+				earned += _spent(p) * v
+			"trade":
+				for s in NEWS_SERIES.get(news.get("key", ""), []):
+					earned += max(float(got.get(s, 0.0)), 0.0) * v
+			"storm_pay":
+				if w == "storm":
+					earned += max(last_week, 0.0) / 7.0 * v
+	# Supplies the Supply Depot sold to voyages that set out since yesterday
+	earned += outfit_cash
+	outfit_cash = 0.0
+	if earned > 0.0:
+		got[a.name] = earned
+		stats["building_earned"] = float(stats.get("building_earned", 0.0)) + earned
+		report.lines.append("%s: +$%s" % [a.name, _money(earned)])
+	return earned
 
 
 func lift(key: String) -> float:
@@ -702,10 +903,8 @@ func news_preview_text() -> String:
 
 func _roll_news() -> Dictionary:
 	# One market moves each week, for any avenue (built or not) or fishing
-	var keys: Array = ["fish"] + data.avenues.keys()
-	keys.erase("deep")
-	keys.erase("lighthouse")
-	keys.erase("meteo")
+	# Optional buildings (lighthouse, weather bureau, champion buildings) and the dock have no market
+	var keys: Array = ["fish"] + data.avenues.keys().filter(func(k): return k != "deep" and not data.avenues[k].get("optional", false))
 	var key: String = keys[rng.randi_range(0, keys.size() - 1)]
 	var up := rng.randf() < 0.5
 	var name: String = "Fish" if key == "fish" else data.avenues[key].name
@@ -857,7 +1056,7 @@ func start_day() -> Dictionary:
 
 	# Storms wash up wrecks (more for every boat of yours that sank); barges haul one each a day
 	if w == "storm" and built.has("salvage"):
-		wrecks += int(av.salvage.wrecks_per_storm) + int(perk("wrecks_add")) + report.sunk.size()
+		wrecks += int(av.salvage.wrecks_per_storm) + int(perk("wrecks_add")) + int(cb_value("wrecks")) + report.sunk.size()
 	var n_barge := count_boats("barge")
 	if n_barge > 0 and wrecks > 0:
 		var take: int = min(wrecks, n_barge)
@@ -942,7 +1141,7 @@ func start_day() -> Dictionary:
 						boats.remove_at(i)
 						caught += 1
 						continue
-				var pay: float = float(b.haul) * float(vl.pay) * float(b.roll) * perk("voyage_pay") * perk("voyage_pay_" + key)
+				var pay: float = float(b.haul) * float(vl.pay) * float(b.roll) * perk("voyage_pay") * perk("voyage_pay_" + key) * (1.0 + cb_value("voyage_pay"))
 				de += pay
 				if vl.id == "slow":
 					stats.slow += 1
@@ -1002,6 +1201,9 @@ func start_day() -> Dictionary:
 			if wwe > 0:
 				report.lines.append("Wildcat well: +$%s" % _money(wwe))
 
+	# Your champion's building takes its cut of today's work (clean money)
+	clean += _champion_building_day(w, clean, dirty, got, report)
+
 	# Dirty money is laundered at a flat rate
 	var laundered: float = dirty * launder_rate()
 	var income: float = clean + laundered
@@ -1033,7 +1235,7 @@ func start_day() -> Dictionary:
 		var share: float = laundered / income
 		var r: float = dirty_risk / dirty
 		suspicion += sp.gain * share * r * perk("suspicion")
-	suspicion *= 1.0 - sp.fade_per_day
+	suspicion *= 1.0 - sp.fade_per_day - cb_value("fade")
 	suspicion = min(suspicion, 100.0)
 	var fine := 0.0
 	var investigate := false
@@ -1087,13 +1289,6 @@ func start_day() -> Dictionary:
 		got["Tax"] = t
 		last_week = week_income
 		last_week_dirty = week_dirty
-		# The Banker pays interest on clean cash
-		var rate: float = perk("interest_add") + champ_value("interest")
-		if rate > 0 and cash > 0:
-			var interest: float = cash * rate
-			cash += interest
-			got["Banker interest"] = interest
-			report.lines.append("Interest from your Banker: +$%s" % _money(interest))
 
 	# End of a season: the Crown checks the levy, then sets the next one
 	if not over and day % int(data.levy.season_days) == 0:
@@ -1837,6 +2032,7 @@ func buy_fishing_boat() -> bool:
 	if not can_afford(p):
 		return false
 	cash -= p
+	_add_spent("ships_spent", p)
 	var zone := "harbor" if count_boats("fish", "harbor") < harbor_spaces else "dock"
 	boats.append({"kind": "fish", "zone": zone})
 	_say("Bought a fishing boat for $%s." % _money(p))
@@ -1858,7 +2054,36 @@ func expand_harbor() -> bool:
 func can_build(key: String) -> bool:
 	# The oil platform needs only oil found and the permit, at any tier
 	var open := oil_approved() if key == "oil" else tier_open(tier_of(key))
-	return not built.has(key) and open and can_afford(build_price(key))
+	return not built.has(key) and open and champion_allows(key) and can_afford(build_price(key))
+
+
+func champion_allows(key: String) -> bool:
+	# A champion building needs that champion (and anything it's built on, like the Refinery on the Oil Platform)
+	if not is_champion_building(key):
+		return true
+	var a: Dictionary = data.avenues[key]
+	if key != champion_building():
+		return false
+	return not a.has("needs_built") or built.has(a.needs_built)
+
+
+func build_blockers(key: String) -> Array:
+	# Everything stopping a building being built, as readable lines (empty = can be built)
+	if is_champion_building(key) and key != champion_building():
+		return ["Only %s can build this." % _champion_name(data.avenues[key].champion)]
+	var out: Array = [] if key == "oil" else tier_blockers(tier_of(key))
+	if is_champion_building(key):
+		var a: Dictionary = data.avenues[key]
+		if a.has("needs_built") and not built.has(a.needs_built):
+			out.append("Build the %s first." % data.avenues[a.needs_built].name)
+	return out
+
+
+func _champion_name(id: String) -> String:
+	for c in data.champions.list:
+		if c.id == id:
+			return c.name
+	return id
 
 
 func build(key: String) -> bool:
@@ -1868,6 +2093,8 @@ func build(key: String) -> bool:
 	if key == "oil" and not oil_approved():
 		return false
 	if key != "oil" and not tier_open(tier_of(key)):
+		return false
+	if not champion_allows(key):
 		return false
 	var p := build_price(key)
 	if not can_afford(p):
@@ -1888,6 +2115,7 @@ func build(key: String) -> bool:
 		_write("Opened a laundering front for dirty money.")
 	if a.has("unit"):
 		_add_unit(key)
+		_add_spent("ships_spent", float(a.unit) * perk("build_cost"))
 		_say("Built the %s, with your first %s." % [a.name, a.unit_name])
 	else:
 		_say("Built the %s." % a.name)
@@ -1924,6 +2152,7 @@ func buy_unit(key: String) -> bool:
 		return false
 	var p := unit_price(key)
 	cash -= p
+	_add_spent("ships_spent", p)
 	_add_unit(key)
 	_say("Bought a %s for $%s." % [data.avenues[key].unit_name, _money(p)])
 	return true
@@ -1942,6 +2171,8 @@ func upgrade(key: String, path: int) -> bool:
 		return false
 	var p := upgrade_price(key, path)
 	cash -= p
+	# The Scientist's Research Lab earns royalties on everything spent on upgrades
+	_add_spent("upgrade_spent", p)
 	levels[key][path] += 1
 	_say("%s upgraded to level %d." % [paths_for(key)[path].name, levels[key][path]])
 	return true
@@ -2194,7 +2425,7 @@ func voyage_estimate(i: int) -> float:
 	var o := odds()
 	var sea: float = (o.perfect * a.perfect + o.normal * a.normal + o.storm * a.storm) * income_mult(key)
 	var vl: Dictionary = data.voyages.lengths[int(v.length)]
-	return sea * voyage_days(key, int(v.length)) * float(vl.pay) * float(v.roll) * perk("voyage_pay") * perk("voyage_pay_" + key)
+	return sea * voyage_days(key, int(v.length)) * float(vl.pay) * float(v.roll) * perk("voyage_pay") * perk("voyage_pay_" + key) * (1.0 + cb_value("voyage_pay"))
 
 
 func _free_ship(kind: String) -> int:
@@ -2219,6 +2450,12 @@ func send_voyage(i: int) -> bool:
 	var key: String = v.avenue
 	var b: Dictionary = boats[_free_ship(SHIP_KIND[key])]
 	var vl: Dictionary = data.voyages.lengths[int(v.length)]
+	# The Quartermaster's Supply Depot sells this voyage its supplies (paid with tomorrow's earnings)
+	var outfit := cb_value("outfit")
+	if outfit > 0.0:
+		var sale: float = voyage_estimate(i) * outfit
+		outfit_cash += sale
+		_say("The Supply Depot sold the voyage $%s of supplies (paid tomorrow)." % _money(sale))
 	b.zone = "voyage"
 	b.length = int(v.length)
 	b.roll = float(v.roll)

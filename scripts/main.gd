@@ -71,6 +71,7 @@ func _ready() -> void:
 	_setup_camera()
 	_make_graphs_panel()
 	_make_mail_props()
+	_make_champion_buildings()
 	_make_newspaper_panel()
 	# Made last so it sits on top of the other panels
 	_make_talk_panel()
@@ -193,12 +194,14 @@ func _fill_menu() -> void:
 	$UI/BuildingMenu/Box/Title.text = "%s  (tier %d)" % [a.name, int(a.tier)]
 	_text(menu_body, a.blurb)
 	if not Game.built.has(key):
-		var blockers: Array = Game.tier_blockers(int(a.tier))
-		# Oil can be hunted at any tier, so the oil menu skips the tier lock
-		if key == "oil":
-			blockers = []
+		# Oil can be hunted at any tier, so build_blockers skips the oil tier lock; champion buildings add their own
+		var blockers: Array = Game.build_blockers(key)
+		if Game.is_champion_building(key):
+			_header(menu_body, "What it does")
+			for i in a.paths.size():
+				_text(menu_body, "-  %s: %s" % [a.paths[i].name, Game.cb_path_text(key, i)])
 		if blockers.size() > 0:
-			_header(menu_body, "Locked. Tier %d opens when you:" % int(a.tier))
+			_header(menu_body, "Locked. To build it:" if Game.is_champion_building(key) else "Locked. Tier %d opens when you:" % int(a.tier))
 			for b in blockers:
 				_text(menu_body, "-  " + b)
 			return
@@ -210,6 +213,9 @@ func _fill_menu() -> void:
 		var bp := Game.build_price(key)
 		var what := ("Build + first %s  " % a.unit_name) if a.has("unit") else "Build  "
 		var earns := ("  (~%s/day)" % Game.money(Game.avg_per_day(key))) if a.has("unit") else ""
+		# Champion buildings: a guess from the last week's numbers
+		if Game.is_champion_building(key):
+			earns = "  (~%s/day at today's numbers)" % Game.money(Game.cb_estimate(key))
 		if a.get("dirty", false) and not Game.laundering:
 			_text(menu_body, "Includes a laundering front (%s) so dirty money can be turned clean at %d%%." % [Game.money(Game.data.laundering.building), int(Game.launder_rate() * 100)])
 		_button(menu_body, what + Game.money(bp) + earns, bp, Game.can_afford(bp), func(): Game.build(key))
@@ -218,6 +224,8 @@ func _fill_menu() -> void:
 	_perk_text(menu_body, key)
 
 	_lift_text(menu_body, key)
+	if Game.is_champion_building(key):
+		_text(menu_body, "Earned so far this run: %s. Last 7 days: %s." % [Game.money(Game.history_total(a.name)), Game.money(Game.history_total(a.name, max(1, Game.day - 6)))])
 	match key:
 		"deep":
 			_text(menu_body, "Send boats deep from the Boats list on the right. A deep fishing boat earns about %s a day on average. In a storm, deep boats survive %d%% of the time (Hull upgrades raise this, up to 60%%)." % [Game.money(Game.avg_per_day("fish_deep")), int(round(Game.survive_chance() * 100))])
@@ -317,6 +325,11 @@ func _upgrade_rows(into: Control, key: String) -> void:
 				effect = "deep boats stay in port when a storm is forecast"
 			_:
 				effect = str(paths[i].get("text", ""))
+		if Game.is_champion_building(key):
+			effect = Game.cb_path_text(key, i)
+			var gain: float = Game.cb_estimate(key, i) - Game.cb_estimate(key)
+			if gain >= 1.0:
+				effect += ", ~+%s/day" % Game.money(gain)
 		if paths[i].has("avenue"):
 			effect += ", champion only"
 		_button(into, "%s  %d -> %d   %s  (%s)" % [paths[i].name, lvl, lvl + 1, Game.money(price), effect], price, Game.can_upgrade(key, i), func(): Game.upgrade(key, i))
@@ -532,12 +545,20 @@ func _update_buildings() -> void:
 		var key: String = b.name
 		var a: Dictionary = Game.data.avenues[key]
 		var tag: Label3D = b.get_node("Tag")
+		# Only your champion's own building stands on the champion plot (hidden ones can't be clicked)
+		if Game.is_champion_building(key):
+			var mine: bool = key == Game.champion_building()
+			b.visible = mine
+			b.get_node("Click/Shape").disabled = not mine
+			if not mine:
+				continue
 		if Game.built.has(key):
 			b.material_override = null
 			tag.text = a.name
 		else:
 			b.material_override = ghost_mat
-			tag.text = a.name + ("\n(click to build)" if Game.tier_open(int(a.tier)) else "\n(locked)")
+			var open: bool = Game.build_blockers(key).is_empty() if Game.is_champion_building(key) else Game.tier_open(int(a.tier))
+			tag.text = a.name + ("\n(click to build)" if open else "\n(locked)")
 
 
 # ---------- Right panel: boats ----------
@@ -574,8 +595,13 @@ func _rebuild_side_panel() -> void:
 	_header(list, "Buildings")
 	for key in Game.data.avenues:
 		var a: Dictionary = Game.data.avenues[key]
-		var state := "built" if Game.built.has(key) else ("not built" if Game.tier_open(int(a.tier)) else "locked")
-		_button(list, "%s  (%s)" % [a.name, state], 0.0, true, func(): open_menu_for(key))
+		# Only your own champion's building is listed
+		if Game.is_champion_building(key) and key != Game.champion_building():
+			continue
+		var open: bool = Game.build_blockers(key).is_empty() if Game.is_champion_building(key) else Game.tier_open(int(a.tier))
+		var state := "built" if Game.built.has(key) else ("not built" if open else "locked")
+		var label := "%s  (%s, champion)" % [a.name, state] if Game.is_champion_building(key) else "%s  (%s)" % [a.name, state]
+		_button(list, label, 0.0, true, func(): open_menu_for(key))
 
 
 func _boat_row(i: int, number: int) -> void:
@@ -1216,6 +1242,8 @@ func _update_talk() -> void:
 const MAIL_BERTH := Vector3(-4.0, 0, 26.0)
 const MAIL_FAR := Vector3(-60.0, 0, 80.0)
 const LETTERBOX_AT := Vector3(-2.6, 3.0, 13.4)
+# The one plot where your champion's own building stands (between the cove, salvage yard and weather bureau)
+const CHAMPION_PLOT := Vector3(-3.0, 4.0, -4.5)
 const VISITOR_BERTH := Vector3(6.5, 0, 27.0)
 const VISITOR_FAR := Vector3(70.0, 0, 80.0)
 var mail_boat: Node3D
@@ -1256,11 +1284,41 @@ func _click_body(parent: Node3D, size: Vector3, offset := Vector3.ZERO) -> void:
 	body.name = "Click"
 	body.position = offset
 	var shape := CollisionShape3D.new()
+	shape.name = "Shape"
 	var box := BoxShape3D.new()
 	box.size = size
 	shape.shape = box
 	body.add_child(shape)
 	parent.add_child(body)
+
+
+func _make_champion_buildings() -> void:
+	# GREYBOX placeholders: one plot, and only your champion's building shows on it. Real models still to make.
+	var colours := [Color(0.85, 0.75, 0.3), Color(0.4, 0.6, 0.35), Color(0.55, 0.75, 0.85), Color(0.75, 0.45, 0.6), Color(0.55, 0.4, 0.3)]
+	var n := 0
+	for key in Game.data.avenues:
+		if not Game.is_champion_building(key):
+			continue
+		var b := MeshInstance3D.new()
+		b.name = key
+		var m := _box(Vector3(3, 2.4, 3))
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = colours[n % colours.size()]
+		m.material = mat
+		b.mesh = m
+		b.position = CHAMPION_PLOT
+		$Buildings.add_child(b)
+		var tag := Label3D.new()
+		tag.name = "Tag"
+		tag.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		tag.position = Vector3(0, 2.4, 0)
+		tag.pixel_size = 0.02
+		tag.font_size = 64
+		tag.outline_size = 14
+		b.add_child(tag)
+		_click_body(b, Vector3(3.4, 2.8, 3.4))
+		b.visible = false
+		n += 1
 
 
 func _make_mail_props() -> void:
@@ -1492,8 +1550,9 @@ func open_newspaper() -> void:
 	if best != "":
 		t += " Best earner: %s (%s)." % [best, Game.money(best_v)]
 	t += "\n   Rent %s, tax %s." % [Game.money(Game.history_total("Rent", from_day)), Game.money(Game.history_total("Tax", from_day))]
-	if Game.history_total("Banker interest") > 0:
-		t += " Banker interest %s." % Game.money(Game.history_total("Banker interest", from_day))
+	var cb := Game.champion_building()
+	if cb != "" and Game.history_total(Game.data.avenues[cb].name) > 0:
+		t += " Your %s earned %s." % [Game.data.avenues[cb].name, Game.money(Game.history_total(Game.data.avenues[cb].name, from_day))]
 	t += "\n\n[font_size=14][i]Open Graphs (top bar) for every number of every day.[/i][/font_size]"
 	paper_text.text = t
 	$UI/Newspaper.visible = true

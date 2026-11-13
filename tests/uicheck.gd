@@ -29,6 +29,23 @@ func _ready() -> void:
 	Game.answer_pick(0)
 	await _frames(2)
 
+	# Champion buildings: yours shows on the plot and can be opened; the others stay hidden and locked
+	_step("champion building")
+	var cbk: String = Game.champion_building()
+	print("champion: ", Game.champion().id, "  building: ", cbk, "  blockers: ", Game.build_blockers(cbk))
+	print("  plot node visible: ", main.get_node("Buildings/" + cbk).visible, "  others hidden: ", Game.data.avenues.keys().filter(func(k): return Game.is_champion_building(k) and k != cbk and main.get_node("Buildings/" + k).visible).is_empty())
+	print("  another champion's blockers: ", Game.build_blockers("bank"))
+	main.open_menu_for(cbk)
+	await _frames(1)
+	main.close_menu()
+	Game.cash = 50000.0
+	print("  built: ", Game.build(cbk), "  cash after: ", Game.cash, "  can build bank too: ", Game.can_build("bank"))
+	for i in Game.data.avenues[cbk].paths.size():
+		print("  ", Game.data.avenues[cbk].paths[i].name, ": ", Game.cb_path_text(cbk, i))
+	main.open_menu_for(cbk)
+	await _frames(1)
+	main.close_menu()
+
 	# Own everything, with money to spare, so every menu has something to show
 	Game.cash = 1000000000.0
 	Game.laundering = true
@@ -110,7 +127,7 @@ func _ready() -> void:
 	# Graphs, newspaper and a talk panel
 	_step("graphs")
 	main._open_graphs()
-	for s in ["Banker interest", "Tax", "Rent", "Suspicion"]:
+	for s in ["Bank", "Tax", "Rent", "Suspicion"]:
 		main.get_node("UI/GraphPanel").find_child("Tick_" + s, true, false).button_pressed = true
 	main.graph_mode.select(1)
 	main._draw_graphs()
