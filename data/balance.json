@@ -579,5 +579,15 @@
 		]
 	},
 
+	"story": {
+		"_read_me": "Who talks in the story panels. Names are PROPOSED placeholders; change them freely.",
+		"speakers": {
+			"event": {"name": "Old Gus", "role": "Harbour gossip"},
+			"crown": {"name": "The Crown's Herald", "role": "Speaks for your Crown"},
+			"informant": {"name": "The Informant", "role": "Hears things in taverns"},
+			"partner": {"name": "The Silent Partner", "role": "Lends money. Wants it back."}
+		}
+	},
+
 	"unit_price_growth": 1.2
 }

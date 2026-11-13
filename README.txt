@@ -58,6 +58,8 @@ BUILT 12 NOV (LATER)
 - Wildcat well (cheap early oil), Crown favour (beat a levy by 50%), Iron Fleet and Privateer fixes.
 - Mid-run save: user://save_run.txt, saved every day; the game offers to continue on start.
 - tests/uicheck.tscn: headless check that drives every new panel and menu.
+- My run panel (top bar): Crown, champion, conditions, boons, advisors, visitors, this season, and what it all
+  adds up to (storm survival, damage, risks, fines, rent, income from picks). Nodes in main.tscn UI/RunPanel.
 
 NOT IN YET
 Characters and portraits (other than Crown names), sound, real art.

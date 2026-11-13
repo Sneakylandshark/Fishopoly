@@ -77,17 +77,56 @@ func _ready() -> void:
 	Game.favour_strike()
 	await _frames(1)
 
+	# The My run panel, with everything owned
+	_step("my run panel")
+	main._open_run_panel()
+	await _frames(2)
+	print(main.get_node("UI/RunPanel/Box/Text").get_parsed_text().substr(0, 1500))
+
 	# Ten days through the real day button (boats sail, sink, come back from voyages)
 	for d in 10:
 		_step("day %d" % (d + 1))
 		while not Game.pending_pick.is_empty():
 			Game.answer_pick(0)
+		while not Game.story.is_empty():
+			print("story: ", Game.story[0].who, " | ", Game.story[0].title)
+			Game.read_story()
 		if Game.pending_offer >= 0:
+			main.open_visitors()
+			await _frames(1)
 			Game.answer_offer("later")
 		if Game.pending_push >= 0:
 			Game.resolve_push(false)
 		await main._on_start_day()
 		await _frames(1)
+
+	# Graphs, newspaper and a talk panel
+	_step("graphs")
+	main._open_graphs()
+	for s in ["Banker interest", "Tax", "Rent", "Suspicion"]:
+		main.get_node("UI/GraphPanel").find_child("Tick_" + s, true, false).button_pressed = true
+	main.graph_mode.select(1)
+	main._draw_graphs()
+	await _frames(2)
+	print(main.graph_totals.get_parsed_text())
+	main.get_node("UI/GraphPanel").visible = false
+	_step("newspaper")
+	main.open_newspaper()
+	await _frames(1)
+	print(main.paper_text.get_parsed_text().substr(0, 600))
+	main.get_node("UI/Newspaper").visible = false
+	_step("talk panel")
+	Game.event_due = {"index": Game.data.events.list.size() - 1, "day": Game.day + 1}
+	while not Game.pending_pick.is_empty():
+		Game.answer_pick(0)
+	if Game.pending_offer >= 0:
+		Game.answer_offer("later")
+	if Game.pending_push >= 0:
+		Game.resolve_push(false)
+	await main._on_start_day()
+	await _frames(1)
+	print("talk visible: ", main.get_node("UI/TalkPanel").visible, " | ", main.talk_text.get_parsed_text())
+	print("history days: ", Game.history["Cash"].size(), " day ", Game.day)
 
 	# Save, start a new run (it offers to continue), continue, then clean up
 	_step("save and continue")

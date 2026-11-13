@@ -14,7 +14,15 @@ const BALANCE_PATH := "res://data/balance.json"
 const META_PATH := "user://meta.json"
 const SAVE_PATH := "user://save_run.txt"
 # Everything a saved run needs to carry on where it left off
-const SAVE_VARS := ["day", "cash", "loan", "loan_due", "warnings", "warning_day", "loan_mult", "surveys", "oil_found", "oil_ready_day", "permit_day", "permit_bribes", "week_dirty", "last_week_dirty", "conditions_now", "boons_taken", "pending_pick", "tiers_rewarded", "event_due", "active_effects", "forced_storm_until", "week_income", "season", "season_earned", "strikes", "decree", "season_log", "levy_mult", "week_taxable", "last_week", "last_storm", "upcoming", "harbor_spaces", "harbor_buys", "price", "boats", "counts", "built", "laundering", "perks", "offers_done", "offer_order", "pending_offer", "levels", "wrecks", "crown", "defected", "served", "rival_index", "push_index", "pending_push", "suspicion", "investigations", "investigation_due", "calloff_at", "bribes", "news", "log_lines", "champion_index", "stats", "advisor_queue", "advisors_met", "board", "favour", "wildcat", "wildcat_ready_day", "news_next"]
+const SAVE_VARS := ["day", "cash", "loan", "loan_due", "warnings", "warning_day", "loan_mult", "surveys", "oil_found", "oil_ready_day", "permit_day", "permit_bribes", "week_dirty", "last_week_dirty", "conditions_now", "boons_taken", "pending_pick", "tiers_rewarded", "event_due", "active_effects", "forced_storm_until", "week_income", "season", "season_earned", "strikes", "decree", "season_log", "levy_mult", "week_taxable", "last_week", "last_storm", "upcoming", "harbor_spaces", "harbor_buys", "price", "boats", "counts", "built", "laundering", "perks", "offers_done", "offer_order", "pending_offer", "levels", "wrecks", "crown", "defected", "served", "rival_index", "push_index", "pending_push", "suspicion", "investigations", "investigation_due", "calloff_at", "bribes", "news", "log_lines", "champion_index", "stats", "advisor_queue", "advisors_met", "board", "favour", "wildcat", "wildcat_ready_day", "news_next", "history", "story", "news_unread"]
+# Graph series, grouped for the Graphs panel. Days with nothing count as 0.
+const HISTORY_GROUPS := {
+	"Money": ["Cash", "Earned today", "Clean money", "Dirty money", "Laundered", "Loan", "Island price"],
+	"Income by avenue": ["Harbour fishing", "Deep-sea fishing", "Newspaper", "Crab Boats", "Pearl Diving", "Cray Potting", "Salvage", "Whaling", "Treasure Hunting", "Smuggling", "Piracy", "Hidden Moorings", "Oil", "Wildcat well"],
+	"Bills and losses": ["Rent", "Tax", "Repairs", "Fines", "Gear lost", "Levy fines", "Loan interest", "Paid to Silent Partner"],
+	"Gains": ["Banker interest"],
+	"Crown and risk": ["Levy target", "Earned this season", "Suspicion", "Strikes", "Boats sunk", "Ships caught"],
+}
 # Avenues whose units are ships on the water (stored in "boats"), and the boat kind for each
 const SHIP_KIND := {"crab": "crab", "salvage": "barge", "whaling": "whale", "smuggle": "smuggler", "piracy": "pirate", "oil": "rig"}
 # Avenues whose units are just counted (not ships you can see)
@@ -129,6 +137,13 @@ var wildcat_ready_day := -1
 # Real games save each day and remember unlocks; headless tests don't
 var save_enabled := false
 
+# Every number of every day, for the Graphs panel: series name -> [day 1 value, day 2 value, ...]
+var history: Dictionary = {}
+# Story moments waiting to be shown in a talk panel: [{"who", "title", "text"}]
+var story: Array = []
+# This week's newspaper is in the letterbox, not read yet
+var news_unread := false
+
 var log_lines: Array = []
 var log_file: FileAccess = null
 var log_path := ""
@@ -241,6 +256,9 @@ func new_run(seed: int = -1, write_log: bool = true) -> void:
 	decree = {}
 	season_log = []
 	levy_mult = 1.0
+	history = {}
+	story = []
+	news_unread = false
 	_say("Day 0. You own one small boat and a rock. %s owns the island and wants %s for it." % [crown.name, money(price)])
 	_say("CROWN LEVY: earn %s by day %d. Miss a levy and you're fined and get a strike; %d strikes and the Crown takes the island back." % [money(levy_target()), season_end_day(), int(data.levy.max_strikes)])
 	_fill_board()
@@ -709,12 +727,16 @@ func start_day() -> Dictionary:
 	if (day - 1) % 7 == 0:
 		_new_news()
 		_say("NEWS: " + news.text)
+		# The mail boat brings the paper (the scene shows it arriving)
+		news_unread = true
 	var today: Dictionary = upcoming.pop_front()
 	var w: String = today.w
 	# Standing orders: when the Weather Bureau forecast a storm, deep boats stay in port today
 	var held := has_orders() and forecast_call(today) == "storm"
 	# "removed" lists boat indices in the order they were removed, so the scene can remove the same boats
 	var report := {"day": day, "weather": w, "lines": [], "sunk": [], "removed": [], "income": 0.0}
+	# What each thing earned or cost today, for the Graphs panel
+	var got := {}
 	# Random events: old effects wear off, a warned event may hit today (a hurricane forces storms)
 	_event_tick(report)
 	if day <= forced_storm_until:
@@ -737,6 +759,7 @@ func start_day() -> Dictionary:
 	if in_harbor > 0:
 		var e: float = h.catch * h[w] * income_mult("fish") * perk("zone_fish_harbor") * in_harbor
 		clean += e
+		got["Harbour fishing"] = e
 		report.lines.append("Harbor fishing: +$%s" % _money(e))
 
 	# Boats sent deep: fishing and crab. Storms sink them unless they survive.
@@ -775,6 +798,7 @@ func start_day() -> Dictionary:
 			deep_e += ds["crab_" + w] * income_mult("crab")
 	if deep_e > 0:
 		clean += deep_e
+		got["Deep-sea fishing"] = deep_e
 		report.lines.append("Deep sea: +$%s" % _money(deep_e))
 	if report.sunk.size() > 0:
 		report.lines.append("Storm sank %d deep boat(s)!" % report.sunk.size())
@@ -784,6 +808,7 @@ func start_day() -> Dictionary:
 		report.lines.append("Standing orders: storm forecast, %d deep boat(s) stayed in port." % stayed)
 	if perk("daily_add") > 0:
 		clean += perk("daily_add")
+		got["Newspaper"] = perk("daily_add")
 		report.lines.append("Newspaper: +$%s" % _money(perk("daily_add")))
 
 	# Crab boats in the harbor: big storm hauls; storms can wreck a boat's gear (the boat is safe)
@@ -792,6 +817,7 @@ func start_day() -> Dictionary:
 		var c: Dictionary = av.crab
 		var ce: float = c[w] * income_mult("crab") * n_crab
 		clean += ce
+		got["Crab Boats"] = ce
 		report.lines.append("Crab boats: +$%s" % _money(ce))
 		if w == "storm":
 			var lost := 0
@@ -800,12 +826,14 @@ func start_day() -> Dictionary:
 					lost += 1
 			if lost > 0:
 				clean -= lost * c.pot_cost
+				got["Gear lost"] = got.get("Gear lost", 0.0) + lost * c.pot_cost
 				report.lines.append("Storm wrecked the gear of %d crab boat(s): -$%s" % [lost, _money(lost * c.pot_cost)])
 
 	# Pearl spots: steady
 	if counts.pearl > 0:
 		var pe: float = av.pearl[w] * income_mult("pearl") * counts.pearl
 		clean += pe
+		got["Pearl Diving"] = pe
 		report.lines.append("Pearls: +$%s" % _money(pe))
 
 	# Cray ships drop pots. Storms lose pots, which cost money to replace.
@@ -819,10 +847,12 @@ func start_day() -> Dictionary:
 					lost_pots += 1
 			if lost_pots > 0:
 				clean -= lost_pots * cr.pot_cost
+				got["Gear lost"] = got.get("Gear lost", 0.0) + lost_pots * cr.pot_cost
 				report.lines.append("Storm lost %d cray pots: -$%s" % [lost_pots, _money(lost_pots * cr.pot_cost)])
 		else:
 			var cye: float = pots * cr["pot_" + w] * income_mult("cray")
 			clean += cye
+			got["Cray Potting"] = cye
 			report.lines.append("Cray pots: +$%s" % _money(cye))
 
 	# Storms wash up wrecks (more for every boat of yours that sank); barges haul one each a day
@@ -834,6 +864,7 @@ func start_day() -> Dictionary:
 		wrecks -= take
 		var se: float = take * av.salvage.wreck_value * income_mult("salvage")
 		clean += se
+		got["Salvage"] = se
 		report.lines.append("Salvage: %d wreck(s) +$%s (%d left)" % [take, _money(se), wrecks])
 
 	# Whaling ships: big calm-day catches, home empty in storms
@@ -844,6 +875,7 @@ func start_day() -> Dictionary:
 		else:
 			var we: float = av.whaling[w] * income_mult("whaling") * n_whale
 			clean += we
+			got["Whaling"] = we
 			report.lines.append("Whaling: +$%s" % _money(we))
 
 	# Treasure divers: one find each on perfect days
@@ -863,6 +895,7 @@ func start_day() -> Dictionary:
 						stats.relics += 1
 					break
 		clean += te
+		got["Treasure Hunting"] = te
 		var names := []
 		for k in finds:
 			names.append("%s x%d" % [k, finds[k]])
@@ -929,6 +962,9 @@ func start_day() -> Dictionary:
 		de -= licensed
 		dirty += de
 		dirty_risk += de * risk(key)
+		# Before laundering (licensed piracy counts in full)
+		got["Smuggling" if key == "smuggle" else "Piracy"] = de + licensed
+		got["Ships caught"] = got.get("Ships caught", 0.0) + caught
 		if licensed > 0:
 			report.lines.append("%s: +$%s clean (licensed) +$%s dirty" % [a.name, _money(licensed), _money(de)])
 		else:
@@ -940,6 +976,7 @@ func start_day() -> Dictionary:
 	if counts.hiding - hidden_own() > 0:
 		var he: float = av.hiding[w] * income_mult("hiding") * (counts.hiding - hidden_own())
 		dirty += he
+		got["Hidden Moorings"] = he
 		dirty_risk += he * risk("hiding")
 		report.lines.append("Hidden moorings: +$%s dirty" % _money(he))
 
@@ -951,6 +988,7 @@ func start_day() -> Dictionary:
 	if n_rig > 0:
 		var oe: float = av.oil[w] * income_mult("oil") * n_rig
 		clean += oe
+		got["Oil"] = oe
 		if oe > 0:
 			report.lines.append("Oil: +$%s" % _money(oe))
 	# A wildcat well: a trickle of oil before the full platform
@@ -960,6 +998,7 @@ func start_day() -> Dictionary:
 		else:
 			var wwe: float = av.oil[w] * float(data.oil_search.wildcat_share) * income_mult("oil")
 			clean += wwe
+			got["Wildcat well"] = wwe
 			if wwe > 0:
 				report.lines.append("Wildcat well: +$%s" % _money(wwe))
 
@@ -1022,6 +1061,7 @@ func start_day() -> Dictionary:
 				report.removed.append(i)
 				boats.remove_at(i)
 				seized += 1
+		got["Ships caught"] = got.get("Ships caught", 0.0) + seized
 		report.lines.append("INVESTIGATION! No earnings today, fined $%s, %d sailing ship(s) seized. Your hidden ships are safe." % [_money(fine), seized])
 		report["investigation"] = true
 		suspicion = sp.after_investigation
@@ -1043,6 +1083,8 @@ func start_day() -> Dictionary:
 		cash -= t + rent
 		report.lines.append("Bills: rent $%s + tax $%s (tax on the $%s clean money you earned this week; dirty money isn't taxed)" % [_money(rent), _money(t), _money(week_taxable)])
 		report["bills"] = t + rent
+		got["Rent"] = rent
+		got["Tax"] = t
 		last_week = week_income
 		last_week_dirty = week_dirty
 		# The Banker pays interest on clean cash
@@ -1050,14 +1092,17 @@ func start_day() -> Dictionary:
 		if rate > 0 and cash > 0:
 			var interest: float = cash * rate
 			cash += interest
+			got["Banker interest"] = interest
 			report.lines.append("Interest from your Banker: +$%s" % _money(interest))
 
 	# End of a season: the Crown checks the levy, then sets the next one
 	if not over and day % int(data.levy.season_days) == 0:
 		_end_season(report)
+		got["Levy fines"] = float(report.get("levy_fine", 0.0))
 
 	# Interest on any loan, then the Silent Partner covers a shortfall (if you have warnings left)
 	if loan > 0:
+		got["Loan interest"] = loan * data.silent_partner.daily_interest * loan_mult
 		loan *= 1.0 + data.silent_partner.daily_interest * loan_mult
 	if cash < 0:
 		_cover_shortfall(report)
@@ -1071,6 +1116,7 @@ func start_day() -> Dictionary:
 	if loan < 0.01:
 		loan = 0.0
 	if pay > 0:
+		got["Paid to Silent Partner"] = pay
 		report["repaid"] = pay
 		if loan > 0:
 			report.lines.append("Paid $%s to the Silent Partner (still owe $%s)." % [_money(pay), _money(loan)])
@@ -1100,6 +1146,15 @@ func start_day() -> Dictionary:
 		_next_advisor()
 	_check_unlocks(report)
 
+	got["Clean money"] = clean
+	got["Dirty money"] = dirty
+	got["Laundered"] = laundered
+	got["Repairs"] = repairs
+	got["Fines"] = fine
+	got["Earned today"] = report.income
+	got["Boats sunk"] = report.sunk.size()
+	_track(got)
+	_story_from(report)
 	_fill_forecast()
 	for line in report.lines:
 		log_lines.append("Day %d (%s): %s" % [day, w, line])
@@ -1109,6 +1164,95 @@ func start_day() -> Dictionary:
 	changed.emit()
 	save_run()
 	return report
+
+
+func _track(got: Dictionary) -> void:
+	# One value per series per day; anything not earned today is 0
+	got["Cash"] = cash
+	got["Loan"] = loan
+	got["Island price"] = island_price()
+	got["Levy target"] = levy_target()
+	got["Earned this season"] = season_earned
+	got["Suspicion"] = suspicion
+	got["Strikes"] = strikes
+	for group in HISTORY_GROUPS:
+		for s in HISTORY_GROUPS[group]:
+			if not history.has(s):
+				history[s] = []
+			var a: Array = history[s]
+			# A series added after day 1 (e.g. an old save) is padded with zeros
+			while a.size() < day - 1:
+				a.append(0.0)
+			a.append(float(got.get(s, 0.0)))
+
+
+func history_total(series: String, from_day: int = 1) -> float:
+	var t := 0.0
+	var a: Array = history.get(series, [])
+	for i in range(max(0, from_day - 1), a.size()):
+		t += float(a[i])
+	return t
+
+
+# Story moments: a line in the day's report that starts with one of these opens a talk panel
+const STORY_LINES := [
+	["WARNING (", "event", "Trouble coming"],
+	["EVENT: ", "event", "It's happened"],
+	["CROWN LEVY MET", "crown", "The levy is met"],
+	["CROWN LEVY MISSED", "crown", "The levy is missed"],
+	["CROWN DECREE", "crown", "A new decree"],
+	["NEXT LEVY", "crown", ""],
+	["The Crown is impressed", "crown", ""],
+	["TIP-OFF", "informant", "A tip-off"],
+	["INVESTIGATION!", "informant", "Investigation"],
+	["The investigators found nothing", "informant", "All clear"],
+	["SILENT PARTNER WARNING", "partner", "The Silent Partner"],
+	["The Silent Partner refuses", "partner", "The Silent Partner"],
+	["Loan overdue", "partner", "The Silent Partner"],
+	["The Crown approves your oil permit", "crown", "Oil permit"],
+]
+
+
+func _story_from(report: Dictionary) -> void:
+	# Lines from the same speaker on the same day share one talk panel
+	var by_who := {}
+	var order := []
+	for line in report.lines:
+		for rule in STORY_LINES:
+			if not str(line).begins_with(rule[0]):
+				continue
+			var who: String = rule[1]
+			if not by_who.has(who):
+				by_who[who] = {"who": who, "title": rule[2], "lines": []}
+				order.append(who)
+			if by_who[who].title == "":
+				by_who[who].title = rule[2]
+			by_who[who].lines.append(_story_text(str(line)))
+			break
+	for who in order:
+		var b: Dictionary = by_who[who]
+		var sp: Dictionary = data.story.speakers.get(who, {"name": who, "role": ""})
+		story.append({"day": day, "who": sp.name, "role": sp.role, "title": b.title, "text": "\n\n".join(b.lines)})
+
+
+func _story_text(line: String) -> String:
+	# Event lines get a plain explanation of how long it lasts
+	if line.begins_with("EVENT: "):
+		var t := line.trim_prefix("EVENT: ")
+		for e in data.events.list:
+			if e.hit == t and int(e.days) > 0:
+				t += "\n\nThis lasts %d day(s), until the end of day %d." % [int(e.days), day + int(e.days) - 1]
+		return t
+	if line.begins_with("WARNING ("):
+		return line.trim_prefix("WARNING ")
+	return line
+
+
+func read_story() -> void:
+	# The player closed the oldest talk panel
+	if not story.is_empty():
+		story.pop_front()
+		changed.emit()
 
 
 func _liquidate(report: Dictionary) -> void:
@@ -1370,6 +1514,7 @@ func _end_season(report: Dictionary) -> void:
 		var fine: float = (target - season_earned) * float(lv.fine_share)
 		cash -= fine
 		report["levy_missed"] = true
+		report["levy_fine"] = fine
 		report.lines.append("CROWN LEVY MISSED: you earned $%s of $%s. Fined $%s. Strike %d of %d." % [_money(season_earned), _money(target), _money(fine), strikes, int(lv.max_strikes)])
 		if strikes >= int(lv.max_strikes):
 			over = true

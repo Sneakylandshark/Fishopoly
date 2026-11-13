@@ -19,6 +19,10 @@ config/features=PackedStringArray("4.7", "Forward Plus")
 
 Game="*res://scripts/game.gd"
 
+[debug]
+
+file_logging/max_log_files=30
+
 [display]
 
 window/size/viewport_width=1600
