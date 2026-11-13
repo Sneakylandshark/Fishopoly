@@ -14,14 +14,15 @@ const BALANCE_PATH := "res://data/balance.json"
 const META_PATH := "user://meta.json"
 const SAVE_PATH := "user://save_run.txt"
 # Everything a saved run needs to carry on where it left off
-const SAVE_VARS := ["day", "cash", "loan", "loan_due", "warnings", "warning_day", "loan_mult", "surveys", "oil_found", "oil_ready_day", "permit_day", "permit_bribes", "week_dirty", "last_week_dirty", "conditions_now", "boons_taken", "pending_pick", "tiers_rewarded", "event_due", "active_effects", "forced_storm_until", "week_income", "season", "season_earned", "strikes", "decree", "season_log", "levy_mult", "week_taxable", "last_week", "last_storm", "upcoming", "harbor_spaces", "harbor_buys", "price", "boats", "counts", "built", "laundering", "perks", "offers_done", "offer_order", "pending_offer", "levels", "wrecks", "crown", "defected", "served", "rival_index", "push_index", "pending_push", "suspicion", "investigations", "investigation_due", "calloff_at", "bribes", "news", "log_lines", "champion_index", "stats", "advisor_queue", "advisors_met", "board", "favour", "wildcat", "wildcat_ready_day", "news_next", "history", "story", "news_unread", "outfit_cash"]
+const SAVE_VARS := ["day", "cash", "loan", "loan_due", "warnings", "warning_day", "loan_mult", "surveys", "oil_found", "oil_ready_day", "permit_day", "permit_bribes", "week_dirty", "last_week_dirty", "conditions_now", "boons_taken", "pending_pick", "tiers_rewarded", "event_due", "active_effects", "forced_storm_until", "week_income", "season", "season_earned", "strikes", "decree", "season_log", "levy_mult", "week_taxable", "last_week", "last_storm", "upcoming", "harbor_spaces", "harbor_buys", "price", "boats", "counts", "built", "laundering", "perks", "offers_done", "offer_order", "pending_offer", "levels", "wrecks", "crown", "defected", "served", "rival_index", "push_index", "pending_push", "suspicion", "investigations", "investigation_due", "calloff_at", "bribes", "news", "log_lines", "champion_index", "stats", "advisor_queue", "advisors_met", "board", "favour", "wildcat", "wildcat_ready_day", "news_next", "history", "story", "news_unread", "outfit_cash", "news_archive", "season_targets"]
 # Graph series, grouped for the Graphs panel. Days with nothing count as 0.
 const HISTORY_GROUPS := {
 	"Money": ["Cash", "Earned today", "Clean money", "Dirty money", "Laundered", "Loan", "Island price"],
 	"Income by avenue": ["Harbour fishing", "Deep-sea fishing", "Newspaper", "Crab Boats", "Pearl Diving", "Cray Potting", "Salvage", "Whaling", "Treasure Hunting", "Smuggling", "Piracy", "Hidden Moorings", "Oil", "Wildcat well"],
 	"Bills and losses": ["Rent", "Tax", "Repairs", "Fines", "Gear lost", "Levy fines", "Loan interest", "Paid to Silent Partner"],
 	"Champion buildings": ["Bank", "Bait Works", "Research Lab", "Exchange", "Shipyard", "Diving School", "Law Office", "Supply Depot", "Refinery", "Weather Station"],
-	"Crown and risk": ["Levy target", "Earned this season", "Suspicion", "Strikes", "Boats sunk", "Ships caught"],
+	"The Crown": ["Levy target", "Earned this season", "Strikes"],
+	"Risk": ["Suspicion", "Boats sunk", "Ships caught"],
 }
 # Which income series each news market's money lands in (for the Economist's Exchange)
 const NEWS_SERIES := {"fish": ["Harbour fishing", "Deep-sea fishing"], "pearl": ["Pearl Diving"], "crab": ["Crab Boats"], "cray": ["Cray Potting"], "salvage": ["Salvage"], "treasure": ["Treasure Hunting"], "whaling": ["Whaling"], "smuggle": ["Smuggling"], "piracy": ["Piracy"], "hiding": ["Hidden Moorings"], "oil": ["Oil", "Wildcat well"]}
@@ -147,6 +148,10 @@ var story: Array = []
 var news_unread := false
 # Supply Depot money from voyages that set out today, paid with the next day's earnings
 var outfit_cash := 0.0
+# Every week's headline, for the Gazette Office: [{day, text}]
+var news_archive: Array = []
+# Each finished season's levy target, for the Customs House (season_log holds what you earned)
+var season_targets: Array = []
 
 var log_lines: Array = []
 var log_file: FileAccess = null
@@ -259,11 +264,13 @@ func new_run(seed: int = -1, write_log: bool = true) -> void:
 	strikes = 0
 	decree = {}
 	season_log = []
+	season_targets = []
 	levy_mult = 1.0
 	history = {}
 	story = []
 	news_unread = false
 	outfit_cash = 0.0
+	news_archive = []
 	_say("Day 0. You own one small boat and a rock. %s owns the island and wants %s for it." % [crown.name, money(price)])
 	_say("CROWN LEVY: earn %s by day %d. Miss a levy and you're fined and get a strike; %d strikes and the Crown takes the island back." % [money(levy_target()), season_end_day(), int(data.levy.max_strikes)])
 	_fill_board()
@@ -469,6 +476,41 @@ func champion_building() -> String:
 		if data.avenues[key].get("champion", "") == id:
 			return key
 	return ""
+
+
+func is_info_building(key: String) -> bool:
+	return key != "fish" and data.avenues.has(key) and data.avenues[key].has("info")
+
+
+func graph_group_open(group: String) -> bool:
+	# A Graphs group shows once the building that keeps it is built
+	for key in data.avenues:
+		if group in data.avenues[key].get("graphs", []):
+			return built.has(key)
+	return true
+
+
+func graph_group_keeper(group: String) -> String:
+	# The name of the building that keeps a Graphs group ("" if none)
+	for key in data.avenues:
+		if group in data.avenues[key].get("graphs", []):
+			return data.avenues[key].name
+	return ""
+
+
+func season_rows() -> Array:
+	# Every finished season for the Customs House: [{season, day, earned, target, met}]
+	var out := []
+	var targets: Array = history.get("Levy target", [])
+	var sd: int = int(data.levy.season_days)
+	for i in season_log.size():
+		var end_day: int = (i + 1) * sd
+		# The day before the season ends (on the last day the graph already shows the next season's levy)
+		var target: float = float(targets[end_day - 2]) if end_day - 2 < targets.size() and end_day >= 2 else 0.0
+		if i < season_targets.size():
+			target = float(season_targets[i])
+		out.append({"season": i + 1, "day": end_day, "earned": float(season_log[i]), "target": target, "met": float(season_log[i]) >= target})
+	return out
 
 
 func is_champion_building(key: String) -> bool:
@@ -883,6 +925,8 @@ func _new_news() -> void:
 	# Next week's headline becomes this week's, and a new one is rolled for next week
 	news = news_next
 	news_next = _roll_news()
+	# The Gazette Office keeps every headline on file
+	news_archive.append({"day": day, "text": str(news.get("text", ""))})
 
 
 func news_preview_days() -> int:
@@ -1698,6 +1742,7 @@ func _end_season(report: Dictionary) -> void:
 	var lv: Dictionary = data.levy
 	var target := levy_target()
 	season_log.append(season_earned)
+	season_targets.append(target)
 	if season_earned >= target:
 		report.lines.append("CROWN LEVY MET: you earned $%s this season (needed $%s)." % [_money(season_earned), _money(target)])
 		# Beating it well earns a favour you can spend later

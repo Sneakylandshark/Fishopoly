@@ -508,6 +508,55 @@
 				{"name": "Storm cover", "effect": "storm_pay", "base": 0.15, "per_level": 0.07, "max": 0.5, "show": "days", "what": "of last week's average daily income on storm days"},
 				{"name": "Harbour forecasts", "effect": "share", "of": ["Harbour fishing"], "base": 0.05, "per_level": 0.03, "max": 0.2, "show": "pct", "what": "of harbour fishing income"}
 			]
+		},
+		"harbour_office": {
+			"name": "Harbourmaster's Office",
+			"info": "graphs",
+			"graphs": ["Money", "Income by avenue"],
+			"tier": 1,
+			"optional": true,
+			"blurb": "Optional. Keeps the island's books: graphs of your money and what every avenue earns, every day of the run (it has been keeping count all along).",
+			"building": 500,
+			"paths": []
+		},
+		"gazette_office": {
+			"name": "Gazette Office",
+			"info": "archive",
+			"tier": 1,
+			"optional": true,
+			"blurb": "Optional. Keeps every back issue of The Rock Gazette: each week's headline, on file.",
+			"building": 1000,
+			"paths": []
+		},
+		"counting_house": {
+			"name": "Counting House",
+			"info": "graphs",
+			"graphs": ["Bills and losses", "Champion buildings"],
+			"tier": 1,
+			"optional": true,
+			"blurb": "Optional. Graphs of every bill and loss, and what your champion's building earns. Also shows your loan and the Silent Partner.",
+			"building": 1500,
+			"paths": []
+		},
+		"customs_house": {
+			"name": "Customs House",
+			"info": "graphs",
+			"graphs": ["The Crown"],
+			"tier": 1,
+			"optional": true,
+			"blurb": "Optional. The Crown's records: every season's levy against what you earned and how close it was, strikes and decrees.",
+			"building": 2500,
+			"paths": []
+		},
+		"watch_house": {
+			"name": "Watch House",
+			"info": "graphs",
+			"graphs": ["Risk"],
+			"tier": 1,
+			"optional": true,
+			"blurb": "Optional. Keeps watch: suspicion over time, investigations, boats sunk and ships caught.",
+			"building": 4000,
+			"paths": []
 		}
 	},
 
@@ -572,6 +621,7 @@
 	},
 
 	"champions": {
+		"_info_note": "Info buildings (avenues with an info field): optional, no upgrades. info graphs = unlocks those Graphs groups; info archive = back issues of the paper. Prices Proposed.",
 		"_buildings_note": "Champion buildings: only the champion named in 'champion' can build one. Optional, never block a tier. Each upgrade path has base + per_level a level, up to max. Effects: share (a share of today's income in the 'of' series; 'clean' / 'dirty' = all of it), per_boat ($ a day per boat of the 'of' kinds; 'any' = every ship), royalty (each day, a share of all you've spent on 'upgrades' or 'ships'), trade (a share of today's income from the market in the news), storm_pay (on storm days, this many average days of last week's income), outfit (paid when a voyage sets out: a share of what it should bring home). The rest change other numbers: launder, boost, upgrade_cut, hedge, boat_cut, wrecks, fade, voyage_pay. All numbers Proposed.",
 		"_note": "Pick one champion at the start of a run, from those you've unlocked. Each has a good side, a bad side and champion-only upgrades (paths added to an avenue's upgrades). perks work like Visitors' perks. unlock = how a locked champion is unlocked (saved between runs). Numbers Proposed.",
 		"list": [

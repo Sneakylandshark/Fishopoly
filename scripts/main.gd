@@ -41,9 +41,36 @@ var ghost_mat := StandardMaterial3D.new()
 @onready var list: VBoxContainer = $UI/Shop/Scroll/List
 @onready var menu_body: VBoxContainer = $UI/BuildingMenu/Box/Scroll/Body
 @onready var log_box: RichTextLabel = $UI/LogPanel/Log
+# The top bar's row of numbers and buttons (moved into a scroller in _ready)
+@onready var top_row: HBoxContainer = $UI/TopBar/Row
+# The status bar under it (Crown, levy, suspicion, news, forecast)
+@onready var status_row: HBoxContainer = $UI/StatusBar/Row
+
+
+func _scroll_row(panel: Control, row: HBoxContainer) -> void:
+	# A bar wider than the screen: put its row in a sideways scroller (mouse wheel over the bar, or drag its scrollbar)
+	var scroll := ScrollContainer.new()
+	scroll.name = "Scroll"
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	panel.add_child(scroll)
+	row.reparent(scroll, false)
+
+
+func _stack_bars() -> void:
+	# The status bar sits right under the top bar, and the side panels under both (the bars grow when a scrollbar shows)
+	var top: float = $UI/TopBar.size.y
+	$UI/StatusBar.offset_top = top
+	var below: float = top + $UI/StatusBar.size.y
+	for p in [$UI/Shop, $UI/BuildingMenu]:
+		p.offset_top = below
 
 
 func _ready() -> void:
+	_scroll_row($UI/TopBar, top_row)
+	_scroll_row($UI/StatusBar, status_row)
+	$UI/TopBar.resized.connect(_stack_bars)
+	$UI/StatusBar.resized.connect(_stack_bars)
 	# Unbuilt buildings show as faint ghosts you can click
 	ghost_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	ghost_mat.albedo_color = Color(1, 1, 1, 0.25)
@@ -56,14 +83,14 @@ func _ready() -> void:
 	$UI/Actions/StartDay.pressed.connect(_on_start_day)
 	$UI/Actions/BuyIsland.pressed.connect(func(): Game.buy_island())
 	$UI/EndScreen/Box/Restart.pressed.connect(_on_restart)
-	$UI/TopBar/Row/Help.pressed.connect(func(): $UI/HelpPanel.visible = true)
+	top_row.get_node("Help").pressed.connect(func(): $UI/HelpPanel.visible = true)
 	$UI/HelpPanel/Box/Close.pressed.connect(func(): $UI/HelpPanel.visible = false)
-	$UI/TopBar/Row/MyRun.pressed.connect(_open_run_panel)
+	top_row.get_node("MyRun").pressed.connect(_open_run_panel)
 	$UI/RunPanel/Box/Close.pressed.connect(func(): $UI/RunPanel.visible = false)
 	$UI/BuildingMenu/Box/Close.pressed.connect(close_menu)
 	$UI/CrownChoice/Box/Buttons/Stay.pressed.connect(func(): Game.resolve_push(false))
 	$UI/CrownChoice/Box/Buttons/Defect.pressed.connect(func(): Game.resolve_push(true))
-	$UI/StatusBar/Row/Bribe.pressed.connect(func(): Game.bribe())
+	status_row.get_node("Bribe").pressed.connect(func(): Game.bribe())
 	# The Visitors panel also shows sea conditions and boon picks (pending_pick)
 	$UI/OfferChoice/Box/Buttons/PickA.pressed.connect(func(): _on_choice(0))
 	$UI/OfferChoice/Box/Buttons/PickB.pressed.connect(func(): _on_choice(1))
@@ -258,6 +285,10 @@ func _fill_menu() -> void:
 			for row in Game.loot_table():
 				odds.append("%s %s (%.1f%%)" % [row[0], Game.money(row[2] * Game.income_mult("treasure")), row[1] * 100.0])
 			_text(menu_body, "Finds right now: " + ",  ".join(odds))
+	# Records buildings: no upgrades, they open their own information
+	if Game.is_info_building(key):
+		_info_rows(key)
+		return
 	if a.has("unit"):
 		var owned := Game.units_owned(key)
 		var cap_text := (" / %d" % Game.max_units(key)) if a.has("max_units") else ""
@@ -268,6 +299,53 @@ func _fill_menu() -> void:
 			_button(menu_body, "Buy %s  %s  (~%s/day)   own %d%s" % [a.unit_name, Game.money(up), Game.money(Game.avg_per_day(key)), owned, cap_text], up, Game.can_buy_unit(key), func(): Game.buy_unit(key))
 	_header(menu_body, "Upgrades")
 	_upgrade_rows(menu_body, key)
+
+
+func _info_rows(key: String) -> void:
+	# What each records building shows (GREYBOX: the buildings themselves are placeholders)
+	var a: Dictionary = Game.data.avenues[key]
+	if a.has("graphs"):
+		_button(menu_body, "Open the graphs (%s)" % ", ".join(a.graphs), 0.0, true, _open_graphs)
+	match key:
+		"gazette_office":
+			_header(menu_body, "Back issues")
+			if Game.news_archive.is_empty():
+				_text(menu_body, "No papers yet. The first comes on day 1.")
+			# Newest first
+			for i in range(Game.news_archive.size() - 1, -1, -1):
+				var n: Dictionary = Game.news_archive[i]
+				_text(menu_body, "Week %d (day %d):  %s" % [int(n.day) / 7 + 1, int(n.day), n.text])
+		"counting_house":
+			_header(menu_body, "The books")
+			_text(menu_body, "Loan: %s.  Silent Partner covers left: %d." % [(("%s, due day %d" % [Game.money(Game.loan), Game.loan_due]) if Game.loan > 0 else "none"), Game.covers_left()])
+			_text(menu_body, "Next bills in %d day(s): rent %s + tax ~%s." % [Game.days_to_bills(), Game.money(Game.next_rent()), Game.money(Game.tax_estimate())])
+			_text(menu_body, "Laundering keeps %d%% of dirty money." % int(round(Game.launder_rate() * 100)))
+			for s in ["Rent", "Tax", "Repairs", "Fines", "Levy fines", "Loan interest"]:
+				_text(menu_body, "%s this run: %s" % [s, Game.money(Game.history_total(s))])
+			var cb := Game.champion_building()
+			if cb != "" and Game.built.has(cb):
+				_text(menu_body, "Your %s has earned %s." % [Game.data.avenues[cb].name, Game.money(Game.history_total(Game.data.avenues[cb].name))])
+		"customs_house":
+			_header(menu_body, "The Crown's records")
+			_text(menu_body, Game.levy_text())
+			var rows: Array = Game.season_rows()
+			if rows.is_empty():
+				_text(menu_body, "No season finished yet.")
+			for i in range(rows.size() - 1, -1, -1):
+				var r: Dictionary = rows[i]
+				var margin: float = (r.earned / r.target - 1.0) * 100.0 if r.target > 0 else 0.0
+				var verdict := ("met, %s%% over" % str(snapped(margin, 0.1))) if r.met else ("MISSED, %s%% short" % str(snapped(-margin, 0.1)))
+				# Huge margins read better as "36x the levy"
+				if r.met and r.target > 0 and r.earned >= r.target * 2.0:
+					verdict = "met, %sx the levy" % str(snapped(r.earned / r.target, 0.1))
+				_text(menu_body, "Season %d (day %d): earned %s, levy %s  -  %s" % [int(r.season), int(r.day), Game.money(r.earned), Game.money(r.target), verdict])
+		"watch_house":
+			_header(menu_body, "On watch")
+			_text(menu_body, "Suspicion %d / 100. Investigation chance today: %d%%." % [int(Game.suspicion), int(round(Game.investigation_chance() * 100))])
+			if Game.investigation_due >= 0:
+				_text(menu_body, "Investigators arrive day %d. Get suspicion under %d first." % [Game.investigation_due, int(Game.calloff_at)])
+			_text(menu_body, "Investigations this run: %d.  Officials paid off: %d times." % [Game.investigations, Game.bribes])
+			_text(menu_body, "Boats sunk this run: %d.  Ships caught or seized: %d." % [int(Game.history_total("Boats sunk")), int(Game.history_total("Ships caught"))])
 
 
 func _bounty_rows(key: String) -> void:
@@ -338,50 +416,50 @@ func _upgrade_rows(into: Control, key: String) -> void:
 # ---------- Top bar, log, buildings ----------
 
 func _update_top_bar() -> void:
-	$UI/TopBar/Row/Day.text = "Day %d" % Game.day
-	$UI/TopBar/Row/Cash.text = "Cash " + Game.money(Game.cash)
+	top_row.get_node("Day").text = "Day %d" % Game.day
+	top_row.get_node("Cash").text = "Cash " + Game.money(Game.cash)
 	# Loan, plus how many Silent Partner covers are left
 	var covers := "  (Silent Partner covers left: %d)" % Game.covers_left()
-	$UI/TopBar/Row/Loan.text = (("Loan %s (due day %d)" % [Game.money(Game.loan), Game.loan_due]) if Game.loan > 0 else "No loan") + covers
-	$UI/TopBar/Row/Bills.text = "Bills in %d day(s): rent %s + tax ~%s" % [Game.days_to_bills(), Game.money(Game.next_rent()), Game.money(Game.tax_estimate())]
-	$UI/TopBar/Row/Island.text = "Island " + Game.money(Game.island_price())
+	top_row.get_node("Loan").text = (("Loan %s (due day %d)" % [Game.money(Game.loan), Game.loan_due]) if Game.loan > 0 else "No loan") + covers
+	top_row.get_node("Bills").text = "Bills in %d day(s): rent %s + tax ~%s" % [Game.days_to_bills(), Game.money(Game.next_rent()), Game.money(Game.tax_estimate())]
+	top_row.get_node("Island").text = "Island " + Game.money(Game.island_price())
 	var safe := Game.safe_to_spend()
-	$UI/TopBar/Row/Safe.text = "Safe to spend " + Game.money(max(safe, 0.0))
-	$UI/TopBar/Row/Safe.modulate = Color(1, 0.55, 0.4) if safe < 0 else Color(0.6, 1, 0.6)
+	top_row.get_node("Safe").text = "Safe to spend " + Game.money(max(safe, 0.0))
+	top_row.get_node("Safe").modulate = Color(1, 0.55, 0.4) if safe < 0 else Color(0.6, 1, 0.6)
 	$UI/Actions/BuyIsland.disabled = not Game.can_afford(Game.island_price())
 	$UI/Actions/StartDay.disabled = animating or Game.over or Game.pending_push >= 0 or Game.pending_offer >= 0 or not Game.pending_pick.is_empty() or not Game.story.is_empty()
-	$UI/StatusBar/Row/Forecast.text = Game.forecast_text()
-	$UI/StatusBar/Row/Crown.text = "Crown: %s. Good: %s Bad: %s" % [Game.crown.name, Game.crown.good, Game.crown.bad]
+	status_row.get_node("Forecast").text = Game.forecast_text()
+	status_row.get_node("Crown").text = "Crown: %s. Good: %s Bad: %s" % [Game.crown.name, Game.crown.good, Game.crown.bad]
 	if Game.champion_index >= 0:
-		$UI/StatusBar/Row/Crown.text += "   |   Champion: " + Game.champion().name
+		status_row.get_node("Crown").text += "   |   Champion: " + Game.champion().name
 	# The Crown's levy for this season, strikes and the season's decree
-	$UI/StatusBar/Row/Crown.text += "   |   " + Game.levy_text()
-	$UI/StatusBar/Row/Crown.modulate = Color(1, 0.6, 0.4) if Game.strikes > 0 else Color(1, 1, 1)
+	status_row.get_node("Crown").text += "   |   " + Game.levy_text()
+	status_row.get_node("Crown").modulate = Color(1, 0.6, 0.4) if Game.strikes > 0 else Color(1, 1, 1)
 	_update_favour_buttons()
 	var sus := int(Game.suspicion)
-	$UI/StatusBar/Row/Suspicion.text = "Suspicion %d/100 (investigation %d%% a day)" % [sus, int(round(Game.investigation_chance() * 100))]
-	$UI/StatusBar/Row/Suspicion.modulate = Color(1, 0.5, 0.4) if sus >= 60 else (Color(1, 0.85, 0.4) if sus >= 30 else Color(0.8, 0.8, 0.8))
+	status_row.get_node("Suspicion").text = "Suspicion %d/100 (investigation %d%% a day)" % [sus, int(round(Game.investigation_chance() * 100))]
+	status_row.get_node("Suspicion").modulate = Color(1, 0.5, 0.4) if sus >= 60 else (Color(1, 0.85, 0.4) if sus >= 30 else Color(0.8, 0.8, 0.8))
 	if Game.investigation_due >= 0:
-		$UI/StatusBar/Row/Suspicion.text = "INVESTIGATORS ARRIVE DAY %d: get suspicion under %d (now %d)" % [Game.investigation_due, int(Game.calloff_at), sus]
-		$UI/StatusBar/Row/Suspicion.modulate = Color(1, 0.4, 0.3)
-	var bribe_btn: Button = $UI/StatusBar/Row/Bribe
+		status_row.get_node("Suspicion").text = "INVESTIGATORS ARRIVE DAY %d: get suspicion under %d (now %d)" % [Game.investigation_due, int(Game.calloff_at), sus]
+		status_row.get_node("Suspicion").modulate = Color(1, 0.4, 0.3)
+	var bribe_btn: Button = status_row.get_node("Bribe")
 	bribe_btn.visible = Game.suspicion >= 1.0
 	bribe_btn.text = "Pay off officials %s (-%d)" % [Game.money(Game.bribe_price()), int(Game.data.suspicion.bribe.drop)]
 	bribe_btn.disabled = not Game.can_afford(Game.bribe_price())
-	$UI/StatusBar/Row/News.text = ("News: " + Game.news.text) if Game.news.has("text") else "News: none yet"
+	status_row.get_node("News").text = ("News: " + Game.news.text) if Game.news.has("text") else "News: none yet"
 	# A warned event shows next to the news, in orange
 	if Game.event_text() != "":
-		$UI/StatusBar/Row/News.text += "   |   COMING: " + Game.event_text()
+		status_row.get_node("News").text += "   |   COMING: " + Game.event_text()
 	if Game.news_preview_text() != "":
-		$UI/StatusBar/Row/News.text += "   |   " + Game.news_preview_text()
-	$UI/StatusBar/Row/News.modulate = Color(1, 0.7, 0.4) if Game.event_text() != "" else Color(1, 1, 1)
+		status_row.get_node("News").text += "   |   " + Game.news_preview_text()
+	status_row.get_node("News").modulate = Color(1, 0.7, 0.4) if Game.event_text() != "" else Color(1, 1, 1)
 	_update_crown_choice()
 	_update_offer_choice()
 
 
 func _update_favour_buttons() -> void:
 	# Crown favours (from beating levies): made once, shown only when there's a favour to spend
-	var row: HBoxContainer = $UI/StatusBar/Row
+	var row: HBoxContainer = status_row
 	if not row.has_node("FavourStrike"):
 		var b1 := Button.new()
 		b1.name = "FavourStrike"
@@ -803,7 +881,7 @@ func _on_start_day() -> void:
 	await get_tree().create_timer(SAIL_TIME * 0.6).timeout
 	var report: Dictionary = Game.start_day()
 	_show_weather(report.weather)
-	$UI/TopBar/Row/Weather.text = "Weather: " + report.weather.capitalize()
+	top_row.get_node("Weather").text = "Weather: " + report.weather.capitalize()
 	# Sink or wreck the boats the rules removed, in the same order
 	for i in report.removed:
 		var n: Node3D = boat_nodes[i]
@@ -855,7 +933,7 @@ func _on_restart() -> void:
 	Game.new_run()
 	_rebuild_boats()
 	_show_weather("normal")
-	$UI/TopBar/Row/Weather.text = "Weather: ?"
+	top_row.get_node("Weather").text = "Weather: ?"
 	refresh()
 
 
@@ -1017,7 +1095,7 @@ func _make_graphs_panel() -> void:
 	var b := Button.new()
 	b.text = "  Graphs  "
 	b.pressed.connect(_open_graphs)
-	$UI/TopBar/Row.add_child(b)
+	top_row.add_child(b)
 	var panel := PanelContainer.new()
 	panel.name = "GraphPanel"
 	panel.visible = false
@@ -1051,6 +1129,7 @@ func _make_graphs_panel() -> void:
 	left.add_child(graph_mode)
 	for group in Game.HISTORY_GROUPS:
 		var h := Label.new()
+		h.name = "Head_" + group
 		h.text = group
 		h.add_theme_font_size_override("font_size", 18)
 		left.add_child(h)
@@ -1109,7 +1188,23 @@ func _tick_series(s: String, on: bool, cb: CheckBox) -> void:
 
 func _open_graphs() -> void:
 	$UI/GraphPanel.visible = true
+	_lock_graph_groups()
 	_draw_graphs()
+
+
+func _lock_graph_groups() -> void:
+	# Each group shows once the building that keeps it is built (its numbers were kept all along)
+	var left: Node = $UI/GraphPanel.find_child("Left", true, false)
+	for group in Game.HISTORY_GROUPS:
+		var open := Game.graph_group_open(group)
+		var h: Label = left.get_node("Head_" + group)
+		h.text = group if open else "%s  (build the %s)" % [group, Game.graph_group_keeper(group)]
+		h.modulate = Color(1, 1, 1) if open else Color(0.6, 0.6, 0.6)
+		for s in Game.HISTORY_GROUPS[group]:
+			var cb: CheckBox = left.get_node("Tick_" + s)
+			cb.disabled = not open
+			if not open and cb.button_pressed:
+				cb.button_pressed = false
 
 
 func _graph_values(s: String, from_day: int) -> Array:
@@ -1158,7 +1253,11 @@ func _draw_graphs() -> void:
 			var in_range: float = Game.history_total(s, from_day)
 			t += "whole run %s   |   shown %s   |   %s a day on average\n" % [_graph_num(s, Game.history_total(s)), _graph_num(s, in_range), _graph_num(s, in_range / days_shown)]
 	if graph_ticked.is_empty():
-		t += "Nothing ticked.\n"
+		var any_open := false
+		for group in Game.HISTORY_GROUPS:
+			if Game.graph_group_open(group):
+				any_open = true
+		t += "Nothing ticked.\n" if any_open else "No records kept yet. Build the Harbourmaster's Office (or another records building) to see graphs.\n"
 	graph_totals.text = t
 	graph_view.queue_redraw()
 
@@ -1242,8 +1341,10 @@ func _update_talk() -> void:
 const MAIL_BERTH := Vector3(-4.0, 0, 26.0)
 const MAIL_FAR := Vector3(-60.0, 0, 80.0)
 const LETTERBOX_AT := Vector3(-2.6, 3.0, 13.4)
-# The one plot where your champion's own building stands (between the cove, salvage yard and weather bureau)
-const CHAMPION_PLOT := Vector3(-3.0, 4.0, -4.5)
+# The one plot where your champion's own building stands (middle of the island, clear of the house and the other buildings)
+const CHAMPION_PLOT := Vector3(2.5, 4.0, -2.5)
+# Where each records building stands (spots chosen clear of every other building)
+const INFO_SPOTS := {"harbour_office": Vector3(-0.5, 4.0, 4.5), "gazette_office": Vector3(-4.5, 4.0, 8.5), "counting_house": Vector3(5.5, 4.0, 8.0), "customs_house": Vector3(-10.5, 4.0, -4.0), "watch_house": Vector3(-1.5, 4.0, -7.5)}
 const VISITOR_BERTH := Vector3(6.5, 0, 27.0)
 const VISITOR_FAR := Vector3(70.0, 0, 80.0)
 var mail_boat: Node3D
@@ -1319,6 +1420,26 @@ func _make_champion_buildings() -> void:
 		_click_body(b, Vector3(3.4, 2.8, 3.4))
 		b.visible = false
 		n += 1
+	# GREYBOX records buildings (graphs, back issues): smaller grey-blue boxes, each on its own spot
+	for key in INFO_SPOTS:
+		var ib := MeshInstance3D.new()
+		ib.name = key
+		var im := _box(Vector3(2.4, 2.0, 2.4))
+		var imat := StandardMaterial3D.new()
+		imat.albedo_color = Color(0.6, 0.65, 0.75)
+		im.material = imat
+		ib.mesh = im
+		ib.position = INFO_SPOTS[key]
+		$Buildings.add_child(ib)
+		var itag := Label3D.new()
+		itag.name = "Tag"
+		itag.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		itag.position = Vector3(0, 2.0, 0)
+		itag.pixel_size = 0.02
+		itag.font_size = 56
+		itag.outline_size = 14
+		ib.add_child(itag)
+		_click_body(ib, Vector3(2.8, 2.4, 2.8))
 
 
 func _make_mail_props() -> void:
@@ -1494,6 +1615,7 @@ func open_visitors() -> void:
 # ---------- The newspaper ----------
 
 var paper_text: RichTextLabel
+var paper_scroll: ScrollContainer
 
 
 func _make_newspaper_panel() -> void:
@@ -1512,11 +1634,16 @@ func _make_newspaper_panel() -> void:
 	panel.add_theme_stylebox_override("panel", sb)
 	var col := VBoxContainer.new()
 	panel.add_child(col)
+	# A long paper scrolls instead of running off the screen
+	paper_scroll = ScrollContainer.new()
+	paper_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	col.add_child(paper_scroll)
 	paper_text = RichTextLabel.new()
 	paper_text.bbcode_enabled = true
 	paper_text.fit_content = true
+	paper_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	paper_text.add_theme_color_override("default_color", Color(0.1, 0.1, 0.1))
-	col.add_child(paper_text)
+	paper_scroll.add_child(paper_text)
 	var close := Button.new()
 	close.text = "Fold the paper"
 	close.size_flags_horizontal = Control.SIZE_SHRINK_END
@@ -1556,6 +1683,7 @@ func open_newspaper() -> void:
 	t += "\n\n[font_size=14][i]Open Graphs (top bar) for every number of every day.[/i][/font_size]"
 	paper_text.text = t
 	$UI/Newspaper.visible = true
+	_fit_paper()
 
 
 # ---------- Camera: scroll to zoom, right-drag (or Q / E) to turn around the island ----------
@@ -1632,3 +1760,16 @@ func _process(delta: float) -> void:
 	if turn != 0.0:
 		cam_yaw += deg_to_rad(turn * TURN_KEYS * delta)
 		_apply_camera()
+
+
+func _fit_paper() -> void:
+	# As tall as the paper's text, but never more than 70% of the screen (the rest scrolls)
+	paper_scroll.custom_minimum_size.y = 0
+	await get_tree().process_frame
+	var most: float = get_viewport().get_visible_rect().size.y * 0.7
+	paper_scroll.custom_minimum_size.y = min(paper_text.get_content_height(), most)
+	paper_scroll.scroll_vertical = 0
+	# Shrink to the new size and sit in the middle of the screen again
+	var panel: Control = $UI/Newspaper
+	panel.reset_size()
+	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER, Control.PRESET_MODE_MINSIZE)

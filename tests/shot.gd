@@ -64,7 +64,7 @@ func _process(delta: float) -> void:
 	if day_started_at >= 0 and clock - day_started_at > 3.0:
 		if Game.pending_push >= 0:
 			Game.resolve_push(false)
-		if Game.day >= 12 or main.get_node("UI/TopBar/Row/Weather").text.ends_with("Storm"):
+		if Game.day >= 12 or main.top_row.get_node("Weather").text.ends_with("Storm"):
 			_save("shot_after_day.png")
 			_quit()
 		else:

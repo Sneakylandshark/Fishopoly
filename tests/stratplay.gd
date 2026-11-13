@@ -331,6 +331,9 @@ func _shop() -> void:
 			options.append([pb, p2, func(): game.expand_harbor(), pb])
 		for key in game.data.avenues:
 			var a: Dictionary = game.data.avenues[key]
+			# Records buildings earn nothing
+			if game.is_info_building(key):
+				continue
 			if STRAT == "clean" and key in DIRTY:
 				continue
 			if not game.built.has(key):

@@ -46,6 +46,21 @@ func _ready() -> void:
 	await _frames(1)
 	main.close_menu()
 
+	# Records buildings: graphs are locked until their building is built
+	_step("records locked")
+	main._open_graphs()
+	await _frames(1)
+	var locked: Array = Game.HISTORY_GROUPS.keys().filter(func(g): return not Game.graph_group_open(g))
+	print("  locked groups before building: ", locked)
+	print("  cash tick disabled: ", main.get_node("UI/GraphPanel").find_child("Tick_Cash", true, false).disabled)
+	main.get_node("UI/GraphPanel").visible = false
+	Game.cash = 50000.0
+	print("  built harbour office: ", Game.build("harbour_office"))
+	main._open_graphs()
+	await _frames(1)
+	print("  cash tick disabled after: ", main.get_node("UI/GraphPanel").find_child("Tick_Cash", true, false).disabled, "  still locked: ", Game.HISTORY_GROUPS.keys().filter(func(g): return not Game.graph_group_open(g)))
+	main.get_node("UI/GraphPanel").visible = false
+
 	# Own everything, with money to spare, so every menu has something to show
 	Game.cash = 1000000000.0
 	Game.laundering = true
@@ -169,6 +184,13 @@ func _ready() -> void:
 	if test_log != "":
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(test_log))
 	print("UICHECK DONE")
+	# Remove this test's own run log, so it never mixes with real play logs
+	var path: String = Game.log_path
+	if Game.log_file != null:
+		Game.log_file.close()
+		Game.log_file = null
+	if path != "":
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 	get_tree().quit()
 
 
