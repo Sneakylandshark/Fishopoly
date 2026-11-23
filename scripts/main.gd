@@ -25,7 +25,7 @@ var cray_nodes: Array = []
 var buoy_mat := StandardMaterial3D.new()
 var buoy_mesh := SphereMesh.new()
 var animating := false
-# Which building menu is open ("" = none). "fish" is the dock / harbor menu.
+# Which building menu is open ("" = none). "fish" is the dock / harbour menu.
 var open_menu := ""
 # True when the title screen uses this scene as its moving background: no menus, no clicks, the camera circles on its own
 var showcase := false
@@ -82,6 +82,7 @@ func _ready() -> void:
 	$UI/CrownChoice/Box/Buttons/Stay.pressed.connect(func(): Game.resolve_push(false))
 	$UI/CrownChoice/Box/Buttons/Defect.pressed.connect(func(): Game.resolve_push(true))
 	status_row.get_node("Bribe").pressed.connect(func(): Game.bribe())
+	_add_bar_tips()
 	# The Visitors panel also shows sea conditions and boon picks (pending_pick)
 	$UI/OfferChoice/Box/Buttons/PickA.pressed.connect(func(): _on_choice(0))
 	$UI/OfferChoice/Box/Buttons/PickB.pressed.connect(func(): _on_choice(1))
@@ -223,11 +224,11 @@ func _fill_menu() -> void:
 		c.queue_free()
 	var key := open_menu
 	if key == "fish":
-		$UI/BuildingMenu/Box/Title.text = "Dock and Harbor"
-		_text(menu_body, "Fishing boats in the harbor are safe and earn about %s a day each. You have %d harbor spaces (%d used). Extra boats wait at the dock or go deep." % [Game.money(Game.avg_per_day("fish")), Game.harbor_spaces, min(Game.count_boats("fish", "harbor"), Game.harbor_spaces)])
+		$UI/BuildingMenu/Box/Title.text = "Dock and Harbour"
+		_text(menu_body, "Fishing boats in the harbour are safe and earn about %s a day each. You have %d harbour spaces (%d used). Extra boats wait at the dock or go deep." % [Game.money(Game.avg_per_day("fish")), Game.harbor_spaces, min(Game.count_boats("fish", "harbor"), Game.harbor_spaces)])
 		_lift_text(menu_body, "fish")
 		_button(menu_body, "Buy fishing boat  " + Game.money(Game.fishing_boat_price()), Game.fishing_boat_price(), Game.can_afford(Game.fishing_boat_price()), func(): Game.buy_fishing_boat())
-		_button(menu_body, "Expand harbor (+1 space)  " + Game.money(Game.harbor_space_price()), Game.harbor_space_price(), Game.can_afford(Game.harbor_space_price()), func(): Game.expand_harbor())
+		_button(menu_body, "Expand harbour (+1 space)  " + Game.money(Game.harbor_space_price()), Game.harbor_space_price(), Game.can_afford(Game.harbor_space_price()), func(): Game.expand_harbor())
 		_perk_text(menu_body, "fish")
 		_header(menu_body, "Fishing upgrades (all fishing boats)")
 		_upgrade_rows(menu_body, "fish")
@@ -387,7 +388,7 @@ func _info_rows(key: String) -> void:
 		"counting_house":
 			_header(menu_body, "The books")
 			_text(menu_body, "Loan: %s.  Silent Partner covers left: %d." % [(("%s, due day %d" % [Game.money(Game.loan), Game.loan_due]) if Game.loan > 0 else "none"), Game.covers_left()])
-			_text(menu_body, "Next bills in %d day(s): rent %s + tax ~%s." % [Game.days_to_bills(), Game.money(Game.next_rent()), Game.money(Game.tax_estimate())])
+			_text(menu_body, "Next bills in %s: rent %s + tax about %s." % [Game.count_of(Game.days_to_bills(), "day"), Game.money(Game.next_rent()), Game.money(Game.tax_estimate())])
 			_text(menu_body, "Laundering keeps %d%% of dirty money." % int(round(Game.launder_rate() * 100)))
 			for s in ["Rent", "Tax", "Repairs", "Fines", "Levy fines", "Loan interest"]:
 				_text(menu_body, "%s this run: %s" % [s, Game.money(Game.history_total(s))])
@@ -484,14 +485,45 @@ func _upgrade_rows(into: Control, key: String) -> void:
 
 # ---------- Top bar, log, buildings ----------
 
+# Hover text that explains each number in the top bars, in plain words
+const BAR_TIPS := {
+	"Day": "Each press of Start Day plays one day.",
+	"Weather": "Today's weather. Fine days pay most. Storms can sink deep-sea boats and damage gear.",
+	"Cash": "Money you have right now.",
+	"Loan": "If you can't pay your bills, the Silent Partner pays them for you as a loan.\nPay it back by the due day, or they sell your things.",
+	"Bills": "Every 7 days you pay rent and tax.\nTax is only taken from clean money. Dirty money is never taxed.",
+	"Island": "Buy the island to win the run.",
+	"Safe": "How much you can spend and still pay the next bills.\nRed means you can't cover them yet.",
+	"Forecast": "What the weather office thinks is coming. It can be wrong.",
+	"Crown": "The Crown leases you the rock. Each season it wants a set amount earned (the levy).\nMiss it and you're fined and get a strike. Three strikes and the Crown takes the island back.",
+	"Suspicion": "Dirty money makes the authorities suspicious. The higher it is, the more likely an investigation.\nInvestigations fine you and seize ships.",
+	"Levy": "What the Crown wants you to earn this season, and by when.
+Miss it and you're fined and get a strike. Three strikes and the Crown takes the island back.",
+	"News": "The Gazette's latest story. News changes what things earn for a while.",
+}
+
+
+func _add_bar_tips() -> void:
+	# The levy gets its own label, so the Crown line isn't one endless sentence
+	var levy := Label.new()
+	levy.name = "Levy"
+	status_row.add_child(levy)
+	status_row.move_child(levy, status_row.get_node("Crown").get_index() + 1)
+	for row in [top_row, status_row]:
+		for key in BAR_TIPS:
+			var l: Node = row.get_node_or_null(key)
+			if l is Label:
+				l.tooltip_text = BAR_TIPS[key]
+				l.mouse_filter = Control.MOUSE_FILTER_PASS
+
 func _update_top_bar() -> void:
 	top_row.get_node("Day").text = "Day %d" % Game.day
 	top_row.get_node("Cash").text = "Cash " + Game.money(Game.cash)
 	# Loan, plus how many Silent Partner covers are left
-	var covers := "  (Silent Partner covers left: %d)" % Game.covers_left()
+	var covers := "  (Silent Partner will cover %s more)" % Game.count_of(Game.covers_left(), "shortfall")
 	top_row.get_node("Loan").text = (("Loan %s (due day %d)" % [Game.money(Game.loan), Game.loan_due]) if Game.loan > 0 else "No loan") + covers
-	top_row.get_node("Bills").text = "Bills in %d day(s): rent %s + tax ~%s" % [Game.days_to_bills(), Game.money(Game.next_rent()), Game.money(Game.tax_estimate())]
-	top_row.get_node("Island").text = "Island " + Game.money(Game.island_price())
+	top_row.get_node("Bills").text = "Bills in %s: rent %s + tax about %s" % [Game.count_of(Game.days_to_bills(), "day"), Game.money(Game.next_rent()), Game.money(Game.tax_estimate())]
+	top_row.get_node("Island").text = "Island costs " + Game.money(Game.island_price())
 	var safe := Game.safe_to_spend()
 	top_row.get_node("Safe").text = "Safe to spend " + Game.money(max(safe, 0.0))
 	top_row.get_node("Safe").modulate = Color(1, 0.55, 0.4) if safe < 0 else Color(0.6, 1, 0.6)
@@ -502,11 +534,11 @@ func _update_top_bar() -> void:
 	if Game.champion_index >= 0:
 		status_row.get_node("Crown").text += "   |   Champion: " + Game.champion().name
 	# The Crown's levy for this season, strikes and the season's decree
-	status_row.get_node("Crown").text += "   |   " + Game.levy_text()
-	status_row.get_node("Crown").modulate = Color(1, 0.6, 0.4) if Game.strikes > 0 else Color(1, 1, 1)
+	status_row.get_node("Levy").text = Game.levy_text()
+	status_row.get_node("Levy").modulate = Color(1, 0.6, 0.4) if Game.strikes > 0 else Color(1, 1, 1)
 	_update_favour_buttons()
 	var sus := int(Game.suspicion)
-	status_row.get_node("Suspicion").text = "Suspicion %d/100 (investigation %d%% a day)" % [sus, int(round(Game.investigation_chance() * 100))]
+	status_row.get_node("Suspicion").text = "Suspicion %d/100 (%d%% chance of an investigation each day)" % [sus, int(round(Game.investigation_chance() * 100))]
 	status_row.get_node("Suspicion").modulate = Color(1, 0.5, 0.4) if sus >= 60 else (Color(1, 0.85, 0.4) if sus >= 30 else Color(0.8, 0.8, 0.8))
 	if Game.investigation_due >= 0:
 		status_row.get_node("Suspicion").text = "INVESTIGATORS ARRIVE DAY %d: get suspicion under %d (now %d)" % [Game.investigation_due, int(Game.calloff_at), sus]
@@ -522,8 +554,27 @@ func _update_top_bar() -> void:
 	if Game.news_preview_text() != "":
 		status_row.get_node("News").text += "   |   " + Game.news_preview_text()
 	status_row.get_node("News").modulate = Color(1, 0.7, 0.4) if Game.event_text() != "" else Color(1, 1, 1)
+	_wrap_long(top_row)
+	_wrap_long(status_row)
 	_update_crown_choice()
 	_update_offer_choice()
+
+
+func _wrap_long(row: Control) -> void:
+	# A line wider than the bar wraps onto more lines instead of running off the edge of the screen
+	# The bars run the full width of the screen. (The bar's own size isn't ready on the first frame.)
+	var room: float = get_viewport().get_visible_rect().size.x - 40.0
+	for l in row.get_children():
+		if not l is Label:
+			continue
+		var font: Font = l.get_theme_font("font")
+		var width: float = font.get_string_size(l.text, HORIZONTAL_ALIGNMENT_LEFT, -1, l.get_theme_font_size("font_size")).x
+		if width > room:
+			l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			l.custom_minimum_size.x = room
+		else:
+			l.autowrap_mode = TextServer.AUTOWRAP_OFF
+			l.custom_minimum_size.x = 0.0
 
 
 func _update_favour_buttons() -> void:
@@ -783,7 +834,7 @@ func _rebuild_side_panel() -> void:
 		c.queue_free()
 	_header(list, "Your fleet")
 	_text(list, "Choose where each boat works, then press Start Day. Click a building on the island (or the dock) to buy more and upgrade it.")
-	_button(list, "Open Dock and Harbor", 0.0, true, func(): open_menu_for("fish"))
+	_button(list, "Open Dock and Harbour", 0.0, true, func(): open_menu_for("fish"))
 	# Shortcuts in case the ship or letterbox is off screen
 	if Game.pending_offer >= 0 and Game.pending_push < 0 and not offer_open:
 		_button(list, "Visitors are waiting at the dock: talk to them", 0.0, true, open_visitors)
@@ -805,7 +856,7 @@ func _rebuild_side_panel() -> void:
 	for k in others:
 		_text(list, "%s x%d (always at work)" % [KIND_NAMES[k], others[k]])
 	if Game.units_owned("cray") > 0:
-		_text(list, "Cray ship x%d, %d pots each (orange, left of the harbor)" % [Game.units_owned("cray"), Game.pots_per_ship()])
+		_text(list, "Cray ship x%d, %d pots each (orange, left of the harbour)" % [Game.units_owned("cray"), Game.pots_per_ship()])
 
 	_header(list, "Your buildings")
 	var owned := 0
@@ -944,7 +995,7 @@ func _spot_for(zone: String, kind: String, index_in_zone: int) -> Vector3:
 
 
 func _place_cray() -> void:
-	# One orange ship per cray ship owned, in rows left of the harbor, with its pots around it
+	# One orange ship per cray ship owned, in rows left of the harbour, with its pots around it
 	var ships: int = Game.units_owned("cray")
 	var pots: int = Game.pots_per_ship()
 	while cray_nodes.size() > ships:
@@ -986,7 +1037,7 @@ func _place_boats(seconds: float) -> void:
 	for i in Game.boats.size():
 		var b: Dictionary = Game.boats[i]
 		var zone: String = b.zone
-		# Fishing boats beyond the harbor's spaces wait at the dock
+		# Fishing boats beyond the harbour's spaces wait at the dock
 		if zone == "harbor" and b.kind == "fish" and counts.get("harbor_fish", 0) >= Game.harbor_spaces:
 			zone = "dock"
 		var key: String = zone + "_" + b.kind
@@ -1063,7 +1114,7 @@ func _on_start_day() -> void:
 	if report.has("repaid"):
 		summary += "   Loan repaid: " + Game.money(report.repaid)
 	if report.sunk.size() > 0:
-		summary += "   %d boat(s) sank!" % report.sunk.size()
+		summary += "   %s sank!" % Game.count_of(report.sunk.size(), "boat")
 	if report.has("investigation"):
 		summary += "   INVESTIGATION!"
 	if report.has("tipoff"):
@@ -1099,7 +1150,7 @@ func _on_restart() -> void:
 	Game.new_run()
 	_rebuild_boats()
 	_show_weather("normal")
-	top_row.get_node("Weather").text = "Weather: ?"
+	top_row.get_node("Weather").text = "Weather: unknown until you sail"
 	refresh()
 
 
@@ -1533,7 +1584,7 @@ func _fit_talk() -> void:
 	var panel: Control = $UI/TalkPanel
 	panel.reset_size()
 	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM, Control.PRESET_MODE_MINSIZE)
-	panel.position.y -= 70
+	panel.position.y -= 84
 
 
 func _on_talk_ok() -> void:

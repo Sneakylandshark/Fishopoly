@@ -14,7 +14,7 @@ const BALANCE_PATH := "res://data/balance.json"
 const META_PATH := "user://meta.json"
 const SAVE_PATH := "user://save_run.txt"
 # Everything a saved run needs to carry on where it left off
-const SAVE_VARS := ["day", "cash", "loan", "loan_due", "warnings", "warning_day", "loan_mult", "surveys", "oil_found", "oil_ready_day", "permit_day", "permit_bribes", "week_dirty", "last_week_dirty", "conditions_now", "boons_taken", "pending_pick", "tiers_rewarded", "event_due", "active_effects", "forced_storm_until", "week_income", "season", "season_earned", "strikes", "decree", "season_log", "levy_mult", "week_taxable", "last_week", "last_storm", "upcoming", "harbor_spaces", "harbor_buys", "price", "boats", "counts", "built", "laundering", "perks", "offers_done", "offer_order", "pending_offer", "levels", "wrecks", "crown", "defected", "served", "rival_index", "push_index", "pending_push", "suspicion", "investigations", "investigation_due", "calloff_at", "bribes", "news", "log_lines", "champion_index", "stats", "advisor_queue", "advisors_met", "board", "favour", "wildcat", "wildcat_ready_day", "news_next", "history", "story", "news_unread", "outfit_cash", "news_archive", "season_targets"]
+const SAVE_VARS := ["day", "cash", "loan", "loan_due", "warnings", "warning_day", "loan_mult", "surveys", "oil_found", "oil_ready_day", "permit_day", "permit_bribes", "week_dirty", "last_week_dirty", "conditions_now", "boons_taken", "pending_pick", "tiers_rewarded", "event_due", "active_effects", "forced_storm_until", "week_income", "season", "season_earned", "strikes", "decree", "season_log", "levy_mult", "week_taxable", "last_week", "last_storm", "upcoming", "harbor_spaces", "harbor_buys", "price", "boats", "counts", "built", "laundering", "perks", "offers_done", "offer_order", "pending_offer", "levels", "wrecks", "crown", "defected", "served", "rival_index", "push_index", "pending_push", "suspicion", "investigations", "investigation_due", "calloff_at", "bribes", "news", "log_lines", "champion_index", "stats", "advisor_queue", "advisors_met", "board", "favour", "wildcat", "wildcat_ready_day", "news_next", "history", "story", "news_unread", "outfit_cash", "news_archive", "season_targets", "banter_done", "banter_last"]
 # Graph series, grouped for the Graphs panel. Days with nothing count as 0.
 const HISTORY_GROUPS := {
 	"Money": ["Cash", "Earned today", "Clean money", "Dirty money", "Laundered", "Loan", "Island price"],
@@ -144,6 +144,11 @@ var save_enabled := false
 var history: Dictionary = {}
 # Story moments waiting to be shown in a talk panel: [{"who", "title", "text"}]
 var story: Array = []
+# Banter scenes already played this run (each plays once), and the day the last one played
+var banter_done: Array = []
+var banter_last := 0
+# Banter has its own dice, so adding or changing scenes never changes the weather, catches or events
+var banter_rng := RandomNumberGenerator.new()
 # This week's newspaper is in the letterbox, not read yet
 var news_unread := false
 # Supply Depot money from voyages that set out today, paid with the next day's earnings
@@ -181,6 +186,9 @@ func new_run(seed: int = -1, write_log: bool = true) -> void:
 		rng.seed = seed
 	else:
 		rng.randomize()
+	banter_rng.seed = rng.seed + 7
+	banter_done = []
+	banter_last = 0
 	day = 0
 	cash = data.start.cash
 	loan = 0.0
@@ -997,13 +1005,13 @@ func start_day() -> Dictionary:
 	var ds: Dictionary = data.deep_sea
 	var av: Dictionary = data.avenues
 
-	# Fishing boats in the harbor (only as many as there are spaces)
+	# Fishing boats in the harbour (only as many as there are spaces)
 	var in_harbor: int = min(count_boats("fish", "harbor"), harbor_spaces)
 	if in_harbor > 0:
 		var e: float = h.catch * h[w] * income_mult("fish") * perk("zone_fish_harbor") * in_harbor
 		clean += e
 		got["Harbour fishing"] = e
-		report.lines.append("Harbor fishing: +$%s" % _money(e))
+		report.lines.append("Harbour fishing: +$%s" % _money(e))
 
 	# Boats sent deep: fishing and crab. Storms sink them unless they survive.
 	var deep_e := 0.0
@@ -1021,7 +1029,7 @@ func start_day() -> Dictionary:
 		if w == "storm":
 			if rng.randf() >= survive:
 				if rng.randf() < home:
-					# The lighthouse guides it home: back to the harbor (or the dock if the harbor is full)
+					# The lighthouse guides it home: back to the harbour (or the dock if the harbour is full)
 					homed += 1
 					if b.kind == "crab" or count_boats("fish", "harbor") < harbor_spaces:
 						b.zone = "harbor"
@@ -1044,17 +1052,17 @@ func start_day() -> Dictionary:
 		got["Deep-sea fishing"] = deep_e
 		report.lines.append("Deep sea: +$%s" % _money(deep_e))
 	if report.sunk.size() > 0:
-		report.lines.append("Storm sank %d deep boat(s)!" % report.sunk.size())
+		report.lines.append("Storm sank %s!" % count_of(report.sunk.size(), "deep boat"))
 	if homed > 0:
-		report.lines.append("The lighthouse guided %d boat(s) home." % homed)
+		report.lines.append("The lighthouse guided %s home." % count_of(homed, "boat"))
 	if stayed > 0:
-		report.lines.append("Standing orders: storm forecast, %d deep boat(s) stayed in port." % stayed)
+		report.lines.append("Standing orders: storm forecast, so %s stayed in port." % count_of(stayed, "deep boat"))
 	if perk("daily_add") > 0:
 		clean += perk("daily_add")
 		got["Newspaper"] = perk("daily_add")
 		report.lines.append("Newspaper: +$%s" % _money(perk("daily_add")))
 
-	# Crab boats in the harbor: big storm hauls; storms can wreck a boat's gear (the boat is safe)
+	# Crab boats in the harbour: big storm hauls; storms can wreck a boat's gear (the boat is safe)
 	var n_crab := count_boats("crab", "harbor")
 	if n_crab > 0:
 		var c: Dictionary = av.crab
@@ -1070,7 +1078,7 @@ func start_day() -> Dictionary:
 			if lost > 0:
 				clean -= lost * c.pot_cost
 				got["Gear lost"] = got.get("Gear lost", 0.0) + lost * c.pot_cost
-				report.lines.append("Storm wrecked the gear of %d crab boat(s): -$%s" % [lost, _money(lost * c.pot_cost)])
+				report.lines.append("Storm wrecked the gear of %s: -$%s" % [count_of(lost, "crab boat"), _money(lost * c.pot_cost)])
 
 	# Pearl spots: steady
 	if counts.pearl > 0:
@@ -1108,7 +1116,7 @@ func start_day() -> Dictionary:
 		var se: float = take * av.salvage.wreck_value * income_mult("salvage")
 		clean += se
 		got["Salvage"] = se
-		report.lines.append("Salvage: %d wreck(s) +$%s (%d left)" % [take, _money(se), wrecks])
+		report.lines.append("Salvage: %s +$%s (%d left)" % [count_of(take, "wreck"), _money(se), wrecks])
 
 	# Whaling ships: big calm-day catches, home empty in storms
 	var n_whale := count_boats("whale")
@@ -1196,7 +1204,7 @@ func start_day() -> Dictionary:
 				b.erase("length")
 				b.erase("roll")
 		if escaped > 0:
-			report.lines.append("Your lawyer got %d %s(s) off the hook." % [escaped, a.unit_name.to_lower()])
+			report.lines.append("Your lawyer got %s off the hook." % count_of(escaped, a.unit_name.to_lower()))
 		if de <= 0.0 and caught == 0:
 			continue
 		# A licensed share of piracy (Queen's Privateer) comes in clean: no laundering, no suspicion
@@ -1213,7 +1221,7 @@ func start_day() -> Dictionary:
 		else:
 			report.lines.append("%s: +$%s dirty" % [a.name, _money(de)])
 		if caught > 0:
-			report.lines.append("Patrols caught %d of your %s(s) in total today!" % [caught, a.unit_name.to_lower()])
+			report.lines.append("Patrols caught %s of yours today!" % count_of(caught, a.unit_name.to_lower()))
 
 	# Hidden moorings: a flat fee every day for each berth not holding one of your own ships
 	if counts.hiding - hidden_own() > 0:
@@ -1271,7 +1279,7 @@ func start_day() -> Dictionary:
 				if key == "oil":
 					cost *= max(0.0, 1.0 - champ_value("repair_cut"))
 				repairs += cost
-				report.lines.append("Storm damaged %d %s(s): repairs -$%s" % [hit, data.avenues[key].unit_name.to_lower(), _money(cost)])
+				report.lines.append("Storm damaged %s: repairs -$%s" % [count_of(hit, data.avenues[key].unit_name.to_lower()), _money(cost)])
 
 	# Suspicion rises with the share of income that is dirty, then fades a little
 	var sp: Dictionary = data.suspicion
@@ -1308,7 +1316,7 @@ func start_day() -> Dictionary:
 				boats.remove_at(i)
 				seized += 1
 		got["Ships caught"] = got.get("Ships caught", 0.0) + seized
-		report.lines.append("INVESTIGATION! No earnings today, fined $%s, %d sailing ship(s) seized. Your hidden ships are safe." % [_money(fine), seized])
+		report.lines.append("INVESTIGATION! No earnings today, fined $%s, %s seized. Your hidden ships are safe." % [_money(fine), count_of(seized, "sailing ship")])
 		report["investigation"] = true
 		suspicion = sp.after_investigation
 
@@ -1394,6 +1402,7 @@ func start_day() -> Dictionary:
 	got["Boats sunk"] = report.sunk.size()
 	_track(got)
 	_story_from(report)
+	_banter_tick(report)
 	_fill_forecast()
 	for line in report.lines:
 		log_lines.append("Day %d (%s): %s" % [day, w, line])
@@ -1474,16 +1483,108 @@ func _story_from(report: Dictionary) -> void:
 		story.append({"day": day, "who": sp.name, "role": sp.role, "title": b.title, "text": "\n\n".join(b.lines)})
 
 
+# ---------- Banter: the characters talk among themselves on quiet days ----------
+
+func _banter_tick(report: Dictionary) -> void:
+	# Only on a day with nothing else to say, and not too often
+	var b: Dictionary = data.get("banter", {})
+	if b.is_empty() or not story.is_empty() or day - banter_last < int(b.gap_days):
+		return
+	if banter_rng.randf() >= float(b.chance):
+		return
+	var ready := []
+	for scene in b.list:
+		if not banter_done.has(scene.id) and _banter_ok(scene, report):
+			ready.append(scene)
+	if ready.is_empty():
+		return
+	var scene: Dictionary = ready[banter_rng.randi() % ready.size()]
+	banter_done.append(scene.id)
+	banter_last = day
+	for i in scene.lines.size():
+		var who: String = scene.lines[i][0]
+		story.append({"day": day, "who": who, "role": role_of(who), "title": scene.get("title", b.title) if i == 0 else "", "text": scene.lines[i][1]})
+
+
+func _banter_ok(scene: Dictionary, report: Dictionary) -> bool:
+	# Every "needs" rule must hold. Rules: day:N, built:key, advisor:key, advisor:key:a, offer:id:a,
+	# champion:Name, loan, suspicion:N, weather:storm
+	for rule in scene.get("needs", []):
+		var p: PackedStringArray = str(rule).split(":")
+		match p[0]:
+			"day":
+				if day < int(p[1]):
+					return false
+			"built":
+				if not built.has(p[1]):
+					return false
+			"advisor":
+				if not advisors_met.has(p[1]) or (p.size() > 2 and str(advisors_met[p[1]]) != p[2]):
+					return false
+			"offer":
+				if not offers_done.has(p[1]) or (p.size() > 2 and str(offers_done[p[1]]) != p[2]):
+					return false
+			"champion":
+				if champion_index < 0 or champion().name != p[1]:
+					return false
+			"loan":
+				if loan <= 0.0:
+					return false
+			"suspicion":
+				if suspicion < float(p[1]):
+					return false
+			"weather":
+				if str(report.weather) != p[1]:
+					return false
+			_:
+				push_warning("Unknown banter rule: " + str(rule))
+				return false
+	return true
+
+
+func role_of(who: String) -> String:
+	# A character's job, from wherever they first appear in the data
+	for sp in data.story.speakers.values():
+		if sp.name == who:
+			return sp.role
+	for a in data.advisors.list.values():
+		if a.who == who:
+			return a.role
+	for o in data.offers.list:
+		for side in ["a", "b"]:
+			if o[side].who == who:
+				return o[side].role
+	for c in data.champions.list:
+		if c.name == who:
+			return "Your champion"
+	return data.get("banter", {}).get("roles", {}).get(who, "")
+
+
 func _story_text(line: String) -> String:
 	# Event lines get a plain explanation of how long it lasts
 	if line.begins_with("EVENT: "):
 		var t := line.trim_prefix("EVENT: ")
 		for e in data.events.list:
 			if e.hit == t and int(e.days) > 0:
-				t += "\n\nThis lasts %d day(s), until the end of day %d." % [int(e.days), day + int(e.days) - 1]
+				t += "\n\nThis lasts %s, until the end of day %d." % [count_of(int(e.days), "day"), day + int(e.days) - 1]
 		return t
+	# "WARNING (Pearl blight, day 12): Divers report..." reads as "Divers report... Pearl blight hits on day 12."
 	if line.begins_with("WARNING ("):
+		var close := line.find("): ")
+		var head := line.substr(9, close - 9)
+		var parts := head.rsplit(", day ", true, 1)
+		if close > 0 and parts.size() == 2:
+			return "%s\n\n%s hits on day %s." % [line.substr(close + 3), parts[0], parts[1]]
 		return line.trim_prefix("WARNING ")
+	# Shouty log prefixes are fine in the log, but a person talking doesn't shout them
+	for p in ["CROWN LEVY MET: ", "CROWN LEVY MISSED: ", "CROWN DECREE for this season: ", "CROWN DECREE: ", "NEXT LEVY: ", "TIP-OFF: ", "SILENT PARTNER WARNING: "]:
+		if line.begins_with(p):
+			return line.trim_prefix(p)
+	if line.begins_with("SILENT PARTNER WARNING ") and line.find(": ") > 0:
+		var at := line.find(": ")
+		return "Warning %s. %s" % [line.substr(23, at - 23), line.substr(at + 2).replace("they cover you this time", "I'll cover you this time")]
+	if line.begins_with("INVESTIGATION! "):
+		return "Investigators raided you. " + line.trim_prefix("INVESTIGATION! ")
 	return line
 
 
@@ -1631,7 +1732,7 @@ func _clear_old_warning(report: Dictionary) -> void:
 	if day - warning_day >= int(data.silent_partner.clear_after_weeks) * 7:
 		warnings -= 1
 		warning_day = day
-		report.lines.append("The Silent Partner forgets one warning. You have %d cover(s) left." % covers_left())
+		report.lines.append("The Silent Partner forgets one warning. You have %s left." % count_of(covers_left(), "cover"))
 
 
 # ---------- Rival Crowns ----------
@@ -1729,10 +1830,10 @@ func season_end_day() -> int:
 
 func levy_text() -> String:
 	# For the top bar
-	var t := "Levy: earn %s by day %d (%s so far)  Strikes %d/%d" % [money(levy_target()), season_end_day(), money(season_earned), strikes, int(data.levy.max_strikes)]
+	var t := "Levy: earn %s by day %d (%s so far).  Strikes: %d of %d" % [money(levy_target()), season_end_day(), money(season_earned), strikes, int(data.levy.max_strikes)]
 	# Say so when the Crown's appetite (not the table) sets the target
 	if appetite_floor(season) > levy_base(season):
-		t += " [%d%% of last season]" % int(round(float(data.levy.appetite) * 100))
+		t += " (%d%% of what you earned last season)" % int(round(float(data.levy.appetite) * 100))
 	if not decree.is_empty():
 		t += "  |  Decree: %s (%s)" % [decree.name, decree.text]
 	return t
@@ -2092,7 +2193,7 @@ func expand_harbor() -> bool:
 	harbor_spaces += 1
 	harbor_buys += 1
 	_fill_harbor()
-	_say("Harbor now has %d spaces." % harbor_spaces)
+	_say("Harbour now has %d spaces." % harbor_spaces)
 	return true
 
 
@@ -2410,7 +2511,7 @@ func investigation_chance() -> float:
 
 
 func _fill_harbor() -> void:
-	# Fishing boats waiting at the dock move into any free harbor space
+	# Fishing boats waiting at the dock move into any free harbour space
 	for b in boats:
 		if b.kind == "fish" and b.zone == "dock" and count_boats("fish", "harbor") < harbor_spaces:
 			b.zone = "harbor"
@@ -2434,6 +2535,11 @@ func _money(x: float) -> String:
 
 func money(x: float) -> String:
 	return "$" + _money(x)
+
+
+# "1 boat", "3 boats": reads better than "3 boat(s)"
+func count_of(n: int, word: String) -> String:
+	return "%d %s%s" % [n, word, "" if n == 1 else "s"]
 
 
 # ---------- Voyages and the bounty board ----------

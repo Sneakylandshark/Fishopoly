@@ -15,10 +15,15 @@ func _ready() -> void:
 	main.get_node("UI/HelpPanel").visible = false
 	while not Game.pending_pick.is_empty():
 		Game.answer_pick(0)
-	Game.story = [
-		{"who": "Old Gus", "role": "Harbour gossip", "title": "A storm on the way", "day": 12, "text": "Sky's gone the colour of a bruise, and the gulls have all flown inland. Mark my words, there's a blow coming before the week's out. Get your deep boats home, or kiss 'em goodbye."},
-		{"who": "The Crown's Herald", "role": "Speaks for your Crown", "title": "", "day": 12, "text": "The Crown expects its levy."},
-	]
+	# A real banter scene from the data, run through the same code the game uses
+	Game.story = []
+	Game.advisors_met = {"crab": "a", "cray": "a"}
+	Game.data.banter.chance = 1.0
+	for scene in Game.data.banter.list:
+		if scene.id != "pete_kev":
+			Game.banter_done.append(scene.id)
+	Game.day = 10
+	Game._banter_tick({"weather": "normal"})
 	main.refresh()
 
 

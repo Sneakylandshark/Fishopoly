@@ -182,7 +182,7 @@ surface_material_override/0 = SubResource("HarborMat")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 3, 7)
 pixel_size = 0.03
 billboard = 1
-text = "HARBOR"
+text = "HARBOUR"
 font_size = 80
 outline_size = 16
 
@@ -494,7 +494,7 @@ text = "Day 0"
 
 [node name="Weather" type="Label" parent="UI/TopBar/Row" unique_id=503772080]
 layout_mode = 2
-text = "Weather: ?"
+text = "Weather: unknown until you sail"
 
 [node name="Cash" type="Label" parent="UI/TopBar/Row" unique_id=20057782]
 layout_mode = 2
@@ -686,7 +686,7 @@ text = "[font_size=26][b]How to play[/b][/font_size]
 [b]Goal:[/b] save enough to buy the island (top bar) and press [b]Buy the Island[/b].
 
 [b]Each day[/b] choose where each boat works ([b]Town Hall[/b], Fleet tab), then press [b]Start Day[/b].
-   [b]Harbor[/b]: safe (never sinks), small catch, limited spaces.  [b]Deep[/b] (needs the Deep Sea Dock): big catch on calm days, but storms can sink it; the dock's Hull raises survival (20% up to 60%).  [b]Dock[/b]: parked.
+   [b]Harbour[/b]: safe (never sinks), small catch, limited spaces.  [b]Deep[/b] (needs the Deep Sea Dock): big catch on calm days, but storms can sink it; the dock's Hull raises survival (20% up to 60%).  [b]Dock[/b]: parked.
 The weather is secret until the boats head out: perfect days pay most, normal days less, storms are dangerous.
 
 [b]Every 7 days[/b] you pay rent [b]and tax[/b]. Tax is taken from the clean money you earned that week (dirty money isn't taxed): the first $1,000 is tax-free, then 16%, 30%, 37% and 45% as you earn more. The top bar shows the next bill and how much is safe to spend; buttons turn orange if a buy leaves you short. If you can't pay, the Silent Partner lends the rest at 5% a day; repay within 7 days or your things are sold.
