@@ -1361,67 +1361,158 @@ func _graph_num(s: String, v: float) -> String:
 
 var talk_face: ColorRect
 var talk_initials: Label
+var talk_portrait: TextureRect
+var talk_name: Label
+var talk_role: Label
 var talk_text: RichTextLabel
 var talk_ok: Button
+# The text types itself out; pressing the button while it types shows the rest at once
+var talk_typing: Tween
+# Which story line is on screen, so the typing only starts once per line
+var talk_shown := {}
+# Letters typed per second
+const TALK_SPEED := 70.0
+# Portrait images: res://assets/portraits/<name>.png, e.g. "Old Gus" -> old_gus.png, "The Crown's Herald" -> the_crowns_herald.png
+const PORTRAIT_DIR := "res://assets/portraits/"
 
 
 func _make_talk_panel() -> void:
+	# A dialogue box along the bottom: framed portrait and name plate on the left, the words on the right
 	var panel := PanelContainer.new()
 	panel.name = "TalkPanel"
 	panel.visible = false
 	$UI.add_child(panel)
 	panel.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	panel.custom_minimum_size = Vector2(820, 0)
+	panel.custom_minimum_size = Vector2(900, 0)
 	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	panel.offset_bottom = -70
 	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 16)
+	row.add_theme_constant_override("separation", 20)
 	panel.add_child(row)
-	# Portrait slot: a coloured square with initials until the 2D portraits are drawn
+
+	var left := VBoxContainer.new()
+	left.add_theme_constant_override("separation", 6)
+	left.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	row.add_child(left)
+	# The brass portrait frame
+	var frame := PanelContainer.new()
+	frame.theme_type_variation = &"InsetPanel"
+	left.add_child(frame)
+	var holder := Control.new()
+	holder.custom_minimum_size = Vector2(160, 160)
+	frame.add_child(holder)
+	# Until a portrait image exists: a coloured square with the speaker's initials
 	talk_face = ColorRect.new()
-	talk_face.custom_minimum_size = Vector2(130, 130)
-	talk_face.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	row.add_child(talk_face)
+	holder.add_child(talk_face)
+	talk_face.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	talk_initials = Label.new()
+	talk_initials.theme_type_variation = &"Title"
 	talk_initials.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	talk_initials.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	talk_initials.add_theme_font_size_override("font_size", 40)
+	talk_initials.add_theme_font_size_override("font_size", 48)
 	talk_face.add_child(talk_initials)
-	talk_initials.set_anchors_preset(Control.PRESET_FULL_RECT)
+	talk_initials.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	talk_portrait = TextureRect.new()
+	talk_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	talk_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	holder.add_child(talk_portrait)
+	talk_portrait.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	# Name plate under the portrait
+	talk_name = Label.new()
+	talk_name.theme_type_variation = &"Heading"
+	talk_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	talk_name.custom_minimum_size = Vector2(180, 0)
+	talk_name.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	left.add_child(talk_name)
+	talk_role = Label.new()
+	talk_role.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	talk_role.custom_minimum_size = Vector2(180, 0)
+	talk_role.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	talk_role.modulate = Color(1, 1, 1, 0.7)
+	left.add_child(talk_role)
+
 	var col := VBoxContainer.new()
 	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	col.add_theme_constant_override("separation", 12)
 	row.add_child(col)
 	talk_text = RichTextLabel.new()
 	talk_text.bbcode_enabled = true
 	talk_text.fit_content = true
-	talk_text.custom_minimum_size = Vector2(640, 0)
+	talk_text.custom_minimum_size = Vector2(640, 150)
 	col.add_child(talk_text)
 	talk_ok = Button.new()
+	talk_ok.theme_type_variation = &"BigButton"
 	talk_ok.size_flags_horizontal = Control.SIZE_SHRINK_END
-	talk_ok.pressed.connect(func(): Game.read_story())
+	talk_ok.pressed.connect(_on_talk_ok)
 	col.add_child(talk_ok)
+
+
+func _fit_talk() -> void:
+	# The text measures itself as very tall before it knows its width, which stretches the box.
+	# A frame later, shrink the box back to fit and sit it at the bottom middle again.
+	await get_tree().process_frame
+	var panel: Control = $UI/TalkPanel
+	panel.reset_size()
+	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM, Control.PRESET_MODE_MINSIZE)
+	panel.position.y -= 70
+
+
+func _on_talk_ok() -> void:
+	# First press while the words are still typing: show them all. Next press: on to the next line.
+	if talk_typing != null and talk_typing.is_running():
+		talk_typing.kill()
+		talk_text.visible_ratio = 1.0
+		return
+	Game.read_story()
+
+
+func portrait_for(who: String) -> Texture2D:
+	var slug := ""
+	for ch in who.to_lower().replace("'", ""):
+		slug += ch if (ch >= "a" and ch <= "z") or (ch >= "0" and ch <= "9") else "_"
+	while slug.contains("__"):
+		slug = slug.replace("__", "_")
+	var path := PORTRAIT_DIR + slug.trim_prefix("_").trim_suffix("_") + ".png"
+	if ResourceLoader.exists(path):
+		return load(path)
+	return null
 
 
 func _update_talk() -> void:
 	var panel: Control = $UI/TalkPanel
 	panel.visible = not Game.story.is_empty() and not Game.over
 	if not panel.visible:
+		talk_shown = {}
 		return
 	var s: Dictionary = Game.story[0]
-	# Each speaker keeps one colour so you learn who's who
+	talk_name.text = s.who
+	talk_role.text = s.role
+	# The portrait if there is one, otherwise the speaker's own colour and initials (each speaker keeps one colour)
+	talk_portrait.texture = portrait_for(s.who)
+	talk_face.visible = talk_portrait.texture == null
 	talk_face.color = Color.from_hsv(float(abs(hash(s.who)) % 360) / 360.0, 0.45, 0.55)
 	var ini := ""
 	for w in str(s.who).replace("The ", "").replace("'s", "").split(" "):
 		if w != "":
 			ini += w[0]
 	talk_initials.text = ini.substr(0, 2)
-	var t := "[font_size=22][b]%s[/b][/font_size]  [color=#aaaaaa]%s[/color]\n" % [s.who, s.role]
+	var t := ""
 	if s.title != "":
-		t += "[font_size=18][b]%s[/b][/font_size]   [color=#aaaaaa]day %d[/color]\n" % [s.title, int(s.day)]
-	t += "\n" + s.text
-	talk_text.text = t
+		t += "[font_size=22][b]%s[/b][/font_size]   [color=#aaaaaa]day %d[/color]\n\n" % [s.title, int(s.day)]
+	t += s.text
 	talk_ok.text = "Got it" if Game.story.size() == 1 else "Next (%d more)" % (Game.story.size() - 1)
+	# Only a new line types out; a refresh while it's showing leaves it as it is
+	if talk_shown == s and talk_text.text == t:
+		return
+	talk_shown = s
+	talk_text.text = t
+	_fit_talk()
+	if talk_typing != null:
+		talk_typing.kill()
+	talk_text.visible_ratio = 0.0
+	talk_typing = create_tween()
+	talk_typing.tween_property(talk_text, "visible_ratio", 1.0, max(0.3, talk_text.get_total_character_count() / TALK_SPEED))
 
 
 # ---------- The mail boat, the postman and the letterbox ----------
