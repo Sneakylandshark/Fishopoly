@@ -771,6 +771,7 @@ func _update_buildings() -> void:
 		if Game.is_champion_building(key) and key != Game.champion_building():
 			shown = false
 		b.visible = shown
+		_set_ambience(b, shown)
 		b.get_node("Click/Shape").disabled = not shown
 		b.get_node("Tag").text = Game.data.avenues[key].name
 
@@ -1732,6 +1733,59 @@ func _dress(b: Node3D, key: String) -> void:
 	var tag: Node3D = b.get_node_or_null("Tag")
 	if tag != null:
 		tag.position.y = model.position.y + _model_top(model) + 0.8
+	_add_ambience(b, key, model.position.y + 1.0)
+
+
+# ---------- Building sounds ----------
+# Each building has a 20-second looping soundscape, assets/sounds/buildings/<key>.wav (mixed by tools/make_sounds.py).
+# It plays quietly from the building while the building stands, and fades with distance from the listener,
+# which follows the camera (see _apply_camera).
+const AMBIENCE_DIR := "res://assets/sounds/buildings/"
+# Loudness at the building, metres before it starts to fade, and the distance where it's gone
+const AMBIENCE_DB := -4.0
+const AMBIENCE_NEAR := 9.0
+const AMBIENCE_FAR := 38.0
+var listener: AudioListener3D
+
+
+func _add_ambience(b: Node3D, key: String, height: float) -> void:
+	var path := AMBIENCE_DIR + key + ".wav"
+	if not ResourceLoader.exists(path):
+		return
+	var stream: AudioStreamWAV = load(path)
+	# Loop the whole file (set here so the import settings don't matter)
+	stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
+	stream.loop_begin = 0
+	stream.loop_end = int(stream.get_length() * stream.mix_rate)
+	var player := AudioStreamPlayer3D.new()
+	player.name = "Ambience"
+	player.stream = stream
+	player.volume_db = AMBIENCE_DB
+	player.unit_size = AMBIENCE_NEAR
+	player.max_distance = AMBIENCE_FAR
+	player.attenuation_model = AudioStreamPlayer3D.ATTENUATION_INVERSE_SQUARE_DISTANCE
+	player.position.y = height
+	b.add_child(player)
+	# The Town Hall and your house always stand; the rest start when they're built (_update_buildings)
+	if not b.get_parent() == $Buildings:
+		_set_ambience(b, true)
+
+
+func _exit_tree() -> void:
+	# Stop every building sound when the island closes (back to the title, or quitting), so nothing keeps playing
+	for player in find_children("Ambience", "AudioStreamPlayer3D", true, false):
+		player.stop()
+
+
+func _set_ambience(b: Node3D, on: bool) -> void:
+	var player: AudioStreamPlayer3D = b.get_node_or_null("Ambience")
+	if player == null or player.playing == on:
+		return
+	if on:
+		# A random starting point, so neighbouring buildings don't loop in step
+		player.play(randf() * player.stream.get_length())
+	else:
+		player.stop()
 
 
 func _model_top(model: Node3D) -> float:
@@ -2064,6 +2118,13 @@ func _apply_camera() -> void:
 	var off := Vector3(sin(cam_yaw) * cos(cam_pitch), sin(cam_pitch), cos(cam_yaw) * cos(cam_pitch)) * cam_dist
 	cam.global_position = cam_target + off
 	cam.look_at(cam_target, Vector3.UP)
+	# The ears sit a quarter of the way from the ground spot up to the camera:
+	# zoomed in you hear the buildings close by, zoomed out the whole island softly
+	if listener == null:
+		listener = AudioListener3D.new()
+		add_child(listener)
+		listener.make_current()
+	listener.global_position = cam_target + off * 0.25
 
 
 func _camera_input(event: InputEvent) -> bool:
