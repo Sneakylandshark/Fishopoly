@@ -1,0 +1,16 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/flag-high-pennant.glb" id="1_flag-high-pennant"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/tower-base.glb" id="2_tower-base"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/tower-watch.glb" id="3_tower-watch"]
+
+[node name="weather_station" type="Node3D"]
+
+[node name="tower-base" parent="." instance=ExtResource("2_tower-base")]
+transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, -0, 0, 0.75, 0, 0, 0)
+
+[node name="tower-watch" parent="." instance=ExtResource("3_tower-watch")]
+transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, -0, 0, 0.75, 0, 1.5, 0)
+
+[node name="flag-high-pennant" parent="." instance=ExtResource("1_flag-high-pennant")]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, -0, 0, 0.6, 0, 3.4, 0)

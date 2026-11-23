@@ -1,0 +1,20 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/cannon.glb" id="1_cannon"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/flag-pirate-high.glb" id="2_flag-pirate-high"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/tower-base.glb" id="3_tower-base"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/tower-watch.glb" id="4_tower-watch"]
+
+[node name="piracy" type="Node3D"]
+
+[node name="tower-base" parent="." instance=ExtResource("3_tower-base")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, -0, 0, 0.8, 0, 0, 0)
+
+[node name="tower-watch" parent="." instance=ExtResource("4_tower-watch")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, -0, 0, 0.8, 0, 1.6, 0)
+
+[node name="flag-pirate-high" parent="." instance=ExtResource("2_flag-pirate-high")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, -0, 0, 0.8, 0.2, 3.6, 0)
+
+[node name="cannon" parent="." instance=ExtResource("1_cannon")]
+transform = Transform3D(0.606218, 0, 0.35, 0, 0.7, 0, -0.35, 0, 0.606218, 1.7, 0, 1.6)

@@ -1,0 +1,44 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/chimney.glb" id="1_chimney"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/roof-high-gable-end.glb" id="2_roof-high-gable-end"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-door.glb" id="3_wall-door"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-wood.glb" id="4_wall-wood"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-wood-window-shutters.glb" id="5_wall-wood-window-shutters"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/barrel.glb" id="6_barrel"]
+[ext_resource type="PackedScene" path="res://assets/kenney/survival-kit/campfire-fishing-stand.glb" id="7_campfire-fishing-stand"]
+
+[node name="bait_works" type="Node3D"]
+
+[node name="wall-wood-window-shutters" parent="." instance=ExtResource("5_wall-wood-window-shutters")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, -0, 0, 1.5, -0.4, 0, -0.75)
+
+[node name="wall-wood-window-shutters2" parent="." instance=ExtResource("5_wall-wood-window-shutters")]
+transform = Transform3D(-1.5, 0, 1.83697e-16, 0, 1.5, 0, -1.83697e-16, 0, -1.5, -0.4, 0, -0.75)
+
+[node name="wall-wood" parent="." instance=ExtResource("4_wall-wood")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, -0, 0, 1.5, -0.4, 0, 0.75)
+
+[node name="wall-wood2" parent="." instance=ExtResource("4_wall-wood")]
+transform = Transform3D(-1.5, 0, 1.83697e-16, 0, 1.5, 0, -1.83697e-16, 0, -1.5, -0.4, 0, 0.75)
+
+[node name="wall-wood3" parent="." instance=ExtResource("4_wall-wood")]
+transform = Transform3D(9.18485e-17, 0, 1.5, 0, 1.5, 0, -1.5, 0, 9.18485e-17, -0.4, 0, -0.75)
+
+[node name="wall-door" parent="." instance=ExtResource("3_wall-door")]
+transform = Transform3D(9.18485e-17, 0, -1.5, 0, 1.5, 0, 1.5, 0, 9.18485e-17, -0.4, 0, 0.75)
+
+[node name="roof-high-gable-end" parent="." instance=ExtResource("2_roof-high-gable-end")]
+transform = Transform3D(9.18485e-17, 0, -1.5, 0, 1.5, 0, 1.5, 0, 9.18485e-17, -0.4, 1.5, -0.75)
+
+[node name="roof-high-gable-end2" parent="." instance=ExtResource("2_roof-high-gable-end")]
+transform = Transform3D(9.18485e-17, 0, 1.5, 0, 1.5, 0, -1.5, 0, 9.18485e-17, -0.4, 1.5, 0.75)
+
+[node name="chimney" parent="." instance=ExtResource("1_chimney")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, -0, 0, 1.5, -0.85, 1.65, -0.75)
+
+[node name="barrel" parent="." instance=ExtResource("6_barrel")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, -0, 0, 0.5, 1.2, 0, 1.2)
+
+[node name="campfire-fishing-stand" parent="." instance=ExtResource("7_campfire-fishing-stand")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, -0, 0, 3, 1.2, 0, -0.3)

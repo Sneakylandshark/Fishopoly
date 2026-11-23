@@ -1,0 +1,71 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/chimney.glb" id="1_chimney"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/roof-high-gable-end.glb" id="2_roof-high-gable-end"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/roof-high-point.glb" id="3_roof-high-point"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall.glb" id="4_wall"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-door.glb" id="5_wall-door"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-window-shutters.glb" id="6_wall-window-shutters"]
+[ext_resource type="PackedScene" path="res://assets/kenney/survival-kit/barrel.glb" id="7_barrel"]
+
+[node name="refinery" type="Node3D"]
+
+[node name="wall-window-shutters" parent="." instance=ExtResource("6_wall-window-shutters")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, -0, 0, 1.5, -0.5, 0, -0.75)
+
+[node name="wall-window-shutters2" parent="." instance=ExtResource("6_wall-window-shutters")]
+transform = Transform3D(-1.5, 0, 1.83697e-16, 0, 1.5, 0, -1.83697e-16, 0, -1.5, -0.5, 0, -0.75)
+
+[node name="wall" parent="." instance=ExtResource("4_wall")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, -0, 0, 1.5, -0.5, 0, 0.75)
+
+[node name="wall2" parent="." instance=ExtResource("4_wall")]
+transform = Transform3D(-1.5, 0, 1.83697e-16, 0, 1.5, 0, -1.83697e-16, 0, -1.5, -0.5, 0, 0.75)
+
+[node name="wall3" parent="." instance=ExtResource("4_wall")]
+transform = Transform3D(9.18485e-17, 0, 1.5, 0, 1.5, 0, -1.5, 0, 9.18485e-17, -0.5, 0, -0.75)
+
+[node name="wall-door" parent="." instance=ExtResource("5_wall-door")]
+transform = Transform3D(9.18485e-17, 0, -1.5, 0, 1.5, 0, 1.5, 0, 9.18485e-17, -0.5, 0, 0.75)
+
+[node name="roof-high-gable-end" parent="." instance=ExtResource("2_roof-high-gable-end")]
+transform = Transform3D(9.18485e-17, 0, -1.5, 0, 1.5, 0, 1.5, 0, 9.18485e-17, -0.5, 1.5, -0.75)
+
+[node name="roof-high-gable-end2" parent="." instance=ExtResource("2_roof-high-gable-end")]
+transform = Transform3D(9.18485e-17, 0, 1.5, 0, 1.5, 0, -1.5, 0, 9.18485e-17, -0.5, 1.5, 0.75)
+
+[node name="chimney" parent="." instance=ExtResource("1_chimney")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, -0, 0, 1.5, -0.95, 1.65, -0.75)
+
+[node name="wall4" parent="." instance=ExtResource("4_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.9, 0, -0.9)
+
+[node name="wall5" parent="." instance=ExtResource("4_wall")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, 0.9, 0, -0.9)
+
+[node name="wall6" parent="." instance=ExtResource("4_wall")]
+transform = Transform3D(-1, 0, 1.22465e-16, 0, 1, 0, -1.22465e-16, 0, -1, 0.9, 0, -0.9)
+
+[node name="wall-door2" parent="." instance=ExtResource("5_wall-door")]
+transform = Transform3D(6.12323e-17, 0, -1, 0, 1, 0, 1, 0, 6.12323e-17, 0.9, 0, -0.9)
+
+[node name="wall-window-shutters3" parent="." instance=ExtResource("6_wall-window-shutters")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.9, 1, -0.9)
+
+[node name="wall-window-shutters4" parent="." instance=ExtResource("6_wall-window-shutters")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, 0.9, 1, -0.9)
+
+[node name="wall-window-shutters5" parent="." instance=ExtResource("6_wall-window-shutters")]
+transform = Transform3D(-1, 0, 1.22465e-16, 0, 1, 0, -1.22465e-16, 0, -1, 0.9, 1, -0.9)
+
+[node name="wall-window-shutters6" parent="." instance=ExtResource("6_wall-window-shutters")]
+transform = Transform3D(6.12323e-17, 0, -1, 0, 1, 0, 1, 0, 6.12323e-17, 0.9, 1, -0.9)
+
+[node name="roof-high-point" parent="." instance=ExtResource("3_roof-high-point")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.9, 2, -0.9)
+
+[node name="barrel" parent="." instance=ExtResource("7_barrel")]
+transform = Transform3D(2.6, 0, 0, 0, 2.6, 0, -0, 0, 2.6, 1.1, 0, 1)
+
+[node name="barrel2" parent="." instance=ExtResource("7_barrel")]
+transform = Transform3D(2.6, 0, 0, 0, 2.6, 0, -0, 0, 2.6, 1.1, 0, 0.3)

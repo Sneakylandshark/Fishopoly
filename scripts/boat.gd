@@ -33,6 +33,8 @@ const MODELS := {
 	"whale": [PIRATE + "ship-medium.glb", 0.4],
 	"mail": [WATER + "boat-sail-a.glb", 0.8],
 	"visitor": [WATER + "ship-small.glb", 0.42],
+	# The oil rig model lives with the building models (scenes/buildings/rig.tscn)
+	"rig": ["res://scenes/buildings/rig.tscn", 1.0],
 }
 
 var kind := ""

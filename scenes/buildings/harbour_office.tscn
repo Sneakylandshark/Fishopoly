@@ -1,0 +1,36 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/roof-gable-end.glb" id="1_roof-gable-end"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall.glb" id="2_wall"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-door.glb" id="3_wall-door"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-window-shutters.glb" id="4_wall-window-shutters"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/flag.glb" id="5_flag"]
+
+[node name="harbour_office" type="Node3D"]
+
+[node name="wall-window-shutters" parent="." instance=ExtResource("4_wall-window-shutters")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, -0, 0, 1.2, -0.3, 0, -0.6)
+
+[node name="wall-window-shutters2" parent="." instance=ExtResource("4_wall-window-shutters")]
+transform = Transform3D(-1.2, 0, 1.46958e-16, 0, 1.2, 0, -1.46958e-16, 0, -1.2, -0.3, 0, -0.6)
+
+[node name="wall" parent="." instance=ExtResource("2_wall")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, -0, 0, 1.2, -0.3, 0, 0.6)
+
+[node name="wall2" parent="." instance=ExtResource("2_wall")]
+transform = Transform3D(-1.2, 0, 1.46958e-16, 0, 1.2, 0, -1.46958e-16, 0, -1.2, -0.3, 0, 0.6)
+
+[node name="wall3" parent="." instance=ExtResource("2_wall")]
+transform = Transform3D(7.34788e-17, 0, 1.2, 0, 1.2, 0, -1.2, 0, 7.34788e-17, -0.3, 0, -0.6)
+
+[node name="wall-door" parent="." instance=ExtResource("3_wall-door")]
+transform = Transform3D(7.34788e-17, 0, -1.2, 0, 1.2, 0, 1.2, 0, 7.34788e-17, -0.3, 0, 0.6)
+
+[node name="roof-gable-end" parent="." instance=ExtResource("1_roof-gable-end")]
+transform = Transform3D(7.34788e-17, 0, -1.2, 0, 1.2, 0, 1.2, 0, 7.34788e-17, -0.3, 1.2, -0.6)
+
+[node name="roof-gable-end2" parent="." instance=ExtResource("1_roof-gable-end")]
+transform = Transform3D(7.34788e-17, 0, 1.2, 0, 1.2, 0, -1.2, 0, 7.34788e-17, -0.3, 1.2, 0.6)
+
+[node name="flag" parent="." instance=ExtResource("5_flag")]
+transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, -0, 0, 0.7, 0.8, 0, 0.9)

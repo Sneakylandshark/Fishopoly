@@ -1,0 +1,23 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/stall-bench.glb" id="1_stall-bench"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/stall-green.glb" id="2_stall-green"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/stall-red.glb" id="3_stall-red"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/flag-high.glb" id="4_flag-high"]
+
+[node name="exchange" type="Node3D"]
+
+[node name="stall-red" parent="." instance=ExtResource("3_stall-red")]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, -0, 0, 1.4, -0.8, 0, -0.6)
+
+[node name="stall-green" parent="." instance=ExtResource("2_stall-green")]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, -0, 0, 1.4, 0.8, 0, -0.6)
+
+[node name="stall-red2" parent="." instance=ExtResource("3_stall-red")]
+transform = Transform3D(-1.4, 0, 1.71451e-16, 0, 1.4, 0, -1.71451e-16, 0, -1.4, 0, 0, 1)
+
+[node name="stall-bench" parent="." instance=ExtResource("1_stall-bench")]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, -0, 0, 1.4, -1.2, 0, 1.2)
+
+[node name="flag-high" parent="." instance=ExtResource("4_flag-high")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, -0, 0, 0.8, 1.4, 0, 1.3)

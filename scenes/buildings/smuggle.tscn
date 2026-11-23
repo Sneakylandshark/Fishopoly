@@ -1,0 +1,47 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/roof-gable-end.glb" id="1_roof-gable-end"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-wood.glb" id="2_wall-wood"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-wood-doorway-square-wide.glb" id="3_wall-wood-doorway-square-wide"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-wood-window-shutters.glb" id="4_wall-wood-window-shutters"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/barrel.glb" id="5_barrel"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/crate.glb" id="6_crate"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/flag-pirate-pennant.glb" id="7_flag-pirate-pennant"]
+
+[node name="smuggle" type="Node3D"]
+
+[node name="wall-wood-window-shutters" parent="." instance=ExtResource("4_wall-wood-window-shutters")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, -0, 0, 1.5, -0.4, 0, -0.75)
+
+[node name="wall-wood-window-shutters2" parent="." instance=ExtResource("4_wall-wood-window-shutters")]
+transform = Transform3D(-1.5, 0, 1.83697e-16, 0, 1.5, 0, -1.83697e-16, 0, -1.5, -0.4, 0, -0.75)
+
+[node name="wall-wood" parent="." instance=ExtResource("2_wall-wood")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, -0, 0, 1.5, -0.4, 0, 0.75)
+
+[node name="wall-wood2" parent="." instance=ExtResource("2_wall-wood")]
+transform = Transform3D(-1.5, 0, 1.83697e-16, 0, 1.5, 0, -1.83697e-16, 0, -1.5, -0.4, 0, 0.75)
+
+[node name="wall-wood3" parent="." instance=ExtResource("2_wall-wood")]
+transform = Transform3D(9.18485e-17, 0, 1.5, 0, 1.5, 0, -1.5, 0, 9.18485e-17, -0.4, 0, -0.75)
+
+[node name="wall-wood-doorway-square-wide" parent="." instance=ExtResource("3_wall-wood-doorway-square-wide")]
+transform = Transform3D(9.18485e-17, 0, -1.5, 0, 1.5, 0, 1.5, 0, 9.18485e-17, -0.4, 0, 0.75)
+
+[node name="roof-gable-end" parent="." instance=ExtResource("1_roof-gable-end")]
+transform = Transform3D(9.18485e-17, 0, -1.5, 0, 1.5, 0, 1.5, 0, 9.18485e-17, -0.4, 1.5, -0.75)
+
+[node name="roof-gable-end2" parent="." instance=ExtResource("1_roof-gable-end")]
+transform = Transform3D(9.18485e-17, 0, 1.5, 0, 1.5, 0, -1.5, 0, 9.18485e-17, -0.4, 1.5, 0.75)
+
+[node name="crate" parent="." instance=ExtResource("6_crate")]
+transform = Transform3D(0.579555, 0, 0.155291, 0, 0.6, 0, -0.155291, 0, 0.579555, 1.2, 0, 1.2)
+
+[node name="crate2" parent="." instance=ExtResource("6_crate")]
+transform = Transform3D(0.492404, 0, -0.0868241, 0, 0.5, 0, 0.0868241, 0, 0.492404, 1.2, 0.47, 1.2)
+
+[node name="barrel" parent="." instance=ExtResource("5_barrel")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, -0, 0, 0.5, 1.2, 0, 0.1)
+
+[node name="flag-pirate-pennant" parent="." instance=ExtResource("7_flag-pirate-pennant")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, -0, 0, 0.8, 1.2, 0, -1.2)

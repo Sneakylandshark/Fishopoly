@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/barrel.glb" id="1_barrel"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/flag-pennant.glb" id="2_flag-pennant"]
+[ext_resource type="PackedScene" path="res://assets/kenney/watercraft-pack/boat-house-c.glb" id="3_boat-house-c"]
+
+[node name="deep" type="Node3D"]
+
+[node name="boat-house-c" parent="." instance=ExtResource("3_boat-house-c")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0, 0)
+
+[node name="barrel" parent="." instance=ExtResource("1_barrel")]
+transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, -0, 0, 0.7, 1.9, 0, 1.4)
+
+[node name="barrel2" parent="." instance=ExtResource("1_barrel")]
+transform = Transform3D(0.606218, 0, 0.35, 0, 0.7, 0, -0.35, 0, 0.606218, 1.9, 0, 0.4)
+
+[node name="flag-pennant" parent="." instance=ExtResource("2_flag-pennant")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -1.6, 0, -1.8)

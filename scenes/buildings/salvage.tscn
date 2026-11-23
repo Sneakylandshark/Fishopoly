@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/watercraft-pack/boat-house-b.glb" id="1_boat-house-b"]
+[ext_resource type="PackedScene" path="res://assets/kenney/watercraft-pack/cargo-pile-a.glb" id="2_cargo-pile-a"]
+
+[node name="salvage" type="Node3D"]
+
+[node name="boat-house-b" parent="." instance=ExtResource("1_boat-house-b")]
+transform = Transform3D(5.51091e-17, 0, 0.9, 0, 0.9, 0, -0.9, 0, 5.51091e-17, 0, 0, 0)
+
+[node name="cargo-pile-a" parent="." instance=ExtResource("2_cargo-pile-a")]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, -0, 0, 0.6, 0, 0, 2.3)

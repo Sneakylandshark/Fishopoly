@@ -1,0 +1,43 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/roof-high-gable-end.glb" id="1_roof-high-gable-end"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall.glb" id="2_wall"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-door.glb" id="3_wall-door"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-window-shutters.glb" id="4_wall-window-shutters"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/chest.glb" id="5_chest"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/tool-shovel.glb" id="6_tool-shovel"]
+
+[node name="treasure" type="Node3D"]
+
+[node name="wall-window-shutters" parent="." instance=ExtResource("4_wall-window-shutters")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, -0, 0, 1.5, -0.4, 0, -0.75)
+
+[node name="wall-window-shutters2" parent="." instance=ExtResource("4_wall-window-shutters")]
+transform = Transform3D(-1.5, 0, 1.83697e-16, 0, 1.5, 0, -1.83697e-16, 0, -1.5, -0.4, 0, -0.75)
+
+[node name="wall" parent="." instance=ExtResource("2_wall")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, -0, 0, 1.5, -0.4, 0, 0.75)
+
+[node name="wall2" parent="." instance=ExtResource("2_wall")]
+transform = Transform3D(-1.5, 0, 1.83697e-16, 0, 1.5, 0, -1.83697e-16, 0, -1.5, -0.4, 0, 0.75)
+
+[node name="wall3" parent="." instance=ExtResource("2_wall")]
+transform = Transform3D(9.18485e-17, 0, 1.5, 0, 1.5, 0, -1.5, 0, 9.18485e-17, -0.4, 0, -0.75)
+
+[node name="wall-door" parent="." instance=ExtResource("3_wall-door")]
+transform = Transform3D(9.18485e-17, 0, -1.5, 0, 1.5, 0, 1.5, 0, 9.18485e-17, -0.4, 0, 0.75)
+
+[node name="roof-high-gable-end" parent="." instance=ExtResource("1_roof-high-gable-end")]
+transform = Transform3D(9.18485e-17, 0, -1.5, 0, 1.5, 0, 1.5, 0, 9.18485e-17, -0.4, 1.5, -0.75)
+
+[node name="roof-high-gable-end2" parent="." instance=ExtResource("1_roof-high-gable-end")]
+transform = Transform3D(9.18485e-17, 0, 1.5, 0, 1.5, 0, -1.5, 0, 9.18485e-17, -0.4, 1.5, 0.75)
+
+[node name="chest" parent="." instance=ExtResource("5_chest")]
+transform = Transform3D(0.498469, 0, 0.23244, 0, 0.55, 0, -0.23244, 0, 0.498469, 1.2, 0, 1.3)
+
+[node name="chest2" parent="." instance=ExtResource("5_chest")]
+transform = Transform3D(0.434667, 0, -0.116469, 0, 0.45, 0, 0.116469, 0, 0.434667, 1.2, 0, 0.2)
+
+[node name="tool-shovel" parent="." instance=ExtResource("6_tool-shovel")]
+transform = Transform3D(0.239414, 0, 0.657785, 0, 0.7, 0, -0.657785, 0, 0.239414, 1.3, 0, -0.8)

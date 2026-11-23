@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/tower-base.glb" id="1_tower-base"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/tower-watch.glb" id="2_tower-watch"]
+
+[node name="watch_house" type="Node3D"]
+
+[node name="tower-base" parent="." instance=ExtResource("1_tower-base")]
+transform = Transform3D(0.65, 0, 0, 0, 0.65, 0, -0, 0, 0.65, 0, 0, 0)
+
+[node name="tower-watch" parent="." instance=ExtResource("2_tower-watch")]
+transform = Transform3D(0.65, 0, 0, 0, 0.65, 0, -0, 0, 0.65, 0, 1.3, 0)

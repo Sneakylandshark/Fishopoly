@@ -91,6 +91,7 @@ func _ready() -> void:
 	_make_mail_props()
 	_make_champion_buildings()
 	_make_town_hall()
+	_dress_buildings()
 	_make_newspaper_panel()
 	# Made last so it sits on top of the other panels
 	_make_talk_panel()
@@ -1622,6 +1623,51 @@ func _make_champion_buildings() -> void:
 		_click_body(ib, Vector3(2.8, 2.4, 2.8))
 
 
+# ---------- Building models ----------
+# Each building's model is its own scene, scenes/buildings/<key>.tscn (Kenney pieces; open one in Godot to change it).
+# Its origin is the middle of its base. At the start the model goes on the building's spot and the greybox box is
+# hidden; the click area stays the same, and the name tag moves up above the roof.
+const BUILDING_SCENES := "res://scenes/buildings/"
+
+
+func _dress_buildings() -> void:
+	for b in $Buildings.get_children():
+		_dress(b, b.name)
+	_dress($TownHall, "town_hall")
+	_dress($Island/House, "house")
+
+
+func _dress(b: Node3D, key: String) -> void:
+	var path := BUILDING_SCENES + key + ".tscn"
+	if not ResourceLoader.exists(path):
+		return
+	var model: Node3D = load(path).instantiate()
+	model.name = "Model"
+	b.add_child(model)
+	if b is MeshInstance3D and b.mesh != null:
+		# The greybox box is centred on the building's spot, so the bottom of the box is the ground
+		model.position.y = b.mesh.get_aabb().position.y
+		b.mesh = null
+	else:
+		# The Town Hall's greybox is made of child boxes standing on its spot
+		for c in b.get_children():
+			if c is MeshInstance3D:
+				c.visible = false
+	var tag: Node3D = b.get_node_or_null("Tag")
+	if tag != null:
+		tag.position.y = model.position.y + _model_top(model) + 0.8
+
+
+func _model_top(model: Node3D) -> float:
+	# The height of the model's highest point above its base
+	var top := 0.0
+	var inv := model.global_transform.affine_inverse()
+	for v in model.find_children("*", "VisualInstance3D", true, false):
+		var box: AABB = (inv * v.global_transform) * v.get_aabb()
+		top = max(top, box.end.y)
+	return top
+
+
 const TOWN_HALL_AT := Vector3(-4.0, 3.0, -3.5)
 
 
@@ -2062,6 +2108,8 @@ func _start_showcase() -> void:
 	cam_dist = 92.0
 	$Camera3D.h_offset = -14.0
 	_apply_camera()
+	# Every boat starts already at its spot (oil rigs would otherwise sail out from the dock)
+	_place_boats(0.01)
 	show_timer = Timer.new()
 	show_timer.one_shot = true
 	add_child(show_timer)

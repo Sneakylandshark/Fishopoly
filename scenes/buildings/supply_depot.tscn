@@ -1,0 +1,16 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/watercraft-pack/cargo-container-a.glb" id="1_cargo-container-a"]
+[ext_resource type="PackedScene" path="res://assets/kenney/watercraft-pack/cargo-container-b.glb" id="2_cargo-container-b"]
+[ext_resource type="PackedScene" path="res://assets/kenney/watercraft-pack/cargo-container-c.glb" id="3_cargo-container-c"]
+
+[node name="supply_depot" type="Node3D"]
+
+[node name="cargo-container-a" parent="." instance=ExtResource("1_cargo-container-a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -0.8, 0, 0)
+
+[node name="cargo-container-b" parent="." instance=ExtResource("2_cargo-container-b")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.8, 0, 0)
+
+[node name="cargo-container-c" parent="." instance=ExtResource("3_cargo-container-c")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, 0, 1.1, 0)

@@ -1,0 +1,40 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/lantern.glb" id="1_lantern"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/roof-gable-end.glb" id="2_roof-gable-end"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-wood.glb" id="3_wall-wood"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-wood-doorway-square-wide.glb" id="4_wall-wood-doorway-square-wide"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-wood-window-shutters.glb" id="5_wall-wood-window-shutters"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/boat-row-small.glb" id="6_boat-row-small"]
+
+[node name="hiding" type="Node3D"]
+
+[node name="wall-wood-window-shutters" parent="." instance=ExtResource("5_wall-wood-window-shutters")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, -0, 0, 1.5, -0.3, 0, -0.75)
+
+[node name="wall-wood-window-shutters2" parent="." instance=ExtResource("5_wall-wood-window-shutters")]
+transform = Transform3D(-1.5, 0, 1.83697e-16, 0, 1.5, 0, -1.83697e-16, 0, -1.5, -0.3, 0, -0.75)
+
+[node name="wall-wood" parent="." instance=ExtResource("3_wall-wood")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, -0, 0, 1.5, -0.3, 0, 0.75)
+
+[node name="wall-wood2" parent="." instance=ExtResource("3_wall-wood")]
+transform = Transform3D(-1.5, 0, 1.83697e-16, 0, 1.5, 0, -1.83697e-16, 0, -1.5, -0.3, 0, 0.75)
+
+[node name="wall-wood3" parent="." instance=ExtResource("3_wall-wood")]
+transform = Transform3D(9.18485e-17, 0, 1.5, 0, 1.5, 0, -1.5, 0, 9.18485e-17, -0.3, 0, -0.75)
+
+[node name="wall-wood-doorway-square-wide" parent="." instance=ExtResource("4_wall-wood-doorway-square-wide")]
+transform = Transform3D(9.18485e-17, 0, -1.5, 0, 1.5, 0, 1.5, 0, 9.18485e-17, -0.3, 0, 0.75)
+
+[node name="roof-gable-end" parent="." instance=ExtResource("2_roof-gable-end")]
+transform = Transform3D(9.18485e-17, 0, -1.5, 0, 1.5, 0, 1.5, 0, 9.18485e-17, -0.3, 1.5, -0.75)
+
+[node name="roof-gable-end2" parent="." instance=ExtResource("2_roof-gable-end")]
+transform = Transform3D(9.18485e-17, 0, 1.5, 0, 1.5, 0, -1.5, 0, 9.18485e-17, -0.3, 1.5, 0.75)
+
+[node name="lantern" parent="." instance=ExtResource("1_lantern")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, -0, 0, 1.2, 1, 0, 1.4)
+
+[node name="boat-row-small" parent="." instance=ExtResource("6_boat-row-small")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, -0, 0, 0.5, 1.2, 0, -0.4)

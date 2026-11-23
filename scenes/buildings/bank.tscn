@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/graveyard-kit/column-large.glb" id="1_column-large"]
+[ext_resource type="PackedScene" path="res://assets/kenney/graveyard-kit/crypt-large.glb" id="2_crypt-large"]
+[ext_resource type="PackedScene" path="res://assets/kenney/graveyard-kit/crypt-large-roof.glb" id="3_crypt-large-roof"]
+
+[node name="bank" type="Node3D"]
+
+[node name="crypt-large" parent="." instance=ExtResource("2_crypt-large")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, -0, 0, 1.8, 0, 0, 0)
+
+[node name="crypt-large-roof" parent="." instance=ExtResource("3_crypt-large-roof")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, -0, 0, 1.8, 0, 1.8, 0)
+
+[node name="column-large" parent="." instance=ExtResource("1_column-large")]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, -0, 0, 1.6, -1.3, 0, 2.3)
+
+[node name="column-large2" parent="." instance=ExtResource("1_column-large")]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, -0, 0, 1.6, 1.3, 0, 2.3)

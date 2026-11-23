@@ -1,0 +1,16 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/graveyard-kit/crypt-small.glb" id="1_crypt-small"]
+[ext_resource type="PackedScene" path="res://assets/kenney/graveyard-kit/crypt-small-roof.glb" id="2_crypt-small-roof"]
+[ext_resource type="PackedScene" path="res://assets/kenney/graveyard-kit/lightpost-single.glb" id="3_lightpost-single"]
+
+[node name="law_office" type="Node3D"]
+
+[node name="crypt-small" parent="." instance=ExtResource("1_crypt-small")]
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, -0, 0, 2.2, 0, 0, 0)
+
+[node name="crypt-small-roof" parent="." instance=ExtResource("2_crypt-small-roof")]
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, -0, 0, 2.2, 0, 2.2, 0)
+
+[node name="lightpost-single" parent="." instance=ExtResource("3_lightpost-single")]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, -0, 0, 1.6, 1.4, 0, 1.4)

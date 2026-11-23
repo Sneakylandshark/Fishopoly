@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/castle-gate.glb" id="1_castle-gate"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/flag-high.glb" id="2_flag-high"]
+
+[node name="town_hall" type="Node3D"]
+
+[node name="castle-gate" parent="." instance=ExtResource("1_castle-gate")]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, -0, 0, 0.9, 0, 0, 0)
+
+[node name="flag-high" parent="." instance=ExtResource("2_flag-high")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, -0, 0, 0.8, 0, 3.96, 0)

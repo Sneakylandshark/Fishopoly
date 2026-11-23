@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/graveyard-kit/crypt-small.glb" id="1_crypt-small"]
+[ext_resource type="PackedScene" path="res://assets/kenney/graveyard-kit/crypt-small-roof.glb" id="2_crypt-small-roof"]
+
+[node name="counting_house" type="Node3D"]
+
+[node name="crypt-small" parent="." instance=ExtResource("1_crypt-small")]
+transform = Transform3D(1.9, 0, 0, 0, 1.9, 0, -0, 0, 1.9, 0, 0, 0)
+
+[node name="crypt-small-roof" parent="." instance=ExtResource("2_crypt-small-roof")]
+transform = Transform3D(1.9, 0, 0, 0, 1.9, 0, -0, 0, 1.9, 0, 1.9, 0)

@@ -1,0 +1,39 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/roof-high-point.glb" id="1_roof-high-point"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-door.glb" id="2_wall-door"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-wood.glb" id="3_wall-wood"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-wood-window-shutters.glb" id="4_wall-wood-window-shutters"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/crate.glb" id="5_crate"]
+
+[node name="gazette_office" type="Node3D"]
+
+[node name="wall-wood-window-shutters" parent="." instance=ExtResource("4_wall-wood-window-shutters")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, -0, 0, 1.2, 0, 0, 0)
+
+[node name="wall-wood-window-shutters2" parent="." instance=ExtResource("4_wall-wood-window-shutters")]
+transform = Transform3D(-1.2, 0, 1.46958e-16, 0, 1.2, 0, -1.46958e-16, 0, -1.2, 0, 0, 0)
+
+[node name="wall-wood" parent="." instance=ExtResource("3_wall-wood")]
+transform = Transform3D(7.34788e-17, 0, 1.2, 0, 1.2, 0, -1.2, 0, 7.34788e-17, 0, 0, 0)
+
+[node name="wall-door" parent="." instance=ExtResource("2_wall-door")]
+transform = Transform3D(7.34788e-17, 0, -1.2, 0, 1.2, 0, 1.2, 0, 7.34788e-17, 0, 0, 0)
+
+[node name="wall-wood2" parent="." instance=ExtResource("3_wall-wood")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, -0, 0, 1.2, 0, 1.2, 0)
+
+[node name="wall-wood3" parent="." instance=ExtResource("3_wall-wood")]
+transform = Transform3D(-1.2, 0, 1.46958e-16, 0, 1.2, 0, -1.46958e-16, 0, -1.2, 0, 1.2, 0)
+
+[node name="wall-wood4" parent="." instance=ExtResource("3_wall-wood")]
+transform = Transform3D(7.34788e-17, 0, 1.2, 0, 1.2, 0, -1.2, 0, 7.34788e-17, 0, 1.2, 0)
+
+[node name="wall-wood-window-shutters3" parent="." instance=ExtResource("4_wall-wood-window-shutters")]
+transform = Transform3D(7.34788e-17, 0, -1.2, 0, 1.2, 0, 1.2, 0, 7.34788e-17, 0, 1.2, 0)
+
+[node name="roof-high-point" parent="." instance=ExtResource("1_roof-high-point")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, -0, 0, 1.2, 0, 2.4, 0)
+
+[node name="crate" parent="." instance=ExtResource("5_crate")]
+transform = Transform3D(0.443163, 0, 0.0781417, 0, 0.45, 0, -0.0781417, 0, 0.443163, 0.9, 0, 0.7)

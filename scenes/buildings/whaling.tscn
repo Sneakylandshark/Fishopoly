@@ -1,0 +1,22 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/barrel.glb" id="1_barrel"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/flag-high.glb" id="2_flag-high"]
+[ext_resource type="PackedScene" path="res://assets/kenney/watercraft-pack/boat-house-d.glb" id="3_boat-house-d"]
+
+[node name="whaling" type="Node3D"]
+
+[node name="boat-house-d" parent="." instance=ExtResource("3_boat-house-d")]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, -0, 0, 0.9, 0, 0, 0)
+
+[node name="barrel" parent="." instance=ExtResource("1_barrel")]
+transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, -0, 0, 0.7, 1.8, 0, 1.2)
+
+[node name="barrel2" parent="." instance=ExtResource("1_barrel")]
+transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, -0, 0, 0.7, 1.8, 0, 0.1)
+
+[node name="barrel3" parent="." instance=ExtResource("1_barrel")]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, -0, 0, 0.6, 1.8, 0.86, 0.65)
+
+[node name="flag-high" parent="." instance=ExtResource("2_flag-high")]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, -0, 0, 0.9, -1.5, 0, -1.6)

@@ -1,0 +1,40 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/roof-gable-end.glb" id="1_roof-gable-end"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-door.glb" id="2_wall-door"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-wood.glb" id="3_wall-wood"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-wood-window-shutters.glb" id="4_wall-wood-window-shutters"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/chest.glb" id="5_chest"]
+[ext_resource type="PackedScene" path="res://assets/kenney/survival-kit/bucket.glb" id="6_bucket"]
+
+[node name="pearl" type="Node3D"]
+
+[node name="wall-wood-window-shutters" parent="." instance=ExtResource("4_wall-wood-window-shutters")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, -0, 0, 1.5, -0.4, 0, -0.75)
+
+[node name="wall-wood-window-shutters2" parent="." instance=ExtResource("4_wall-wood-window-shutters")]
+transform = Transform3D(-1.5, 0, 1.83697e-16, 0, 1.5, 0, -1.83697e-16, 0, -1.5, -0.4, 0, -0.75)
+
+[node name="wall-wood" parent="." instance=ExtResource("3_wall-wood")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, -0, 0, 1.5, -0.4, 0, 0.75)
+
+[node name="wall-wood2" parent="." instance=ExtResource("3_wall-wood")]
+transform = Transform3D(-1.5, 0, 1.83697e-16, 0, 1.5, 0, -1.83697e-16, 0, -1.5, -0.4, 0, 0.75)
+
+[node name="wall-wood3" parent="." instance=ExtResource("3_wall-wood")]
+transform = Transform3D(9.18485e-17, 0, 1.5, 0, 1.5, 0, -1.5, 0, 9.18485e-17, -0.4, 0, -0.75)
+
+[node name="wall-door" parent="." instance=ExtResource("2_wall-door")]
+transform = Transform3D(9.18485e-17, 0, -1.5, 0, 1.5, 0, 1.5, 0, 9.18485e-17, -0.4, 0, 0.75)
+
+[node name="roof-gable-end" parent="." instance=ExtResource("1_roof-gable-end")]
+transform = Transform3D(9.18485e-17, 0, -1.5, 0, 1.5, 0, 1.5, 0, 9.18485e-17, -0.4, 1.5, -0.75)
+
+[node name="roof-gable-end2" parent="." instance=ExtResource("1_roof-gable-end")]
+transform = Transform3D(9.18485e-17, 0, 1.5, 0, 1.5, 0, -1.5, 0, 9.18485e-17, -0.4, 1.5, 0.75)
+
+[node name="chest" parent="." instance=ExtResource("5_chest")]
+transform = Transform3D(0.516831, 0, -0.188111, 0, 0.55, 0, 0.188111, 0, 0.516831, 1.2, 0, 1.4)
+
+[node name="bucket" parent="." instance=ExtResource("6_bucket")]
+transform = Transform3D(4, 0, 0, 0, 4, 0, -0, 0, 4, 1.3, 0, 0.3)

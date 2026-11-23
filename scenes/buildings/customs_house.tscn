@@ -1,0 +1,51 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/roof-high-point.glb" id="1_roof-high-point"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall.glb" id="2_wall"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-door.glb" id="3_wall-door"]
+[ext_resource type="PackedScene" path="res://assets/kenney/fantasy-town-kit/wall-window-shutters.glb" id="4_wall-window-shutters"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/flag-high.glb" id="5_flag-high"]
+
+[node name="customs_house" type="Node3D"]
+
+[node name="wall" parent="." instance=ExtResource("2_wall")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, -0, 0, 1.2, 0, 0, 0)
+
+[node name="wall2" parent="." instance=ExtResource("2_wall")]
+transform = Transform3D(7.34788e-17, 0, 1.2, 0, 1.2, 0, -1.2, 0, 7.34788e-17, 0, 0, 0)
+
+[node name="wall3" parent="." instance=ExtResource("2_wall")]
+transform = Transform3D(-1.2, 0, 1.46958e-16, 0, 1.2, 0, -1.46958e-16, 0, -1.2, 0, 0, 0)
+
+[node name="wall-door" parent="." instance=ExtResource("3_wall-door")]
+transform = Transform3D(7.34788e-17, 0, -1.2, 0, 1.2, 0, 1.2, 0, 7.34788e-17, 0, 0, 0)
+
+[node name="wall-window-shutters" parent="." instance=ExtResource("4_wall-window-shutters")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, -0, 0, 1.2, 0, 1.2, 0)
+
+[node name="wall-window-shutters2" parent="." instance=ExtResource("4_wall-window-shutters")]
+transform = Transform3D(7.34788e-17, 0, 1.2, 0, 1.2, 0, -1.2, 0, 7.34788e-17, 0, 1.2, 0)
+
+[node name="wall-window-shutters3" parent="." instance=ExtResource("4_wall-window-shutters")]
+transform = Transform3D(-1.2, 0, 1.46958e-16, 0, 1.2, 0, -1.46958e-16, 0, -1.2, 0, 1.2, 0)
+
+[node name="wall-window-shutters4" parent="." instance=ExtResource("4_wall-window-shutters")]
+transform = Transform3D(7.34788e-17, 0, -1.2, 0, 1.2, 0, 1.2, 0, 7.34788e-17, 0, 1.2, 0)
+
+[node name="wall-window-shutters5" parent="." instance=ExtResource("4_wall-window-shutters")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, -0, 0, 1.2, 0, 2.4, 0)
+
+[node name="wall-window-shutters6" parent="." instance=ExtResource("4_wall-window-shutters")]
+transform = Transform3D(7.34788e-17, 0, 1.2, 0, 1.2, 0, -1.2, 0, 7.34788e-17, 0, 2.4, 0)
+
+[node name="wall-window-shutters7" parent="." instance=ExtResource("4_wall-window-shutters")]
+transform = Transform3D(-1.2, 0, 1.46958e-16, 0, 1.2, 0, -1.46958e-16, 0, -1.2, 0, 2.4, 0)
+
+[node name="wall-window-shutters8" parent="." instance=ExtResource("4_wall-window-shutters")]
+transform = Transform3D(7.34788e-17, 0, -1.2, 0, 1.2, 0, 1.2, 0, 7.34788e-17, 0, 2.4, 0)
+
+[node name="roof-high-point" parent="." instance=ExtResource("1_roof-high-point")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, -0, 0, 1.2, 0, 3.6, 0)
+
+[node name="flag-high" parent="." instance=ExtResource("5_flag-high")]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, -0, 0, 0.6, 0.9, 0, 0.9)

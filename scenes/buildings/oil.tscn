@@ -1,0 +1,36 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/barrel.glb" id="1_barrel"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/mast-ropes.glb" id="2_mast-ropes"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/structure-platform.glb" id="3_structure-platform"]
+[ext_resource type="PackedScene" path="res://assets/kenney/survival-kit/structure-metal.glb" id="4_structure-metal"]
+[ext_resource type="PackedScene" path="res://assets/kenney/survival-kit/structure-metal-roof.glb" id="5_structure-metal-roof"]
+
+[node name="oil" type="Node3D"]
+
+[node name="structure-platform" parent="." instance=ExtResource("3_structure-platform")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -1.25, 0, -1.25)
+
+[node name="structure-platform2" parent="." instance=ExtResource("3_structure-platform")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 1.25, 0, -1.25)
+
+[node name="structure-platform3" parent="." instance=ExtResource("3_structure-platform")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -1.25, 0, 1.25)
+
+[node name="structure-platform4" parent="." instance=ExtResource("3_structure-platform")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 1.25, 0, 1.25)
+
+[node name="structure-metal" parent="." instance=ExtResource("4_structure-metal")]
+transform = Transform3D(4.5, 0, 0, 0, 4.5, 0, -0, 0, 4.5, -1.1, 0.93, -1)
+
+[node name="structure-metal-roof" parent="." instance=ExtResource("5_structure-metal-roof")]
+transform = Transform3D(4.5, 0, 0, 0, 4.5, 0, -0, 0, 4.5, -1.1, 3.18, -1)
+
+[node name="mast-ropes" parent="." instance=ExtResource("2_mast-ropes")]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, -0, 0, 0.9, 1.2, 0.93, 0.8)
+
+[node name="barrel" parent="." instance=ExtResource("1_barrel")]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, -0, 0, 0.6, 1.6, 0.93, -1.4)
+
+[node name="barrel2" parent="." instance=ExtResource("1_barrel")]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, -0, 0, 0.6, 0.8, 0.93, -1.6)
