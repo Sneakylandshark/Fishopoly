@@ -566,6 +566,8 @@ func _update_crown_choice() -> void:
    You gain: %s %s" % [rival.name, Game.money(new_price), int(cr.defectors * 100), Game.crown.good, Game.crown.bad, rival.good, rival.bad]
 		$UI/CrownChoice/Box/Buttons/Defect.disabled = false
 	$UI/CrownChoice/Box/Text.text = text
+	_show_faces($UI/CrownChoice/Box, [[Game.crown.name, "Your Crown now"], [rival.name, "Pushing for the island"]])
+	_refit_centre($UI/CrownChoice, text)
 
 
 func _on_choice(i: int) -> void:
@@ -582,6 +584,12 @@ func _update_pick() -> bool:
 	if p.is_empty() or Game.over:
 		return false
 	$UI/OfferChoice.visible = true
+	# An advisor pick shows the advisor; other picks show faces on their buttons, or none
+	var faces := []
+	if p.kind == "advisor":
+		var ad: Dictionary = Game.data.advisors.list[p.key]
+		faces = [[ad.who, ad.role]]
+	_show_faces($UI/OfferChoice/Box, faces)
 	var text := "[font_size=24][b]%s[/b][/font_size]\n%s\n\n" % [p.title, p.text]
 	for o in p.options:
 		text += "[b]%s[/b]\n[color=#9fe39f]%s[/color]\n\n" % [o.name, o.text]
@@ -597,6 +605,8 @@ func _update_pick() -> bool:
 			cb.visible = i < p.options.size()
 			if cb.visible:
 				cb.text = p.options[i].name
+				# Crowns and champions each have a portrait on their button
+				cb.icon = portrait_for(p.options[i].name)
 		return true
 	var buttons := [$UI/OfferChoice/Box/Buttons/PickA, $UI/OfferChoice/Box/Buttons/PickB, $UI/OfferChoice/Box/Buttons/Later]
 	for i in buttons.size():
@@ -629,7 +639,10 @@ func _pick_grid(n: int) -> GridContainer:
 	while grid.get_child_count() < n:
 		var i := grid.get_child_count()
 		var b := Button.new()
-		b.custom_minimum_size = Vector2(260, 44)
+		b.custom_minimum_size = Vector2(300, 84)
+		b.expand_icon = true
+		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		b.add_theme_constant_override("icon_max_width", 72)
 		b.pressed.connect(func(): Game.answer_pick(i))
 		grid.add_child(b)
 	return grid
@@ -637,6 +650,7 @@ func _pick_grid(n: int) -> GridContainer:
 
 func _update_offer_choice() -> void:
 	if _update_pick():
+		_refit_centre($UI/OfferChoice, $UI/OfferChoice/Box/Text.text)
 		return
 	# Not a pick: put the usual three buttons back
 	_pick_grid(0).visible = false
@@ -660,10 +674,72 @@ func _update_offer_choice() -> void:
 	elif Game.cash - o.cost < Game.next_bill():
 		text += "[color=#ff9a7a]Paying leaves less than your next bill (%s).[/color]" % Game.money(Game.next_bill())
 	$UI/OfferChoice/Box/Text.text = text
+	_show_faces($UI/OfferChoice/Box, [[o.a.who, o.a.role], [o.b.who, o.b.role]])
 	$UI/OfferChoice/Box/Buttons/PickA.text = "Pay %s" % o.a.who
 	$UI/OfferChoice/Box/Buttons/PickB.text = "Pay %s" % o.b.who
 	$UI/OfferChoice/Box/Buttons/PickA.disabled = not afford
 	$UI/OfferChoice/Box/Buttons/PickB.disabled = not afford
+	_refit_centre($UI/OfferChoice, text)
+
+
+func _refit_centre(panel: Control, key: String) -> void:
+	# A centred panel keeps the size of the biggest thing it ever showed (like the Crown pick's grid),
+	# so when its words change, shrink it to fit a frame later and centre it again
+	if panel.get_meta("fit", "") == key:
+		return
+	panel.set_meta("fit", key)
+	await get_tree().process_frame
+	panel.reset_size()
+	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER, Control.PRESET_MODE_MINSIZE)
+
+
+# ---------- Portraits in the choice panels ----------
+# A row of framed portraits along the top of a panel. Made the first time it's needed,
+# and only rebuilt when the people change (refresh runs often).
+const FACE_SIZE := 110.0
+
+
+func _show_faces(box: VBoxContainer, people: Array) -> void:
+	var row: HBoxContainer = box.get_node_or_null("Faces")
+	if row == null:
+		row = HBoxContainer.new()
+		row.name = "Faces"
+		row.alignment = BoxContainer.ALIGNMENT_CENTER
+		row.add_theme_constant_override("separation", 36)
+		box.add_child(row)
+		box.move_child(row, 0)
+	row.visible = not people.is_empty()
+	var key := str(people)
+	if row.get_meta("people", "") == key:
+		return
+	row.set_meta("people", key)
+	for c in row.get_children():
+		c.free()
+	for person in people:
+		var col := VBoxContainer.new()
+		col.add_theme_constant_override("separation", 2)
+		row.add_child(col)
+		var frame := PanelContainer.new()
+		frame.theme_type_variation = &"InsetPanel"
+		frame.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		col.add_child(frame)
+		var pic := TextureRect.new()
+		pic.custom_minimum_size = Vector2(FACE_SIZE, FACE_SIZE)
+		pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		pic.texture = portrait_for(person[0])
+		frame.add_child(pic)
+		var name := Label.new()
+		name.text = person[0]
+		name.theme_type_variation = &"Heading"
+		name.add_theme_font_size_override("font_size", 16)
+		name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		col.add_child(name)
+		var role := Label.new()
+		role.text = person[1]
+		role.modulate = Color(1, 1, 1, 0.7)
+		role.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		col.add_child(role)
 
 
 func _perk_text(into: Control, key: String) -> void:
