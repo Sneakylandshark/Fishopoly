@@ -1,7 +1,7 @@
 extends Node3D
 ## The greybox scene: draws the island, boats, weather and the menus.
 ## The rules live in game.gd (the "Game" autoload). This script only shows them and passes on button presses.
-## Click a building (or the dock) to open its menu: build, buy, upgrade.
+## Buy new buildings at the Town Hall. Click a built building (or the dock) to open its menu: buy more, upgrade.
 
 const BOAT_SCENE := preload("res://scenes/boat.tscn")
 const SAIL_TIME := 1.0
@@ -18,12 +18,6 @@ const BOAT_COLORS := {
 }
 const KIND_NAMES := {"fish": "Fishing boat", "crab": "Crab boat", "whale": "Whaling ship", "barge": "Salvage barge", "smuggler": "Smuggling boat", "pirate": "Pirate ship", "rig": "Oil rig"}
 
-# Weather looks: sky top colour, sun strength, ocean colour, fog on/off
-const WEATHER_LOOK := {
-	"perfect": {"sky": Color(0.3, 0.6, 0.95), "sun": 1.3, "ocean": Color(0.1, 0.45, 0.7), "fog": false},
-	"normal": {"sky": Color(0.45, 0.58, 0.72), "sun": 0.9, "ocean": Color(0.12, 0.36, 0.55), "fog": false},
-	"storm": {"sky": Color(0.18, 0.2, 0.24), "sun": 0.25, "ocean": Color(0.08, 0.15, 0.2), "fog": true},
-}
 
 var boat_nodes: Array = []
 # Cray ships are drawn here only (the rules just count them). Each has yellow buoys, one per pot.
@@ -33,28 +27,17 @@ var buoy_mesh := SphereMesh.new()
 var animating := false
 # Which building menu is open ("" = none). "fish" is the dock / harbor menu.
 var open_menu := ""
-var ghost_mat := StandardMaterial3D.new()
 
-@onready var env: Environment = $WorldEnvironment.environment
-@onready var sun: DirectionalLight3D = $Sun
-@onready var ocean_mat: StandardMaterial3D = $Ocean.get_surface_override_material(0)
-@onready var list: VBoxContainer = $UI/Shop/Scroll/List
+# The Town Hall window: Build (buy buildings), Fleet (where boats work, your buildings) and Ledger (the day log) tabs
+@onready var town_hall: PanelContainer = $UI/TownHallWindow
+@onready var build_body: VBoxContainer = $UI/TownHallWindow/Box/Tabs/Build/Body
+@onready var list: VBoxContainer = $UI/TownHallWindow/Box/Tabs/Fleet/List
 @onready var menu_body: VBoxContainer = $UI/BuildingMenu/Box/Scroll/Body
-@onready var log_box: RichTextLabel = $UI/LogPanel/Log
+@onready var log_box: RichTextLabel = $UI/TownHallWindow/Box/Tabs/Ledger
 # The top bar's row of numbers and buttons (moved into a scroller in _ready)
-@onready var top_row: HBoxContainer = $UI/TopBar/Row
+@onready var top_row: HFlowContainer = $UI/TopBar/Row
 # The status bar under it (Crown, levy, suspicion, news, forecast)
-@onready var status_row: HBoxContainer = $UI/StatusBar/Row
-
-
-func _scroll_row(panel: Control, row: HBoxContainer) -> void:
-	# A bar wider than the screen: put its row in a sideways scroller (mouse wheel over the bar, or drag its scrollbar)
-	var scroll := ScrollContainer.new()
-	scroll.name = "Scroll"
-	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
-	panel.add_child(scroll)
-	row.reparent(scroll, false)
+@onready var status_row: HFlowContainer = $UI/StatusBar/Row
 
 
 func _stack_bars() -> void:
@@ -62,18 +45,18 @@ func _stack_bars() -> void:
 	var top: float = $UI/TopBar.size.y
 	$UI/StatusBar.offset_top = top
 	var below: float = top + $UI/StatusBar.size.y
-	for p in [$UI/Shop, $UI/BuildingMenu]:
-		p.offset_top = below
+	$UI/BuildingMenu.offset_top = below
 
 
 func _ready() -> void:
-	_scroll_row($UI/TopBar, top_row)
-	_scroll_row($UI/StatusBar, status_row)
+	# Windows in the middle of the screen grow both ways from the middle, so they stay centred
+	for c in $UI.get_children():
+		if c is Control and is_equal_approx(c.anchor_left, 0.5):
+			c.grow_horizontal = Control.GROW_DIRECTION_BOTH
+		if c is Control and is_equal_approx(c.anchor_top, 0.5):
+			c.grow_vertical = Control.GROW_DIRECTION_BOTH
 	$UI/TopBar.resized.connect(_stack_bars)
 	$UI/StatusBar.resized.connect(_stack_bars)
-	# Unbuilt buildings show as faint ghosts you can click
-	ghost_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	ghost_mat.albedo_color = Color(1, 1, 1, 0.25)
 	buoy_mat.albedo_color = Color(1.0, 0.85, 0.1)
 	buoy_mesh.radius = 0.45
 	buoy_mesh.height = 0.9
@@ -81,6 +64,12 @@ func _ready() -> void:
 	Game.run_over.connect(_on_run_over)
 	Game.loaded.connect(func(): _rebuild_boats(); refresh())
 	$UI/Actions/StartDay.pressed.connect(_on_start_day)
+	$UI/Actions/TownHall.pressed.connect(func(): open_town_hall())
+	$UI/TownHallWindow/Box/Close.pressed.connect(func(): town_hall.visible = false)
+	var tabs: TabContainer = $UI/TownHallWindow/Box/Tabs
+	tabs.set_tab_title(0, "Build")
+	tabs.set_tab_title(1, "Fleet")
+	tabs.set_tab_title(2, "Ledger")
 	$UI/Actions/BuyIsland.pressed.connect(func(): Game.buy_island())
 	$UI/EndScreen/Box/Restart.pressed.connect(_on_restart)
 	top_row.get_node("Help").pressed.connect(func(): $UI/HelpPanel.visible = true)
@@ -99,6 +88,7 @@ func _ready() -> void:
 	_make_graphs_panel()
 	_make_mail_props()
 	_make_champion_buildings()
+	_make_town_hall()
 	_make_newspaper_panel()
 	# Made last so it sits on top of the other panels
 	_make_talk_panel()
@@ -118,6 +108,7 @@ func refresh() -> void:
 	if $UI/RunPanel.visible:
 		$UI/RunPanel/Box/Text.text = _run_text()
 	_rebuild_side_panel()
+	_town_hall_rows()
 	_update_log()
 	_update_buildings()
 	if open_menu != "":
@@ -150,13 +141,30 @@ func _unhandled_input(event: InputEvent) -> void:
 		if owner_name == "VisitorShip":
 			open_visitors()
 			return
+		if owner_name == "TownHall":
+			open_menu_for("town_hall")
+			return
 		open_menu_for("fish" if owner_name == "Dock" else owner_name)
 
 
 func open_menu_for(key: String) -> void:
+	if key == "town_hall":
+		open_town_hall(0)
+		return
+	# One window at a time: a building's menu replaces the Town Hall
+	town_hall.visible = false
 	open_menu = key
 	$UI/BuildingMenu.visible = true
 	_fill_menu()
+
+
+func open_town_hall(tab := -1) -> void:
+	# tab: 0 Build, 1 Fleet, 2 Ledger (-1 keeps the last one)
+	close_menu()
+	if tab >= 0:
+		$UI/TownHallWindow/Box/Tabs.current_tab = tab
+	town_hall.visible = true
+	_town_hall_rows()
 
 
 func _oil_search_rows() -> void:
@@ -219,6 +227,9 @@ func _fill_menu() -> void:
 
 	var a: Dictionary = Game.data.avenues[key]
 	$UI/BuildingMenu/Box/Title.text = "%s  (tier %d)" % [a.name, int(a.tier)]
+	if not Game.built.has(key):
+		# Unbuilt buildings are only reached from the Town Hall
+		_button(menu_body, "< Back to the Town Hall", 0.0, true, func(): open_menu_for("town_hall"))
 	_text(menu_body, a.blurb)
 	if not Game.built.has(key):
 		# Oil can be hunted at any tier, so build_blockers skips the oil tier lock; champion buildings add their own
@@ -299,6 +310,56 @@ func _fill_menu() -> void:
 			_button(menu_body, "Buy %s  %s  (~%s/day)   own %d%s" % [a.unit_name, Game.money(up), Game.money(Game.avg_per_day(key)), owned, cap_text], up, Game.can_buy_unit(key), func(): Game.buy_unit(key))
 	_header(menu_body, "Upgrades")
 	_upgrade_rows(menu_body, key)
+
+
+func _town_hall_rows() -> void:
+	# The Build tab: every building is bought here; it only appears on the island once it's built
+	for c in build_body.get_children():
+		c.queue_free()
+	_text(build_body, "Buy new buildings here. A building appears on the island once it's built; click it there to buy more and upgrade it.")
+	var tiers := {}
+	for key in Game.data.avenues:
+		if Game.built.has(key):
+			continue
+		# Only your own champion's building is offered
+		if Game.is_champion_building(key) and key != Game.champion_building():
+			continue
+		var t := int(Game.data.avenues[key].tier)
+		if not tiers.has(t):
+			tiers[t] = []
+		tiers[t].append(key)
+	if tiers.is_empty():
+		_header(build_body, "Everything is built")
+		return
+	var order := tiers.keys()
+	order.sort()
+	for t in order:
+		_header(build_body, "Tier %d" % t)
+		for key in tiers[t]:
+			_town_hall_row(key)
+
+
+func _town_hall_row(key: String) -> void:
+	var a: Dictionary = Game.data.avenues[key]
+	var blockers: Array = Game.build_blockers(key)
+	# Oil needs surveys and a permit first, so it gets its own page
+	if blockers.is_empty() and key == "oil" and not Game.oil_approved():
+		_button(build_body, "%s: find oil and get the permit  >" % a.name, 0.0, true, func(): open_menu_for("oil"))
+		return
+	if not blockers.is_empty():
+		_button(build_body, "%s  (locked)  >" % a.name, 0.0, true, func(): open_menu_for(key))
+		return
+	var bp := Game.build_price(key)
+	var earns := ("  (~%s/day)" % Game.money(Game.avg_per_day(key))) if a.has("unit") else ""
+	if Game.is_champion_building(key):
+		earns = "  (~%s/day at today's numbers)" % Game.money(Game.cb_estimate(key))
+	# One row: the Build button, with a small Details button beside it
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	build_body.add_child(row)
+	_button(row, "Build %s  %s%s" % [a.name, Game.money(bp), earns], bp, Game.can_afford(bp), func(): Game.build(key))
+	row.get_child(0).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_button(row, "Details", 0.0, true, func(): open_menu_for(key))
 
 
 func _info_rows(key: String) -> void:
@@ -459,7 +520,7 @@ func _update_top_bar() -> void:
 
 func _update_favour_buttons() -> void:
 	# Crown favours (from beating levies): made once, shown only when there's a favour to spend
-	var row: HBoxContainer = status_row
+	var row: HFlowContainer = status_row
 	if not row.has_node("FavourStrike"):
 		var b1 := Button.new()
 		b1.name = "FavourStrike"
@@ -618,25 +679,16 @@ func _update_log() -> void:
 
 
 func _update_buildings() -> void:
-	# Built = solid; not built = faint ghost with a hint
+	# Only built buildings stand on the island (and can be clicked); the rest are bought at the Town Hall
 	for b in $Buildings.get_children():
 		var key: String = b.name
-		var a: Dictionary = Game.data.avenues[key]
-		var tag: Label3D = b.get_node("Tag")
-		# Only your champion's own building stands on the champion plot (hidden ones can't be clicked)
-		if Game.is_champion_building(key):
-			var mine: bool = key == Game.champion_building()
-			b.visible = mine
-			b.get_node("Click/Shape").disabled = not mine
-			if not mine:
-				continue
-		if Game.built.has(key):
-			b.material_override = null
-			tag.text = a.name
-		else:
-			b.material_override = ghost_mat
-			var open: bool = Game.build_blockers(key).is_empty() if Game.is_champion_building(key) else Game.tier_open(int(a.tier))
-			tag.text = a.name + ("\n(click to build)" if open else "\n(locked)")
+		var shown: bool = Game.built.has(key)
+		# Only your champion's own building stands on the champion plot
+		if Game.is_champion_building(key) and key != Game.champion_building():
+			shown = false
+		b.visible = shown
+		b.get_node("Click/Shape").disabled = not shown
+		b.get_node("Tag").text = Game.data.avenues[key].name
 
 
 # ---------- Right panel: boats ----------
@@ -644,8 +696,8 @@ func _update_buildings() -> void:
 func _rebuild_side_panel() -> void:
 	for c in list.get_children():
 		c.queue_free()
-	_header(list, "Click a building or the dock")
-	_text(list, "Every building on the island opens its own menu: build it, buy more, upgrade it. The dock opens fishing boats and the harbor.")
+	_header(list, "Your fleet")
+	_text(list, "Choose where each boat works, then press Start Day. Click a building on the island (or the dock) to buy more and upgrade it.")
 	_button(list, "Open Dock and Harbor", 0.0, true, func(): open_menu_for("fish"))
 	# Shortcuts in case the ship or letterbox is off screen
 	if Game.pending_offer >= 0 and Game.pending_push < 0 and not offer_open:
@@ -670,16 +722,17 @@ func _rebuild_side_panel() -> void:
 	if Game.units_owned("cray") > 0:
 		_text(list, "Cray ship x%d, %d pots each (orange, left of the harbor)" % [Game.units_owned("cray"), Game.pots_per_ship()])
 
-	_header(list, "Buildings")
+	_header(list, "Your buildings")
+	var owned := 0
 	for key in Game.data.avenues:
-		var a: Dictionary = Game.data.avenues[key]
-		# Only your own champion's building is listed
-		if Game.is_champion_building(key) and key != Game.champion_building():
+		if not Game.built.has(key):
 			continue
-		var open: bool = Game.build_blockers(key).is_empty() if Game.is_champion_building(key) else Game.tier_open(int(a.tier))
-		var state := "built" if Game.built.has(key) else ("not built" if open else "locked")
-		var label := "%s  (%s, champion)" % [a.name, state] if Game.is_champion_building(key) else "%s  (%s)" % [a.name, state]
+		var a: Dictionary = Game.data.avenues[key]
+		owned += 1
+		var label: String = "%s  (champion)" % a.name if Game.is_champion_building(key) else a.name
 		_button(list, label, 0.0, true, func(): open_menu_for(key))
+	if owned == 0:
+		_text(list, "None yet. Buy your first at the Town Hall.")
 
 
 func _boat_row(i: int, number: int) -> void:
@@ -723,7 +776,7 @@ func _boat_row(i: int, number: int) -> void:
 func _header(into: Control, text: String) -> void:
 	var l := Label.new()
 	l.text = text
-	l.add_theme_font_size_override("font_size", 20)
+	l.theme_type_variation = "Heading"
 	into.add_child(l)
 
 
@@ -731,7 +784,7 @@ func _text(into: Control, text: String) -> void:
 	var l := Label.new()
 	l.text = text
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	l.modulate = Color(0.8, 0.8, 0.8)
+	l.modulate = Color(0.88, 0.88, 0.88)
 	into.add_child(l)
 
 
@@ -762,6 +815,7 @@ func _add_boat_node(b: Dictionary) -> void:
 	var n: Node3D = BOAT_SCENE.instantiate()
 	$Boats.add_child(n)
 	n.set_color(BOAT_COLORS[b.kind])
+	n.set_kind(b.kind)
 	n.position = $Spots/DockSpot.position
 	boat_nodes.append(n)
 
@@ -771,24 +825,30 @@ func _spot_for(zone: String, kind: String, index_in_zone: int) -> Vector3:
 	if kind == "whale":
 		return $Spots/DeepSpot.position + Vector3((i % 8) * 6.0, 0, 9.0)
 	if kind == "barge":
-		return Vector3(-11.0 + (i % 4) * 3.2, 0, 29.0)
+		return Vector3(-11.0 + (i % 4) * 3.2, 0, 24.0)
 	if zone == "voyage":
-		# Away on a voyage: over the western horizon
-		return Vector3(-160.0 - (i % 4) * 6.0, 0, -30.0 + (i / 4) * 6.0)
+		# Away on a voyage: over the eastern horizon, out past the sea cave
+		return Vector3(160.0 + (i % 4) * 6.0, 0, -30.0 + (i / 4) * 6.0)
 	if zone == "hidden":
-		# Tucked into a cove on the east coast
-		return Vector3(17.0 + (i % 3) * 2.6, 0, -4.0 + (i / 3) * 3.4)
+		# Inside the sea cave on the east coast (3 x 3 berths), then anchored off its east side
+		if i < 9:
+			return Vector3(19.5 + (i % 3) * 2.2, 0, -17.8 + (i / 3) * 3.2)
+		return Vector3(40.0 + ((i - 9) % 3) * 3.0, 0, -18.0 + ((i - 9) / 3) * 4.0)
 	if kind == "smuggler":
-		return $Spots/DeepSpot.position + Vector3(-12.0 - (i % 4) * 4.0, 0, (i / 4) * 4.0)
+		# Moored in the cove in front of the sea cave, then a second block further east
+		if i < 16:
+			return Vector3(17.5 + (i % 4) * 2.4, 0, -6.0 + (i / 4) * 3.4)
+		return Vector3(49.0 + ((i - 16) % 3) * 3.0, 0, -18.0 + ((i - 16) / 3) * 4.0)
 	if kind == "pirate":
-		return $Spots/DeepSpot.position + Vector3(-12.0 - (i % 4) * 4.0, 0, 10.0 + (i / 4) * 4.0)
+		# Anchored offshore just east of the sea cave
+		return Vector3(31.0 + (i % 3) * 3.0, 0, -20.0 + (i / 3) * 4.0)
 	if kind == "rig":
 		return Vector3(30.0 + (i % 4) * 5.0, 0, 36.0 + (i / 4) * 5.0)
 	match zone:
 		"dock":
 			# Two rows either side of the dock
 			var side := -1 if i % 2 == 0 else 1
-			return Vector3(2.6 * side, 0, 15.5 + (i / 2) * 3.2)
+			return Vector3(2.6 * side, 0, 3.5 + (i / 2) * 3.2)
 		"harbor":
 			if kind == "crab":
 				return $Spots/CrabSpot.position + Vector3((i % 3) * 3.0, 0, (i / 3) * 3.6)
@@ -809,6 +869,9 @@ func _place_cray() -> void:
 			var n: Node3D = BOAT_SCENE.instantiate()
 			$Boats.add_child(n)
 			n.set_color(Color(1.0, 0.5, 0.1))
+			n.set_kind("cray")
+			# Its pots hang off it, so it swings less than other boats
+			n.swing = 0.12
 			n.position = Vector3(-24.0 - (i % 3) * 7.0, 0, 8.0 + (i / 3) * 6.0)
 			cray_nodes.append(n)
 		var ship: Node3D = cray_nodes[i]
@@ -846,9 +909,11 @@ func _place_boats(seconds: float) -> void:
 		counts[key] = idx + 1
 		var n: Node3D = boat_nodes[i]
 		n.set_color(BOAT_COLORS[b.kind])
+		n.set_kind(b.kind)
 		var was: String = n.get_meta("zone", zone)
 		n.set_meta("zone", zone)
 		var spot := _spot_for(zone, b.kind, idx)
+		_set_drift(n, zone, b.kind)
 		if zone == "voyage" and was != "voyage":
 			# Setting off: a slow sail out to the horizon, then out of sight
 			n.set_meta("busy_until", Time.get_ticks_msec() + VOYAGE_SAIL * 1000)
@@ -867,6 +932,26 @@ func _place_boats(seconds: float) -> void:
 			n.sail_to(spot, seconds)
 
 
+func _set_drift(n: Node3D, zone: String, kind: String) -> void:
+	# How much a boat drifts at anchor: tied-up boats at the dock or in the cave barely move, boats in open water swing more
+	var swing := 0.3
+	var surge := 0.4
+	if kind == "rig":
+		swing = 0.0
+		surge = 0.0
+	elif zone == "dock" or zone == "hidden":
+		swing = 0.06
+		surge = 0.1
+	elif kind == "smuggler":
+		swing = 0.15
+		surge = 0.25
+	elif zone == "deep" or kind == "whale" or kind == "pirate":
+		swing = 0.5
+		surge = 0.6
+	n.swing = swing
+	n.surge = surge
+
+
 # ---------- The day ----------
 
 func _on_start_day() -> void:
@@ -877,7 +962,7 @@ func _on_start_day() -> void:
 	# Boats head out a little before the weather shows
 	for n in boat_nodes:
 		if n.visible and Time.get_ticks_msec() >= int(n.get_meta("busy_until", 0)):
-			n.sail_to(n.position + Vector3(0, 0, 3), SAIL_TIME * 0.6)
+			n.head_out(3.0, SAIL_TIME * 0.6)
 	await get_tree().create_timer(SAIL_TIME * 0.6).timeout
 	var report: Dictionary = Game.start_day()
 	_show_weather(report.weather)
@@ -909,12 +994,8 @@ func _on_start_day() -> void:
 
 
 func _show_weather(w: String) -> void:
-	var look: Dictionary = WEATHER_LOOK[w]
-	var t := create_tween().set_parallel(true)
-	t.tween_property(env.sky.sky_material, "sky_top_color", look.sky, 0.8)
-	t.tween_property(sun, "light_energy", look.sun, 0.8)
-	t.tween_property(ocean_mat, "albedo_color", look.ocean, 0.8)
-	env.fog_enabled = look.fog
+	# Sky, sun, fog, sea, clouds, rain and lightning all live in WeatherFX (scenes/weather_fx.tscn)
+	$WeatherFX.set_weather(w)
 	for n in boat_nodes:
 		n.bob_strength = 0.35 if w == "storm" else 0.08
 
@@ -1338,14 +1419,15 @@ func _update_talk() -> void:
 
 # ---------- The mail boat, the postman and the letterbox ----------
 
-const MAIL_BERTH := Vector3(-4.0, 0, 26.0)
+const MAIL_BERTH := Vector3(-4.0, 0, 14.0)
 const MAIL_FAR := Vector3(-60.0, 0, 80.0)
-const LETTERBOX_AT := Vector3(-2.6, 3.0, 13.4)
+const LETTERBOX_AT := Vector3(-2.6, 3.0, 1.4)
 # The one plot where your champion's own building stands (middle of the island, clear of the house and the other buildings)
 const CHAMPION_PLOT := Vector3(2.5, 4.0, -2.5)
-# Where each records building stands (spots chosen clear of every other building)
-const INFO_SPOTS := {"harbour_office": Vector3(-0.5, 4.0, 4.5), "gazette_office": Vector3(-4.5, 4.0, 8.5), "counting_house": Vector3(5.5, 4.0, 8.0), "customs_house": Vector3(-10.5, 4.0, -4.0), "watch_house": Vector3(-1.5, 4.0, -7.5)}
-const VISITOR_BERTH := Vector3(6.5, 0, 27.0)
+# Where each records building stands (spots chosen clear of every other building).
+# The watch house sits on the hill north of town, the customs house at the tip of the harbour's west arm.
+const INFO_SPOTS := {"harbour_office": Vector3(-6.5, 4.0, -0.5), "gazette_office": Vector3(-3.5, 4.0, -8.0), "counting_house": Vector3(8.0, 4.0, -0.5), "customs_house": Vector3(-15.0, 2.5, 15.0), "watch_house": Vector3(0.0, 7.0, -15.0)}
+const VISITOR_BERTH := Vector3(6.5, 0, 15.0)
 const VISITOR_FAR := Vector3(70.0, 0, 80.0)
 var mail_boat: Node3D
 var postman: Node3D
@@ -1442,6 +1524,30 @@ func _make_champion_buildings() -> void:
 		_click_body(ib, Vector3(2.8, 2.4, 2.8))
 
 
+const TOWN_HALL_AT := Vector3(-4.0, 3.0, -3.5)
+
+
+func _make_town_hall() -> void:
+	# GREYBOX: a bigger stone box with a dark roof in the town square. Real model still to make.
+	var hall := Node3D.new()
+	hall.name = "TownHall"
+	hall.position = TOWN_HALL_AT
+	add_child(hall)
+	_mesh(_box(Vector3(4.0, 3.0, 3.6)), Color(0.82, 0.78, 0.68), Vector3(0, 1.5, 0), hall)
+	_mesh(_box(Vector3(4.4, 0.5, 4.0)), Color(0.35, 0.3, 0.32), Vector3(0, 3.25, 0), hall)
+	_mesh(_box(Vector3(1.0, 1.2, 1.0)), Color(0.82, 0.78, 0.68), Vector3(0, 4.1, 0), hall)
+	var tag := Label3D.new()
+	tag.name = "Tag"
+	tag.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	tag.position = Vector3(0, 5.3, 0)
+	tag.pixel_size = 0.02
+	tag.font_size = 64
+	tag.outline_size = 14
+	tag.text = "Town Hall"
+	hall.add_child(tag)
+	_click_body(hall, Vector3(4.2, 4.5, 3.8), Vector3(0, 2.2, 0))
+
+
 func _make_mail_props() -> void:
 	# GREYBOX placeholders: the real letterbox, mail boat and TABS-style postman are models still to make
 	letterbox = Node3D.new()
@@ -1495,9 +1601,12 @@ func _make_mail_props() -> void:
 	mail_boat = BOAT_SCENE.instantiate()
 	mail_boat.name = "MailBoat"
 	add_child(mail_boat)
-	mail_boat.set_color(Color(0.9, 0.9, 0.95))
+	mail_boat.set_kind("mail")
 	mail_boat.position = MAIL_FAR
 	mail_boat.visible = false
+	# Tied up at the dock while the post is unloaded, so it barely drifts
+	mail_boat.swing = 0.05
+	mail_boat.surge = 0.1
 
 	postman = Node3D.new()
 	postman.name = "Postman"
@@ -1523,18 +1632,19 @@ func _make_mail_props() -> void:
 	visitor_ship = BOAT_SCENE.instantiate()
 	visitor_ship.name = "VisitorShip"
 	add_child(visitor_ship)
-	visitor_ship.set_color(Color(0.55, 0.2, 0.6))
-	visitor_ship.scale = Vector3(1.6, 1.6, 1.6)
+	visitor_ship.set_kind("visitor")
 	visitor_ship.position = VISITOR_FAR
 	visitor_ship.visible = false
+	visitor_ship.swing = 0.05
+	visitor_ship.surge = 0.1
 	var vt := Label3D.new()
 	vt.text = "Visitors\n(click)"
 	vt.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	vt.font_size = 40
 	vt.outline_size = 8
-	vt.position = Vector3(0, 2.4, 0)
+	vt.position = Vector3(0, 5.0, 0)
 	visitor_ship.add_child(vt)
-	_click_body(visitor_ship, Vector3(2.5, 2.5, 4.0), Vector3(0, 1.0, 0))
+	_click_body(visitor_ship, Vector3(2.4, 4.0, 4.6), Vector3(0, 2.0, 0))
 
 
 func _set_letterbox(mail: bool) -> void:
@@ -1564,7 +1674,7 @@ func _deliver_mail() -> void:
 	postman.visible = true
 	postman.position = MAIL_BERTH + Vector3(2.5, 0.65, -1.5)
 	var walk := create_tween()
-	walk.tween_property(postman, "position", Vector3(0, 0.65, 15.0), 1.6)
+	walk.tween_property(postman, "position", Vector3(0, 0.65, 3.0), 1.6)
 	walk.tween_property(postman, "position", LETTERBOX_AT + Vector3(0, 0, 1.2), 0.9)
 	await walk.finished
 	var door: Node3D = letterbox.get_node("Door")
@@ -1577,7 +1687,7 @@ func _deliver_mail() -> void:
 	_set_letterbox(true)
 	mail_state = "done"
 	var back := create_tween()
-	back.tween_property(postman, "position", Vector3(0, 0.65, 15.0), 0.9)
+	back.tween_property(postman, "position", Vector3(0, 0.65, 3.0), 0.9)
 	back.tween_property(postman, "position", MAIL_BERTH + Vector3(2.5, 0.65, -1.5), 1.6)
 	await back.finished
 	postman.visible = false
@@ -1696,6 +1806,12 @@ const ZOOM_STEP := 0.1
 const TURN_DRAG := 0.3
 const TURN_KEYS := 70.0
 var cam_target := Vector3.ZERO
+# How far W A S D have moved the view from the island (metres along the sea)
+var cam_pan := Vector3.ZERO
+# Speed of W A S D, as a share of the zoom distance per second (so it feels the same zoomed in or out)
+const PAN_SPEED := 0.9
+# How far the view may wander from the island centre
+const PAN_LIMIT := 90.0
 var cam_dist := 60.0
 var cam_yaw := 0.0
 var cam_pitch := 0.0
@@ -1724,7 +1840,7 @@ func _setup_camera() -> void:
 func _apply_camera() -> void:
 	var cam: Camera3D = $Camera3D
 	# The island centre is (0, 0, 0), so the whole view circles the island
-	cam_target = cam_target0.rotated(Vector3.UP, cam_yaw - cam_yaw0)
+	cam_target = cam_target0.rotated(Vector3.UP, cam_yaw - cam_yaw0) + cam_pan
 	var off := Vector3(sin(cam_yaw) * cos(cam_pitch), sin(cam_pitch), cos(cam_yaw) * cos(cam_pitch)) * cam_dist
 	cam.global_position = cam_target + off
 	cam.look_at(cam_target, Vector3.UP)
@@ -1752,6 +1868,7 @@ func _camera_input(event: InputEvent) -> bool:
 
 
 func _process(delta: float) -> void:
+	_keep_windows_on_screen()
 	var turn := 0.0
 	if Input.is_physical_key_pressed(KEY_Q):
 		turn += 1.0
@@ -1760,6 +1877,48 @@ func _process(delta: float) -> void:
 	if turn != 0.0:
 		cam_yaw += deg_to_rad(turn * TURN_KEYS * delta)
 		_apply_camera()
+	# W A S D (or arrows) slide the view along the sea, in the direction the camera faces
+	var move := Vector2.ZERO
+	if Input.is_physical_key_pressed(KEY_W) or Input.is_physical_key_pressed(KEY_UP):
+		move.y += 1.0
+	if Input.is_physical_key_pressed(KEY_S) or Input.is_physical_key_pressed(KEY_DOWN):
+		move.y -= 1.0
+	if Input.is_physical_key_pressed(KEY_D) or Input.is_physical_key_pressed(KEY_RIGHT):
+		move.x += 1.0
+	if Input.is_physical_key_pressed(KEY_A) or Input.is_physical_key_pressed(KEY_LEFT):
+		move.x -= 1.0
+	if move != Vector2.ZERO:
+		var forward := Vector3(-sin(cam_yaw), 0.0, -cos(cam_yaw))
+		var right := Vector3(cos(cam_yaw), 0.0, -sin(cam_yaw))
+		cam_pan += (forward * move.y + right * move.x).normalized() * cam_dist * PAN_SPEED * delta
+		cam_pan = cam_pan.limit_length(PAN_LIMIT)
+		_apply_camera()
+	# R: back to the island
+	if Input.is_physical_key_pressed(KEY_R) and cam_pan != Vector3.ZERO:
+		cam_pan = Vector3.ZERO
+		_apply_camera()
+
+
+func _keep_windows_on_screen() -> void:
+	# Any open window that pokes off the screen, or up under the top bars, is nudged back into the space below them
+	var screen := get_viewport().get_visible_rect()
+	var bars_bottom: float = $UI/StatusBar.get_global_rect().end.y
+	screen = Rect2(screen.position.x, bars_bottom, screen.size.x, screen.end.y - bars_bottom)
+	for c in $UI.get_children():
+		if not (c is PanelContainer) or not c.visible or c == $UI/TopBar or c == $UI/StatusBar:
+			continue
+		var r: Rect2 = c.get_global_rect()
+		var shift := Vector2.ZERO
+		if r.end.x > screen.end.x:
+			shift.x = screen.end.x - r.end.x
+		if r.position.x + shift.x < screen.position.x:
+			shift.x = screen.position.x - r.position.x
+		if r.end.y > screen.end.y:
+			shift.y = screen.end.y - r.end.y
+		if r.position.y + shift.y < screen.position.y:
+			shift.y = screen.position.y - r.position.y
+		if shift != Vector2.ZERO:
+			c.global_position += shift
 
 
 func _fit_paper() -> void:

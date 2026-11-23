@@ -1,6 +1,9 @@
 [gd_scene format=3 uid="uid://bkuepws0kbxlc"]
 
 [ext_resource type="Script" uid="uid://dyfnrl0vbc2mc" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="PackedScene" path="res://scenes/island_art.tscn" id="2_island_art"]
+[ext_resource type="PackedScene" path="res://scenes/weather_fx.tscn" id="3_weather_fx"]
+[ext_resource type="Shader" path="res://shaders/ocean.gdshader" id="4_ocean"]
 
 [sub_resource type="ProceduralSkyMaterial" id="SkyMat"]
 sky_top_color = Color(0.38, 0.6, 0.86, 1)
@@ -21,10 +24,12 @@ fog_density = 0.004
 
 [sub_resource type="PlaneMesh" id="OceanMesh"]
 size = Vector2(500, 500)
+subdivide_width = 160
+subdivide_depth = 160
 
-[sub_resource type="StandardMaterial3D" id="OceanMat"]
-albedo_color = Color(0.12, 0.38, 0.6, 1)
-roughness = 0.2
+[sub_resource type="ShaderMaterial" id="OceanMat"]
+shader = ExtResource("4_ocean")
+shader_parameter/water_color = Color(0.12, 0.36, 0.55, 1)
 
 [sub_resource type="PlaneMesh" id="DeepMesh"]
 size = Vector2(90, 18)
@@ -34,7 +39,7 @@ albedo_color = Color(0.05, 0.18, 0.35, 1)
 roughness = 0.3
 
 [sub_resource type="PlaneMesh" id="HarborMesh"]
-size = Vector2(26, 14)
+size = Vector2(27, 19)
 
 [sub_resource type="StandardMaterial3D" id="HarborMat"]
 albedo_color = Color(0.25, 0.65, 0.7, 1)
@@ -169,12 +174,12 @@ font_size = 96
 outline_size = 18
 
 [node name="Harbor" type="MeshInstance3D" parent="." unique_id=1261412307]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 23)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 11)
 mesh = SubResource("HarborMesh")
 surface_material_override/0 = SubResource("HarborMat")
 
 [node name="Label3D" type="Label3D" parent="Harbor" unique_id=197244502]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 3, 7)
 pixel_size = 0.03
 billboard = 1
 text = "HARBOR"
@@ -183,21 +188,22 @@ outline_size = 16
 
 [node name="WallWest" type="MeshInstance3D" parent="Harbor" unique_id=56754895]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, 0.5, 0)
-mesh = SubResource("WallMesh")
-surface_material_override/0 = SubResource("RockMat")
 
 [node name="WallEast" type="MeshInstance3D" parent="Harbor" unique_id=307565608]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, 0.5, 0)
-mesh = SubResource("WallMesh")
-surface_material_override/0 = SubResource("RockMat")
 
 [node name="Island" type="MeshInstance3D" parent="." unique_id=1697100740]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
-mesh = SubResource("IslandMesh")
-surface_material_override/0 = SubResource("RockMat")
+
+[node name="IslandArt" parent="." instance=ExtResource("2_island_art")]
+
+[node name="WeatherFX" parent="." node_paths=PackedStringArray("world_env", "sun", "ocean") instance=ExtResource("3_weather_fx")]
+world_env = NodePath("../WorldEnvironment")
+sun = NodePath("../Sun")
+ocean = NodePath("../Ocean")
 
 [node name="House" type="MeshInstance3D" parent="Island" unique_id=2087280424]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3, -3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 6, -3)
 mesh = SubResource("HouseMesh")
 surface_material_override/0 = SubResource("HouseMat")
 
@@ -210,9 +216,7 @@ font_size = 64
 outline_size = 14
 
 [node name="Dock" type="MeshInstance3D" parent="." unique_id=1264865655]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 19)
-mesh = SubResource("DockMesh")
-surface_material_override/0 = SubResource("WoodMat")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 7)
 
 [node name="Click" type="StaticBody3D" parent="Dock" unique_id=1502041809]
 
@@ -222,7 +226,7 @@ shape = SubResource("DockShape")
 [node name="Buildings" type="Node3D" parent="." unique_id=1251880879]
 
 [node name="deep" type="MeshInstance3D" parent="Buildings" unique_id=1874541654]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 4, 7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 2.5, 15)
 mesh = SubResource("ShedMesh")
 surface_material_override/0 = SubResource("DeepDockMat")
 
@@ -240,7 +244,7 @@ outline_size = 14
 shape = SubResource("ShedShape")
 
 [node name="pearl" type="MeshInstance3D" parent="Buildings" unique_id=240227982]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 4, 7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 4, -9)
 mesh = SubResource("ShedMesh")
 surface_material_override/0 = SubResource("PearlMat")
 
@@ -258,7 +262,7 @@ outline_size = 14
 shape = SubResource("ShedShape")
 
 [node name="crab" type="MeshInstance3D" parent="Buildings" unique_id=111322382]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 4, -5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 4, 9)
 mesh = SubResource("ShedMesh")
 surface_material_override/0 = SubResource("CrabMat")
 
@@ -276,7 +280,7 @@ outline_size = 14
 shape = SubResource("ShedShape")
 
 [node name="cray" type="MeshInstance3D" parent="Buildings" unique_id=1549446403]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 4, -9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 4, 3)
 mesh = SubResource("ShedMesh")
 surface_material_override/0 = SubResource("CrayMat")
 
@@ -294,7 +298,7 @@ outline_size = 14
 shape = SubResource("ShedShape")
 
 [node name="salvage" type="MeshInstance3D" parent="Buildings" unique_id=103584046]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 4, -9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 2.5, -39)
 mesh = SubResource("ShedMesh")
 surface_material_override/0 = SubResource("SalvageMat")
 
@@ -312,7 +316,7 @@ outline_size = 14
 shape = SubResource("ShedShape")
 
 [node name="treasure" type="MeshInstance3D" parent="Buildings" unique_id=1246569087]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 4, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27, 8.5, -15)
 mesh = SubResource("ShedMesh")
 surface_material_override/0 = SubResource("TreasureMat")
 
@@ -330,7 +334,7 @@ outline_size = 14
 shape = SubResource("ShedShape")
 
 [node name="whaling" type="MeshInstance3D" parent="Buildings" unique_id=1565977483]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 4, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 4, -39)
 mesh = SubResource("ShedMesh")
 surface_material_override/0 = SubResource("WhalingMat")
 
@@ -348,7 +352,7 @@ outline_size = 14
 shape = SubResource("ShedShape")
 
 [node name="smuggle" type="MeshInstance3D" parent="Buildings" unique_id=36467120]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 4, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 5.5, 3)
 mesh = SubResource("ShedMesh")
 surface_material_override/0 = SubResource("SmuggleMat")
 
@@ -366,7 +370,7 @@ outline_size = 14
 shape = SubResource("ShedShape")
 
 [node name="hiding" type="MeshInstance3D" parent="Buildings" unique_id=1016906495]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 4, 3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 8.5, -21)
 mesh = SubResource("ShedMesh")
 surface_material_override/0 = SubResource("HidingMat")
 
@@ -384,7 +388,7 @@ outline_size = 14
 shape = SubResource("ShedShape")
 
 [node name="piracy" type="MeshInstance3D" parent="Buildings" unique_id=95671725]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 4, 10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 5.5, -24)
 mesh = SubResource("ShedMesh")
 surface_material_override/0 = SubResource("PirateMat")
 
@@ -420,7 +424,7 @@ outline_size = 14
 shape = SubResource("PlatformShape")
 
 [node name="lighthouse" type="MeshInstance3D" parent="Buildings" unique_id=819541797]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 6.5, 12.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 6.5, 6)
 mesh = SubResource("LighthouseMesh")
 surface_material_override/0 = SubResource("LighthouseMat")
 
@@ -438,7 +442,7 @@ outline_size = 14
 shape = SubResource("LighthouseShape")
 
 [node name="meteo" type="MeshInstance3D" parent="Buildings" unique_id=1485476440]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 4, 3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 11.5, -36)
 mesh = SubResource("ShedMesh")
 surface_material_override/0 = SubResource("MeteoMat")
 
@@ -458,13 +462,13 @@ shape = SubResource("ShedShape")
 [node name="Spots" type="Node3D" parent="." unique_id=1441376326]
 
 [node name="DockSpot" type="Marker3D" parent="Spots" unique_id=258577791]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, 16)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, 4)
 
 [node name="HarborSpot" type="Marker3D" parent="Spots" unique_id=2132869666]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0, 22)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 10)
 
 [node name="CrabSpot" type="Marker3D" parent="Spots" unique_id=1060800040]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 22)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 10)
 
 [node name="DeepSpot" type="Marker3D" parent="Spots" unique_id=1277087499]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 40)
@@ -474,13 +478,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 40)
 [node name="UI" type="CanvasLayer" parent="." unique_id=154421054]
 
 [node name="TopBar" type="PanelContainer" parent="UI" unique_id=958963458]
+theme_type_variation = &"HudBar"
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 44.0
 
-[node name="Row" type="HBoxContainer" parent="UI/TopBar" unique_id=892193623]
+[node name="Row" type="HFlowContainer" parent="UI/TopBar" unique_id=892193623]
 layout_mode = 2
-theme_override_constants/separation = 36
+theme_override_constants/h_separation = 28
+theme_override_constants/v_separation = 2
 
 [node name="Day" type="Label" parent="UI/TopBar/Row" unique_id=1140279]
 layout_mode = 2
@@ -518,37 +524,69 @@ text = "  ?  How to play  "
 layout_mode = 2
 text = "  My run  "
 
-[node name="Shop" type="PanelContainer" parent="UI" unique_id=464357151]
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -440.0
-offset_top = 88.0
-offset_right = -8.0
-offset_bottom = -8.0
+[node name="TownHallWindow" type="PanelContainer" parent="UI"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -410.0
+offset_top = -335.0
+offset_right = 410.0
+offset_bottom = 300.0
 
-[node name="Scroll" type="ScrollContainer" parent="UI/Shop" unique_id=62729279]
+[node name="Box" type="VBoxContainer" parent="UI/TownHallWindow"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="UI/TownHallWindow/Box"]
+layout_mode = 2
+theme_type_variation = &"Title"
+text = "Town Hall"
+horizontal_alignment = 1
+
+[node name="Line" type="HSeparator" parent="UI/TownHallWindow/Box"]
+layout_mode = 2
+
+[node name="Tabs" type="TabContainer" parent="UI/TownHallWindow/Box"]
+custom_minimum_size = Vector2(750, 410)
+layout_mode = 2
+size_flags_vertical = 3
+current_tab = 0
+
+[node name="Build" type="ScrollContainer" parent="UI/TownHallWindow/Box/Tabs"]
 layout_mode = 2
 horizontal_scroll_mode = 0
+metadata/_tab_index = 0
 
-[node name="List" type="VBoxContainer" parent="UI/Shop/Scroll" unique_id=997452222]
+[node name="Body" type="VBoxContainer" parent="UI/TownHallWindow/Box/Tabs/Build"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 6
 
-[node name="LogPanel" type="PanelContainer" parent="UI" unique_id=54175923]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 8.0
-offset_top = -170.0
-offset_right = 470.0
-offset_bottom = -8.0
+[node name="Fleet" type="ScrollContainer" parent="UI/TownHallWindow/Box/Tabs"]
+visible = false
+layout_mode = 2
+horizontal_scroll_mode = 0
+metadata/_tab_index = 1
 
-[node name="Log" type="RichTextLabel" parent="UI/LogPanel" unique_id=1213090411]
+[node name="List" type="VBoxContainer" parent="UI/TownHallWindow/Box/Tabs/Fleet"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="Ledger" type="RichTextLabel" parent="UI/TownHallWindow/Box/Tabs"]
+visible = false
 layout_mode = 2
 scroll_following = true
+metadata/_tab_index = 2
+
+[node name="Close" type="Button" parent="UI/TownHallWindow/Box"]
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+theme_type_variation = &"BigButton"
+text = "Close"
 
 [node name="Actions" type="HBoxContainer" parent="UI" unique_id=1767336940]
 anchors_preset = 7
@@ -556,20 +594,29 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -200.0
-offset_top = -76.0
-offset_right = 140.0
+offset_left = -330.0
+offset_top = -78.0
+offset_right = 330.0
 offset_bottom = -16.0
-theme_override_constants/separation = 12
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="TownHall" type="Button" parent="UI/Actions"]
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+theme_type_variation = &"BigButton"
+text = "Town Hall"
 
 [node name="StartDay" type="Button" parent="UI/Actions" unique_id=771791025]
-custom_minimum_size = Vector2(170, 56)
+custom_minimum_size = Vector2(200, 60)
 layout_mode = 2
+theme_type_variation = &"BigButton"
 text = "Start Day"
 
 [node name="BuyIsland" type="Button" parent="UI/Actions" unique_id=1212010355]
-custom_minimum_size = Vector2(170, 56)
+custom_minimum_size = Vector2(220, 60)
 layout_mode = 2
+theme_type_variation = &"BigButton"
 text = "Buy the Island"
 
 [node name="EndScreen" type="PanelContainer" parent="UI" unique_id=1895495359]
@@ -583,7 +630,6 @@ offset_left = -260.0
 offset_top = -110.0
 offset_right = 260.0
 offset_bottom = 110.0
-theme_override_styles/panel = SubResource("SolidPanel")
 
 [node name="Box" type="VBoxContainer" parent="UI/EndScreen" unique_id=637874138]
 layout_mode = 2
@@ -611,7 +657,7 @@ offset_left = -330.0
 offset_top = -112.0
 offset_right = 330.0
 offset_bottom = -82.0
-text = "Choose where your boats work, then press Start Day."
+text = "Choose where your boats work (Town Hall, Fleet tab), then press Start Day."
 horizontal_alignment = 1
 
 [node name="HelpPanel" type="PanelContainer" parent="UI" unique_id=1754659856]
@@ -624,29 +670,28 @@ offset_left = -420.0
 offset_top = -330.0
 offset_right = 420.0
 offset_bottom = 330.0
-theme_override_styles/panel = SubResource("SolidPanel")
 
 [node name="Box" type="VBoxContainer" parent="UI/HelpPanel" unique_id=326162388]
 layout_mode = 2
 theme_override_constants/separation = 12
 
 [node name="Text" type="RichTextLabel" parent="UI/HelpPanel/Box" unique_id=1234390104]
-custom_minimum_size = Vector2(800, 580)
+custom_minimum_size = Vector2(800, 470)
 layout_mode = 2
 bbcode_enabled = true
 text = "[font_size=26][b]How to play[/b][/font_size]
 
-[b]Camera:[/b] mouse wheel zooms in and out. Hold the right mouse button and drag (or hold Q / E) to turn around the island.
+[b]Camera:[/b] W A S D (or the arrow keys) move around. Mouse wheel zooms in and out. Hold the right mouse button and drag (or hold Q / E) to turn. R brings the view back to the island.
 
 [b]Goal:[/b] save enough to buy the island (top bar) and press [b]Buy the Island[/b].
 
-[b]Each day[/b] choose where each boat works (right panel), then press [b]Start Day[/b].
+[b]Each day[/b] choose where each boat works ([b]Town Hall[/b], Fleet tab), then press [b]Start Day[/b].
    [b]Harbor[/b]: safe (never sinks), small catch, limited spaces.  [b]Deep[/b] (needs the Deep Sea Dock): big catch on calm days, but storms can sink it; the dock's Hull raises survival (20% up to 60%).  [b]Dock[/b]: parked.
 The weather is secret until the boats head out: perfect days pay most, normal days less, storms are dangerous.
 
 [b]Every 7 days[/b] you pay rent [b]and tax[/b]. Tax is taken from the clean money you earned that week (dirty money isn't taxed): the first $1,000 is tax-free, then 16%, 30%, 37% and 45% as you earn more. The top bar shows the next bill and how much is safe to spend; buttons turn orange if a buy leaves you short. If you can't pay, the Silent Partner lends the rest at 5% a day; repay within 7 days or your things are sold.
 
-[b]Buildings:[/b] click any building (or the dock) to build, buy and upgrade. Faint ones aren't built yet. 
+[b]Buildings:[/b] buy new buildings at the [b]Town Hall[/b] in the middle of town. Once built, a building appears on the island: click it (or the dock) to buy more and upgrade. 
 [b]Visitors:[/b] after the weekly bills, two people may come with rival offers for something you own (for example stronger hulls OR better nets). Pay for one and the other leaves for good, or say Not now and they come back later.
 [b]Weather tools[/b] (optional, never needed to unlock a tier): the [b]Lighthouse[/b] (tier 1) can guide storm-caught deep boats home instead of sinking. The [b]Weather Bureau[/b] (tier 3) forecasts tomorrow, but is only right some of the time.
 [b]Tiers:[/b] 1 fishing, pearls, crab, cray, deep sea  ->  2 salvage, treasure, whaling  ->  3 smuggling, hidden moorings, piracy  ->  4 oil. [b]Oil[/b] can be hunted from day 1 (click the Oil Platform plot): pay for surveys until one strikes, wait for the permit, then the platform takes 4 weeks to build. A tier opens when you own every building in the tier below and their upgrades reach a set level (the locked building's menu lists what's missing). Later avenues boost earlier ones (supply chains).
@@ -678,14 +723,13 @@ offset_left = -470.0
 offset_top = -350.0
 offset_right = 470.0
 offset_bottom = 350.0
-theme_override_styles/panel = SubResource("SolidPanel")
 
 [node name="Box" type="VBoxContainer" parent="UI/RunPanel" unique_id=579910526]
 layout_mode = 2
 theme_override_constants/separation = 12
 
 [node name="Text" type="RichTextLabel" parent="UI/RunPanel/Box" unique_id=1264097360]
-custom_minimum_size = Vector2(900, 620)
+custom_minimum_size = Vector2(900, 480)
 layout_mode = 2
 bbcode_enabled = true
 text = "My run"
@@ -701,7 +745,6 @@ offset_left = 8.0
 offset_top = 88.0
 offset_right = 560.0
 offset_bottom = 720.0
-theme_override_styles/panel = SubResource("SolidPanel")
 
 [node name="Box" type="VBoxContainer" parent="UI/BuildingMenu" unique_id=811906942]
 layout_mode = 2
@@ -709,11 +752,11 @@ theme_override_constants/separation = 10
 
 [node name="Title" type="Label" parent="UI/BuildingMenu/Box" unique_id=545360649]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
+theme_type_variation = &"Title"
 text = "Building"
 
 [node name="Scroll" type="ScrollContainer" parent="UI/BuildingMenu/Box" unique_id=1446618627]
-custom_minimum_size = Vector2(510, 540)
+custom_minimum_size = Vector2(510, 470)
 layout_mode = 2
 horizontal_scroll_mode = 0
 
@@ -728,14 +771,16 @@ layout_mode = 2
 text = "Close"
 
 [node name="StatusBar" type="PanelContainer" parent="UI" unique_id=1953444211]
+theme_type_variation = &"HudBar"
 anchors_preset = 10
 anchor_right = 1.0
 offset_top = 44.0
 offset_bottom = 80.0
 
-[node name="Row" type="HBoxContainer" parent="UI/StatusBar" unique_id=1634830404]
+[node name="Row" type="HFlowContainer" parent="UI/StatusBar" unique_id=1634830404]
 layout_mode = 2
-theme_override_constants/separation = 36
+theme_override_constants/h_separation = 28
+theme_override_constants/v_separation = 2
 
 [node name="Crown" type="Label" parent="UI/StatusBar/Row" unique_id=1819409694]
 layout_mode = 2
@@ -769,7 +814,6 @@ offset_left = -340.0
 offset_top = -230.0
 offset_right = 340.0
 offset_bottom = 230.0
-theme_override_styles/panel = SubResource("SolidPanel")
 
 [node name="Box" type="VBoxContainer" parent="UI/CrownChoice" unique_id=1436152941]
 layout_mode = 2
@@ -807,7 +851,6 @@ offset_left = -380.0
 offset_top = -250.0
 offset_right = 380.0
 offset_bottom = 250.0
-theme_override_styles/panel = SubResource("SolidPanel")
 
 [node name="Box" type="VBoxContainer" parent="UI/OfferChoice" unique_id=1459560781]
 layout_mode = 2

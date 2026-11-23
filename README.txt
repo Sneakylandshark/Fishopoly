@@ -6,8 +6,8 @@ HOW TO OPEN
 3. Press F5 (or the Play button, top right) to play.
 
 HOW TO PLAY (also shown in the game: the How to play panel, and the ? button at the top)
-- Click a building on the island (or the dock) to open its menu: build it, buy more, upgrade it.
-  Faint buildings aren't built yet. The right panel sets where boats work and lists every building.
+- Click a building on the island (or the dock) to open its menu: buy more, upgrade it.
+  New buildings are bought at the Town Hall and only appear once built. The Town Hall also has the Fleet tab (where boats work, your buildings) and the Ledger (the day log).
 - Each boat row lets you choose Harbor (safe, earns less, limited spaces), Deep (more money, sinks in storms)
   or Dock (does nothing).
 - Press Start Day. The weather is rolled in secret and shown once the boats head out.

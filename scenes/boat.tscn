@@ -11,6 +11,24 @@ size = Vector3(0.8, 0.5, 0.9)
 [sub_resource type="StandardMaterial3D" id="Mat_cabin"]
 albedo_color = Color(0.95, 0.95, 0.95, 1)
 
+[sub_resource type="StandardMaterial3D" id="Mat_wake"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 1, 1, 1)
+
+[sub_resource type="PlaneMesh" id="Mesh_wake"]
+material = SubResource("Mat_wake")
+size = Vector2(0.45, 0.45)
+
+[sub_resource type="Gradient" id="Grad_wake"]
+offsets = PackedFloat32Array(0, 0.15, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 0.75, 1, 1, 1, 0)
+
+[sub_resource type="Curve" id="Curve_wake"]
+_data = [Vector2(0, 0.5), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
 [node name="Boat" type="Node3D"]
 script = ExtResource("1_boat")
 
@@ -22,3 +40,25 @@ mesh = SubResource("BoxMesh_hull")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.4)
 mesh = SubResource("BoxMesh_cabin")
 surface_material_override/0 = SubResource("Mat_cabin")
+
+[node name="Wake" type="CPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, -1.26)
+emitting = false
+amount = 28
+lifetime = 1.6
+local_coords = false
+mesh = SubResource("Mesh_wake")
+emission_shape = 3
+emission_box_extents = Vector3(0.25, 0, 0.05)
+direction = Vector3(0, 0, -1)
+spread = 40.0
+flatness = 1.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.25
+initial_velocity_max = 0.6
+damping_min = 0.2
+damping_max = 0.4
+scale_amount_min = 0.7
+scale_amount_max = 1.1
+scale_amount_curve = SubResource("Curve_wake")
+color_ramp = SubResource("Grad_wake")

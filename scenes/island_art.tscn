@@ -1,0 +1,2813 @@
+[gd_scene load_steps=65 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/kenney/platformer-variants/dry/block-grass-large-tall.glb" id="1_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/platformer-variants/dry/block-grass-large.glb" id="2_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/platformer-variants/forest/block-grass-large-tall.glb" id="3_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/platformer-variants/forest/block-grass-large.glb" id="4_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/platformer-kit/block-grass-large-tall.glb" id="5_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/platformer-kit/block-grass-large.glb" id="6_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/platformer-variants/stone/block-grass-large-tall.glb" id="7_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/platformer-variants/stone/block-grass-large.glb" id="8_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/mini-dungeon/stairs.glb" id="9_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/mini-forest/patch-dirt.glb" id="10_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/graveyard-kit/lightpost-single.glb" id="11_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/tower-complete-small.glb" id="12_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/graveyard-kit/fire-basket.glb" id="13_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/mini-forest/tent.glb" id="14_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/survival-kit/campfire-pit.glb" id="15_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/graveyard-kit/bench.glb" id="16_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/rocks-a.glb" id="17_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/rocks-c.glb" id="18_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/rocks-b.glb" id="19_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/platform-planks.glb" id="20_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/mini-dungeon/chest.glb" id="21_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/crate-bottles.glb" id="22_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/crate.glb" id="23_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/barrel.glb" id="24_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/graveyard-kit/lantern-candle.glb" id="25_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/cannon.glb" id="26_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/flag-pirate-high.glb" id="27_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/patch-sand.glb" id="28_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/rocks-sand-c.glb" id="29_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/rocks-sand-a.glb" id="30_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/rocks-sand-b.glb" id="31_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/platformer-kit/tree-pine.glb" id="32_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/survival-kit/tree-autumn-tall.glb" id="33_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/mini-forest/tree.glb" id="34_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/palm-straight.glb" id="35_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/platformer-kit/tree-pine-small.glb" id="36_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/platformer-kit/tree.glb" id="37_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/survival-kit/tree-autumn.glb" id="38_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/palm-detailed-straight.glb" id="39_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/palm-bend.glb" id="40_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/graveyard-kit/pine.glb" id="41_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/survival-kit/tree-tall.glb" id="42_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/mini-forest/tree-high.glb" id="43_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/palm-detailed-bend.glb" id="44_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/mini-forest/plant.glb" id="45_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/mini-forest/stones.glb" id="46_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/platformer-kit/flowers.glb" id="47_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/platformer-kit/mushrooms.glb" id="48_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/platformer-kit/flowers-tall.glb" id="49_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/grass.glb" id="50_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/survival-kit/rock-a.glb" id="51_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/survival-kit/rock-b.glb" id="52_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/mini-forest/rocks-high.glb" id="53_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/grass-plant.glb" id="54_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/survival-kit/rock-flat.glb" id="55_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/survival-kit/tent-canvas.glb" id="56_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/survival-kit/campfire-fishing-stand.glb" id="57_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/survival-kit/barrel.glb" id="58_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/survival-kit/bucket.glb" id="59_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/structure-platform-dock.glb" id="60_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/survival-kit/fish-large.glb" id="61_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/watercraft-pack/buoy-flag.glb" id="62_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/watercraft-pack/boat-house-a.glb" id="63_r"]
+[ext_resource type="PackedScene" path="res://assets/kenney/pirate-kit/patch-grass.glb" id="64_r"]
+
+[node name="IslandArt" type="Node3D"]
+
+[node name="MainIsland" type="Node3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 0.00, 0.00, 0.00)
+
+[node name="Ground" type="Node3D" parent="MainIsland"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 0.00, 0.00, 0.00)
+
+[node name="Block1" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(0.4028, 0, -1.4449, 0, 1.5000, 0, 1.4449, 0, 0.4028, -36.00, 0.00, -9.00)
+
+[node name="Low1" parent="MainIsland/Ground" instance=ExtResource("2_r")]
+transform = Transform3D(1.2911, 0, -0.7635, 0, 1.5000, 0, 0.7635, 0, 1.2911, -33.00, 0.00, -15.00)
+
+[node name="Low2" parent="MainIsland/Ground" instance=ExtResource("2_r")]
+transform = Transform3D(-0.8956, 0, 1.2033, 0, 1.5000, 0, -1.2033, 0, -0.8956, -33.00, 0.00, -12.00)
+
+[node name="Block2" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(-0.5945, 0, -1.3772, 0, 1.5000, 0, 1.3772, 0, -0.5945, -33.00, 0.00, -9.00)
+
+[node name="Block3" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -33.00, 0.00, -6.00)
+
+[node name="Low3" parent="MainIsland/Ground" instance=ExtResource("2_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -33.00, 0.00, -3.00)
+
+[node name="Low4" parent="MainIsland/Ground" instance=ExtResource("2_r")]
+transform = Transform3D(1.2181, 0, -0.8753, 0, 1.5000, 0, 0.8753, 0, 1.2181, -30.00, 0.00, -27.00)
+
+[node name="Low5" parent="MainIsland/Ground" instance=ExtResource("2_r")]
+transform = Transform3D(1.0344, 0, -1.0863, 0, 1.5000, 0, 1.0863, 0, 1.0344, -30.00, 0.00, -24.00)
+
+[node name="Low6" parent="MainIsland/Ground" instance=ExtResource("2_r")]
+transform = Transform3D(-1.3013, 0, 0.7460, 0, 1.5000, 0, -0.7460, 0, -1.3013, -30.00, 0.00, -21.00)
+
+[node name="Block4" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(0.3779, 0, -1.4516, 0, 1.5000, 0, 1.4516, 0, 0.3779, -30.00, 0.00, -18.00)
+
+[node name="Block5" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.3021, 0, -0.7447, 0, 1.5000, 0, 0.7447, 0, -1.3021, -30.00, 0.00, -15.00)
+
+[node name="Block6" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.3021, 0, -0.7447, 0, 1.5000, 0, 0.7447, 0, -1.3021, -30.00, 3.00, -15.00)
+
+[node name="Low7" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(-1.3021, 0, -0.7447, 0, 1.5000, 0, 0.7447, 0, -1.3021, -30.00, 6.00, -15.00)
+
+[node name="Block7" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(-1.1625, 0, -0.9479, 0, 1.5000, 0, 0.9479, 0, -1.1625, -30.00, 0.00, -12.00)
+
+[node name="Block8" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -30.00, 0.00, -9.00)
+
+[node name="Block9" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -30.00, 0.00, -6.00)
+
+[node name="Low8" parent="MainIsland/Ground" instance=ExtResource("2_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -30.00, 0.00, -3.00)
+
+[node name="Low9" parent="MainIsland/Ground" instance=ExtResource("2_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -30.00, 0.00, 0.00)
+
+[node name="Low10" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.3135, 0, 0.7243, 0, 1.5000, 0, -0.7243, 0, 1.3135, -27.00, 0.00, -33.00)
+
+[node name="Low11" parent="MainIsland/Ground" instance=ExtResource("2_r")]
+transform = Transform3D(-0.9605, 0, -1.1522, 0, 1.5000, 0, 1.1522, 0, -0.9605, -27.00, 0.00, -30.00)
+
+[node name="Low12" parent="MainIsland/Ground" instance=ExtResource("2_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -27.00, 0.00, -27.00)
+
+[node name="Block10" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(1.4987, 0, -0.0629, 0, 1.5000, 0, 0.0629, 0, 1.4987, -27.00, 0.00, -24.00)
+
+[node name="Block11" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -27.00, 0.00, -21.00)
+
+[node name="Block12" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -27.00, 3.00, -18.00)
+
+[node name="Low13" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -27.00, 6.00, -18.00)
+
+[node name="Low14" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -27.00, 6.00, -15.00)
+
+[node name="Block13" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.3101, 0, -0.7305, 0, 1.5000, 0, 0.7305, 0, -1.3101, -27.00, 0.00, -12.00)
+
+[node name="Block14" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.3101, 0, -0.7305, 0, 1.5000, 0, 0.7305, 0, -1.3101, -27.00, 3.00, -12.00)
+
+[node name="Low15" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(-1.3101, 0, -0.7305, 0, 1.5000, 0, 0.7305, 0, -1.3101, -27.00, 6.00, -12.00)
+
+[node name="Block15" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(-1.3965, 0, 0.5476, 0, 1.5000, 0, -0.5476, 0, -1.3965, -27.00, 0.00, -9.00)
+
+[node name="Low16" parent="MainIsland/Ground" instance=ExtResource("2_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -27.00, 0.00, -6.00)
+
+[node name="Low17" parent="MainIsland/Ground" instance=ExtResource("2_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -27.00, 0.00, -3.00)
+
+[node name="Low18" parent="MainIsland/Ground" instance=ExtResource("2_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -27.00, 0.00, 0.00)
+
+[node name="Block16" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -27.00, 0.00, 3.00)
+
+[node name="Low19" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -24.00, 0.00, -36.00)
+
+[node name="Low20" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -24.00, 0.00, -33.00)
+
+[node name="Block17" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -24.00, 0.00, -30.00)
+
+[node name="Block18" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -24.00, 0.00, -27.00)
+
+[node name="Low21" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -24.00, 3.00, -27.00)
+
+[node name="Low22" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -24.00, 3.00, -24.00)
+
+[node name="Block19" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -24.00, 3.00, -21.00)
+
+[node name="Low23" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -24.00, 6.00, -18.00)
+
+[node name="Low24" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -24.00, 6.00, -15.00)
+
+[node name="Block20" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -24.00, 3.00, -12.00)
+
+[node name="Low25" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -24.00, 6.00, -12.00)
+
+[node name="Block21" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(-1.4998, 0, 0.0259, 0, 1.5000, 0, -0.0259, 0, -1.4998, -24.00, 0.00, -9.00)
+
+[node name="Low26" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(-1.4998, 0, 0.0259, 0, 1.5000, 0, -0.0259, 0, -1.4998, -24.00, 3.00, -9.00)
+
+[node name="Block22" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(-1.1283, 0, -0.9885, 0, 1.5000, 0, 0.9885, 0, -1.1283, -24.00, 0.00, -6.00)
+
+[node name="Block23" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -24.00, 0.00, -3.00)
+
+[node name="Block24" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -24.00, 0.00, 0.00)
+
+[node name="Block25" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -24.00, 0.00, 3.00)
+
+[node name="Low27" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -21.00, 0.00, -39.00)
+
+[node name="Low28" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -21.00, 0.00, -36.00)
+
+[node name="Block26" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -21.00, 0.00, -33.00)
+
+[node name="Low29" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -21.00, 3.00, -33.00)
+
+[node name="Block27" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -21.00, 3.00, -30.00)
+
+[node name="Block28" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -21.00, 3.00, -27.00)
+
+[node name="Low30" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -21.00, 3.00, -24.00)
+
+[node name="Low31" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -21.00, 3.00, -21.00)
+
+[node name="Block29" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -21.00, 3.00, -18.00)
+
+[node name="Block30" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -21.00, 3.00, -15.00)
+
+[node name="Block31" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -21.00, 3.00, -12.00)
+
+[node name="Low32" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -21.00, 3.00, -9.00)
+
+[node name="Low33" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -21.00, 3.00, -6.00)
+
+[node name="Block32" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -21.00, 0.00, -3.00)
+
+[node name="Block33" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -21.00, 0.00, 0.00)
+
+[node name="Block34" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -21.00, 0.00, 3.00)
+
+[node name="Low34" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -18.00, 0.00, -39.00)
+
+[node name="Block35" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -18.00, 0.00, -36.00)
+
+[node name="Block36" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -18.00, 3.00, -36.00)
+
+[node name="Block37" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -18.00, 3.00, -33.00)
+
+[node name="Block38" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -18.00, 3.00, -30.00)
+
+[node name="Block39" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -18.00, 3.00, -27.00)
+
+[node name="Low35" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -18.00, 3.00, -24.00)
+
+[node name="Low36" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -18.00, 3.00, -21.00)
+
+[node name="Low37" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -18.00, 3.00, -18.00)
+
+[node name="Block40" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -18.00, 3.00, -15.00)
+
+[node name="Block41" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -18.00, 3.00, -12.00)
+
+[node name="Block42" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -18.00, 3.00, -9.00)
+
+[node name="Low38" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -18.00, 3.00, -6.00)
+
+[node name="Block43" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.7805, 0, -1.2809, 0, 1.5000, 0, 1.2809, 0, 0.7805, -18.00, 0.00, -3.00)
+
+[node name="Block44" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.7805, 0, -1.2809, 0, 1.5000, 0, 1.2809, 0, 0.7805, -18.00, 3.00, -3.00)
+
+[node name="Low39" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -18.00, 3.00, 0.00)
+
+[node name="Low40" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -18.00, 3.00, 3.00)
+
+[node name="Block45" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -18.00, 0.00, 6.00)
+
+[node name="Block46" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -18.00, 0.00, 9.00)
+
+[node name="Block47" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -18.00, 0.00, 12.00)
+
+[node name="Low41" parent="MainIsland/Ground" instance=ExtResource("2_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -18.00, 0.00, 15.00)
+
+[node name="Low42" parent="MainIsland/Ground" instance=ExtResource("2_r")]
+transform = Transform3D(1.4266, 0, -0.4635, 0, 1.5000, 0, 0.4635, 0, 1.4266, -18.00, 0.00, 18.00)
+
+[node name="Block48" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.3357, 0, 1.4620, 0, 1.5000, 0, -1.4620, 0, 0.3357, -15.00, 0.00, -42.00)
+
+[node name="Block49" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.3357, 0, 1.4620, 0, 1.5000, 0, -1.4620, 0, 0.3357, -15.00, 3.00, -42.00)
+
+[node name="Block50" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.2862, 0, 0.7718, 0, 1.5000, 0, -0.7718, 0, -1.2862, -15.00, 0.00, -39.00)
+
+[node name="Block51" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.2862, 0, 0.7718, 0, 1.5000, 0, -0.7718, 0, -1.2862, -15.00, 3.00, -39.00)
+
+[node name="Low43" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(-1.2862, 0, 0.7718, 0, 1.5000, 0, -0.7718, 0, -1.2862, -15.00, 6.00, -39.00)
+
+[node name="Block52" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-1.0558, 0, -1.0655, 0, 1.5000, 0, 1.0655, 0, -1.0558, -15.00, 0.00, -36.00)
+
+[node name="Block53" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-1.0558, 0, -1.0655, 0, 1.5000, 0, 1.0655, 0, -1.0558, -15.00, 3.00, -36.00)
+
+[node name="Block54" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-1.0558, 0, -1.0655, 0, 1.5000, 0, 1.0655, 0, -1.0558, -15.00, 6.00, -36.00)
+
+[node name="Low44" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(-1.0558, 0, -1.0655, 0, 1.5000, 0, 1.0655, 0, -1.0558, -15.00, 9.00, -36.00)
+
+[node name="Block55" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -15.00, 6.00, -33.00)
+
+[node name="Low45" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -15.00, 6.00, -30.00)
+
+[node name="Block56" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -15.00, 3.00, -27.00)
+
+[node name="Block57" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -15.00, 3.00, -24.00)
+
+[node name="Low46" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -15.00, 3.00, -21.00)
+
+[node name="Block58" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.4989, 0, 0.0577, 0, 1.5000, 0, -0.0577, 0, -1.4989, -15.00, 0.00, -18.00)
+
+[node name="Block59" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.4989, 0, 0.0577, 0, 1.5000, 0, -0.0577, 0, -1.4989, -15.00, 3.00, -18.00)
+
+[node name="Block60" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-0.5989, 0, 1.3752, 0, 1.5000, 0, -1.3752, 0, -0.5989, -15.00, 0.00, -15.00)
+
+[node name="Block61" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-0.5989, 0, 1.3752, 0, 1.5000, 0, -1.3752, 0, -0.5989, -15.00, 3.00, -15.00)
+
+[node name="Low47" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(-0.5989, 0, 1.3752, 0, 1.5000, 0, -1.3752, 0, -0.5989, -15.00, 6.00, -15.00)
+
+[node name="Low48" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -15.00, 6.00, -12.00)
+
+[node name="Block62" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -15.00, 3.00, -9.00)
+
+[node name="Block63" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -15.00, 3.00, -6.00)
+
+[node name="Block64" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -15.00, 3.00, -3.00)
+
+[node name="Block65" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -15.00, 3.00, 0.00)
+
+[node name="Block66" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -15.00, 0.00, 3.00)
+
+[node name="Block67" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -15.00, 3.00, 3.00)
+
+[node name="Block68" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -15.00, 0.00, 6.00)
+
+[node name="Low49" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -15.00, 3.00, 6.00)
+
+[node name="Block69" parent="MainIsland/Ground" instance=ExtResource("1_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -15.00, 0.00, 9.00)
+
+[node name="Low50" parent="MainIsland/Ground" instance=ExtResource("2_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -15.00, 0.00, 12.00)
+
+[node name="Low51" parent="MainIsland/Ground" instance=ExtResource("2_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -15.00, 0.00, 15.00)
+
+[node name="Low52" parent="MainIsland/Ground" instance=ExtResource("2_r")]
+transform = Transform3D(-1.4336, 0, 0.4413, 0, 1.5000, 0, -0.4413, 0, -1.4336, -15.00, 0.00, 18.00)
+
+[node name="Low53" parent="MainIsland/Ground" instance=ExtResource("2_r")]
+transform = Transform3D(1.3379, 0, 0.6783, 0, 1.5000, 0, -0.6783, 0, 1.3379, -15.00, 0.00, 21.00)
+
+[node name="Block70" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.4493, 0, 0.3866, 0, 1.5000, 0, -0.3866, 0, 1.4493, -12.00, 0.00, -42.00)
+
+[node name="Block71" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.4493, 0, 0.3866, 0, 1.5000, 0, -0.3866, 0, 1.4493, -12.00, 3.00, -42.00)
+
+[node name="Low54" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.4493, 0, 0.3866, 0, 1.5000, 0, -0.3866, 0, 1.4493, -12.00, 6.00, -42.00)
+
+[node name="Block72" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-0.3855, 0, -1.4496, 0, 1.5000, 0, 1.4496, 0, -0.3855, -12.00, 0.00, -39.00)
+
+[node name="Block73" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-0.3855, 0, -1.4496, 0, 1.5000, 0, 1.4496, 0, -0.3855, -12.00, 3.00, -39.00)
+
+[node name="Block74" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-0.3855, 0, -1.4496, 0, 1.5000, 0, 1.4496, 0, -0.3855, -12.00, 6.00, -39.00)
+
+[node name="Low55" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(-0.3855, 0, -1.4496, 0, 1.5000, 0, 1.4496, 0, -0.3855, -12.00, 9.00, -39.00)
+
+[node name="Low56" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -12.00, 9.00, -36.00)
+
+[node name="Low57" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -12.00, 9.00, -33.00)
+
+[node name="Block75" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -12.00, 6.00, -30.00)
+
+[node name="Low58" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -12.00, 6.00, -27.00)
+
+[node name="Block76" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.9857, 0, 1.1306, 0, 1.5000, 0, -1.1306, 0, 0.9857, -12.00, 0.00, -24.00)
+
+[node name="Block77" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.9857, 0, 1.1306, 0, 1.5000, 0, -1.1306, 0, 0.9857, -12.00, 3.00, -24.00)
+
+[node name="Low59" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(0.9857, 0, 1.1306, 0, 1.5000, 0, -1.1306, 0, 0.9857, -12.00, 6.00, -24.00)
+
+[node name="Block78" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.4400, 0, 0.4200, 0, 1.5000, 0, -0.4200, 0, -1.4400, -12.00, 0.00, -21.00)
+
+[node name="Block79" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.4400, 0, 0.4200, 0, 1.5000, 0, -0.4200, 0, -1.4400, -12.00, 3.00, -21.00)
+
+[node name="Block80" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -12.00, 3.00, -18.00)
+
+[node name="Block81" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.1185, 0, 1.4953, 0, 1.5000, 0, -1.4953, 0, 0.1185, -12.00, 0.00, -15.00)
+
+[node name="Block82" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.1185, 0, 1.4953, 0, 1.5000, 0, -1.4953, 0, 0.1185, -12.00, 3.00, -15.00)
+
+[node name="Low60" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(0.1185, 0, 1.4953, 0, 1.5000, 0, -1.4953, 0, 0.1185, -12.00, 6.00, -15.00)
+
+[node name="Block83" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.4352, 0, 0.4360, 0, 1.5000, 0, -0.4360, 0, 1.4352, -12.00, 0.00, -12.00)
+
+[node name="Block84" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.4352, 0, 0.4360, 0, 1.5000, 0, -0.4360, 0, 1.4352, -12.00, 3.00, -12.00)
+
+[node name="Low61" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.4352, 0, 0.4360, 0, 1.5000, 0, -0.4360, 0, 1.4352, -12.00, 6.00, -12.00)
+
+[node name="Block85" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -12.00, 3.00, -9.00)
+
+[node name="Block86" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -12.00, 0.00, -6.00)
+
+[node name="Block87" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -12.00, 0.00, -3.00)
+
+[node name="Block88" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -12.00, 0.00, 0.00)
+
+[node name="Block89" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-0.8428, 0, -1.2408, 0, 1.5000, 0, 1.2408, 0, -0.8428, -9.00, 0.00, -45.00)
+
+[node name="Low62" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(-0.8428, 0, -1.2408, 0, 1.5000, 0, 1.2408, 0, -0.8428, -9.00, 3.00, -45.00)
+
+[node name="Block90" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.4492, 0, -0.3871, 0, 1.5000, 0, 0.3871, 0, 1.4492, -9.00, 0.00, -42.00)
+
+[node name="Block91" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.4492, 0, -0.3871, 0, 1.5000, 0, 0.3871, 0, 1.4492, -9.00, 3.00, -42.00)
+
+[node name="Block92" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.4817, 0, 0.2333, 0, 1.5000, 0, -0.2333, 0, -1.4817, -9.00, 0.00, -39.00)
+
+[node name="Block93" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.4817, 0, 0.2333, 0, 1.5000, 0, -0.2333, 0, -1.4817, -9.00, 3.00, -39.00)
+
+[node name="Block94" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.4817, 0, 0.2333, 0, 1.5000, 0, -0.2333, 0, -1.4817, -9.00, 6.00, -39.00)
+
+[node name="Low63" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -9.00, 9.00, -36.00)
+
+[node name="Block95" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -9.00, 9.00, -33.00)
+
+[node name="Block96" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -9.00, 9.00, -30.00)
+
+[node name="Block97" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -9.00, 6.00, -27.00)
+
+[node name="Low64" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -9.00, 9.00, -27.00)
+
+[node name="Block98" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.4772, 0, 0.2607, 0, 1.5000, 0, -0.2607, 0, -1.4772, -9.00, 0.00, -24.00)
+
+[node name="Block99" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.4772, 0, 0.2607, 0, 1.5000, 0, -0.2607, 0, -1.4772, -9.00, 3.00, -24.00)
+
+[node name="Block100" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.4772, 0, 0.2607, 0, 1.5000, 0, -0.2607, 0, -1.4772, -9.00, 6.00, -24.00)
+
+[node name="Block101" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-0.3348, 0, -1.4622, 0, 1.5000, 0, 1.4622, 0, -0.3348, -9.00, 0.00, -21.00)
+
+[node name="Block102" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-0.3348, 0, -1.4622, 0, 1.5000, 0, 1.4622, 0, -0.3348, -9.00, 3.00, -21.00)
+
+[node name="Low65" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(-0.3348, 0, -1.4622, 0, 1.5000, 0, 1.4622, 0, -0.3348, -9.00, 6.00, -21.00)
+
+[node name="Block103" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -9.00, 3.00, -18.00)
+
+[node name="Block104" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -9.00, 3.00, -15.00)
+
+[node name="Block105" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-0.4876, 0, -1.4186, 0, 1.5000, 0, 1.4186, 0, -0.4876, -9.00, 0.00, -12.00)
+
+[node name="Block106" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-0.4876, 0, -1.4186, 0, 1.5000, 0, 1.4186, 0, -0.4876, -9.00, 3.00, -12.00)
+
+[node name="Block107" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -9.00, 0.00, -9.00)
+
+[node name="Block108" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -9.00, 0.00, -6.00)
+
+[node name="Block109" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -9.00, 0.00, -3.00)
+
+[node name="Block110" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -9.00, 0.00, 0.00)
+
+[node name="Block111" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.0585, 0, -1.4989, 0, 1.5000, 0, 1.4989, 0, 0.0585, -6.00, 0.00, -45.00)
+
+[node name="Low66" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(0.0585, 0, -1.4989, 0, 1.5000, 0, 1.4989, 0, 0.0585, -6.00, 3.00, -45.00)
+
+[node name="Block112" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.3906, 0, -1.4482, 0, 1.5000, 0, 1.4482, 0, 0.3906, -6.00, 0.00, -42.00)
+
+[node name="Block113" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.3906, 0, -1.4482, 0, 1.5000, 0, 1.4482, 0, 0.3906, -6.00, 3.00, -42.00)
+
+[node name="Block114" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.2804, 0, 0.7814, 0, 1.5000, 0, -0.7814, 0, 1.2804, -6.00, 0.00, -39.00)
+
+[node name="Block115" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.2804, 0, 0.7814, 0, 1.5000, 0, -0.7814, 0, 1.2804, -6.00, 3.00, -39.00)
+
+[node name="Block116" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.2804, 0, 0.7814, 0, 1.5000, 0, -0.7814, 0, 1.2804, -6.00, 6.00, -39.00)
+
+[node name="Block117" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.3675, 0, -0.6164, 0, 1.5000, 0, 0.6164, 0, 1.3675, -6.00, 0.00, -36.00)
+
+[node name="Block118" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.3675, 0, -0.6164, 0, 1.5000, 0, 0.6164, 0, 1.3675, -6.00, 3.00, -36.00)
+
+[node name="Block119" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.3675, 0, -0.6164, 0, 1.5000, 0, 0.6164, 0, 1.3675, -6.00, 6.00, -36.00)
+
+[node name="Block120" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.3675, 0, -0.6164, 0, 1.5000, 0, 0.6164, 0, 1.3675, -6.00, 9.00, -36.00)
+
+[node name="Low67" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -6.00, 12.00, -33.00)
+
+[node name="Low68" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -6.00, 12.00, -30.00)
+
+[node name="Block121" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -6.00, 9.00, -27.00)
+
+[node name="Block122" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-0.2590, 0, -1.4775, 0, 1.5000, 0, 1.4775, 0, -0.2590, -6.00, 0.00, -24.00)
+
+[node name="Block123" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-0.2590, 0, -1.4775, 0, 1.5000, 0, 1.4775, 0, -0.2590, -6.00, 3.00, -24.00)
+
+[node name="Block124" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-0.2590, 0, -1.4775, 0, 1.5000, 0, 1.4775, 0, -0.2590, -6.00, 6.00, -24.00)
+
+[node name="Low69" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(-0.2590, 0, -1.4775, 0, 1.5000, 0, 1.4775, 0, -0.2590, -6.00, 9.00, -24.00)
+
+[node name="Block125" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.0570, 0, -1.0643, 0, 1.5000, 0, 1.0643, 0, -1.0570, -6.00, 0.00, -21.00)
+
+[node name="Block126" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.0570, 0, -1.0643, 0, 1.5000, 0, 1.0643, 0, -1.0570, -6.00, 3.00, -21.00)
+
+[node name="Block127" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.0570, 0, -1.0643, 0, 1.5000, 0, 1.0643, 0, -1.0570, -6.00, 6.00, -21.00)
+
+[node name="Block128" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -6.00, 3.00, -18.00)
+
+[node name="Block129" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.3620, 0, -0.6285, 0, 1.5000, 0, 0.6285, 0, -1.3620, -6.00, 0.00, -15.00)
+
+[node name="Block130" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.3620, 0, -0.6285, 0, 1.5000, 0, 0.6285, 0, -1.3620, -6.00, 3.00, -15.00)
+
+[node name="Block131" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -6.00, 0.00, -12.00)
+
+[node name="Block132" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -6.00, 0.00, -9.00)
+
+[node name="Block133" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -6.00, 0.00, -6.00)
+
+[node name="Block134" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -6.00, 0.00, -3.00)
+
+[node name="Block135" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -6.00, 0.00, 0.00)
+
+[node name="Block136" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.0891, 0, -1.0315, 0, 1.5000, 0, 1.0315, 0, 1.0891, -3.00, 0.00, -45.00)
+
+[node name="Block137" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.0891, 0, -1.0315, 0, 1.5000, 0, 1.0315, 0, 1.0891, -3.00, 3.00, -45.00)
+
+[node name="Block138" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.4345, 0, -1.4357, 0, 1.5000, 0, 1.4357, 0, 0.4345, -3.00, 0.00, -42.00)
+
+[node name="Block139" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.4345, 0, -1.4357, 0, 1.5000, 0, 1.4357, 0, 0.4345, -3.00, 3.00, -42.00)
+
+[node name="Block140" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.4345, 0, -1.4357, 0, 1.5000, 0, 1.4357, 0, 0.4345, -3.00, 6.00, -42.00)
+
+[node name="Block141" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.4089, 0, -0.5147, 0, 1.5000, 0, 0.5147, 0, 1.4089, -3.00, 0.00, -39.00)
+
+[node name="Block142" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.4089, 0, -0.5147, 0, 1.5000, 0, 0.5147, 0, 1.4089, -3.00, 3.00, -39.00)
+
+[node name="Block143" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.4089, 0, -0.5147, 0, 1.5000, 0, 0.5147, 0, 1.4089, -3.00, 6.00, -39.00)
+
+[node name="Low70" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.4089, 0, -0.5147, 0, 1.5000, 0, 0.5147, 0, 1.4089, -3.00, 9.00, -39.00)
+
+[node name="Block144" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-1.4612, 0, 0.3391, 0, 1.5000, 0, -0.3391, 0, -1.4612, -3.00, 0.00, -36.00)
+
+[node name="Block145" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-1.4612, 0, 0.3391, 0, 1.5000, 0, -0.3391, 0, -1.4612, -3.00, 3.00, -36.00)
+
+[node name="Block146" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-1.4612, 0, 0.3391, 0, 1.5000, 0, -0.3391, 0, -1.4612, -3.00, 6.00, -36.00)
+
+[node name="Block147" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-1.4612, 0, 0.3391, 0, 1.5000, 0, -0.3391, 0, -1.4612, -3.00, 9.00, -36.00)
+
+[node name="Block148" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-0.8716, 0, -1.2208, 0, 1.5000, 0, 1.2208, 0, -0.8716, -3.00, 0.00, -33.00)
+
+[node name="Block149" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-0.8716, 0, -1.2208, 0, 1.5000, 0, 1.2208, 0, -0.8716, -3.00, 3.00, -33.00)
+
+[node name="Block150" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-0.8716, 0, -1.2208, 0, 1.5000, 0, 1.2208, 0, -0.8716, -3.00, 6.00, -33.00)
+
+[node name="Block151" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-0.8716, 0, -1.2208, 0, 1.5000, 0, 1.2208, 0, -0.8716, -3.00, 9.00, -33.00)
+
+[node name="Block152" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-0.8716, 0, -1.2208, 0, 1.5000, 0, 1.2208, 0, -0.8716, -3.00, 12.00, -33.00)
+
+[node name="Block153" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -3.00, 12.00, -30.00)
+
+[node name="Low71" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -3.00, 12.00, -27.00)
+
+[node name="Block154" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -3.00, 9.00, -24.00)
+
+[node name="Block155" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.4194, 0, 1.4402, 0, 1.5000, 0, -1.4402, 0, 0.4194, -3.00, 0.00, -21.00)
+
+[node name="Block156" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.4194, 0, 1.4402, 0, 1.5000, 0, -1.4402, 0, 0.4194, -3.00, 3.00, -21.00)
+
+[node name="Block157" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.4194, 0, 1.4402, 0, 1.5000, 0, -1.4402, 0, 0.4194, -3.00, 6.00, -21.00)
+
+[node name="Block158" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -3.00, 3.00, -18.00)
+
+[node name="Block159" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-0.2631, 0, -1.4767, 0, 1.5000, 0, 1.4767, 0, -0.2631, -3.00, 0.00, -15.00)
+
+[node name="Block160" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-0.2631, 0, -1.4767, 0, 1.5000, 0, 1.4767, 0, -0.2631, -3.00, 3.00, -15.00)
+
+[node name="Block161" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -3.00, 0.00, -12.00)
+
+[node name="Block162" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -3.00, 0.00, -9.00)
+
+[node name="Block163" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -3.00, 0.00, -6.00)
+
+[node name="Block164" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -3.00, 0.00, -3.00)
+
+[node name="Block165" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, -3.00, 0.00, 0.00)
+
+[node name="Block166" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-0.3027, 0, -1.4691, 0, 1.5000, 0, 1.4691, 0, -0.3027, 0.00, 0.00, -45.00)
+
+[node name="Block167" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-0.3027, 0, -1.4691, 0, 1.5000, 0, 1.4691, 0, -0.3027, 0.00, 3.00, -45.00)
+
+[node name="Block168" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.2134, 0, -0.8818, 0, 1.5000, 0, 0.8818, 0, 1.2134, 0.00, 0.00, -42.00)
+
+[node name="Block169" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.2134, 0, -0.8818, 0, 1.5000, 0, 0.8818, 0, 1.2134, 0.00, 3.00, -42.00)
+
+[node name="Block170" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.2134, 0, -0.8818, 0, 1.5000, 0, 0.8818, 0, 1.2134, 0.00, 6.00, -42.00)
+
+[node name="Block171" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.4887, 0, -0.1834, 0, 1.5000, 0, 0.1834, 0, 1.4887, 0.00, 0.00, -39.00)
+
+[node name="Block172" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.4887, 0, -0.1834, 0, 1.5000, 0, 0.1834, 0, 1.4887, 0.00, 3.00, -39.00)
+
+[node name="Block173" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.4887, 0, -0.1834, 0, 1.5000, 0, 0.1834, 0, 1.4887, 0.00, 6.00, -39.00)
+
+[node name="Low72" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.4887, 0, -0.1834, 0, 1.5000, 0, 0.1834, 0, 1.4887, 0.00, 9.00, -39.00)
+
+[node name="Block174" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.4848, 0, -0.2127, 0, 1.5000, 0, 0.2127, 0, 1.4848, 0.00, 0.00, -36.00)
+
+[node name="Block175" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.4848, 0, -0.2127, 0, 1.5000, 0, 0.2127, 0, 1.4848, 0.00, 3.00, -36.00)
+
+[node name="Block176" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.4848, 0, -0.2127, 0, 1.5000, 0, 0.2127, 0, 1.4848, 0.00, 6.00, -36.00)
+
+[node name="Block177" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.4848, 0, -0.2127, 0, 1.5000, 0, 0.2127, 0, 1.4848, 0.00, 9.00, -36.00)
+
+[node name="Block178" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-1.4597, 0, -0.3452, 0, 1.5000, 0, 0.3452, 0, -1.4597, 0.00, 0.00, -33.00)
+
+[node name="Block179" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-1.4597, 0, -0.3452, 0, 1.5000, 0, 0.3452, 0, -1.4597, 0.00, 3.00, -33.00)
+
+[node name="Block180" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-1.4597, 0, -0.3452, 0, 1.5000, 0, 0.3452, 0, -1.4597, 0.00, 6.00, -33.00)
+
+[node name="Block181" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-1.4597, 0, -0.3452, 0, 1.5000, 0, 0.3452, 0, -1.4597, 0.00, 9.00, -33.00)
+
+[node name="Low73" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(-1.4597, 0, -0.3452, 0, 1.5000, 0, 0.3452, 0, -1.4597, 0.00, 12.00, -33.00)
+
+[node name="Block182" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 0.00, 12.00, -30.00)
+
+[node name="Low74" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 0.00, 12.00, -27.00)
+
+[node name="Block183" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 0.00, 9.00, -24.00)
+
+[node name="Block184" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 0.00, 6.00, -21.00)
+
+[node name="Block185" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 0.00, 3.00, -18.00)
+
+[node name="Block186" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 0.00, 3.00, -15.00)
+
+[node name="Block187" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 0.00, 0.00, -12.00)
+
+[node name="Block188" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 0.00, 0.00, -9.00)
+
+[node name="Block189" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 0.00, 0.00, -6.00)
+
+[node name="Block190" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 0.00, 0.00, -3.00)
+
+[node name="Block191" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 0.00, 0.00, 0.00)
+
+[node name="Block192" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.3978, 0, 0.5443, 0, 1.5000, 0, -0.5443, 0, -1.3978, 3.00, 0.00, -45.00)
+
+[node name="Low75" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(-1.3978, 0, 0.5443, 0, 1.5000, 0, -0.5443, 0, -1.3978, 3.00, 3.00, -45.00)
+
+[node name="Block193" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.1715, 0, -1.4902, 0, 1.5000, 0, 1.4902, 0, 0.1715, 3.00, 0.00, -42.00)
+
+[node name="Block194" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.1715, 0, -1.4902, 0, 1.5000, 0, 1.4902, 0, 0.1715, 3.00, 3.00, -42.00)
+
+[node name="Low76" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(0.1715, 0, -1.4902, 0, 1.5000, 0, 1.4902, 0, 0.1715, 3.00, 6.00, -42.00)
+
+[node name="Block195" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-1.4953, 0, 0.1182, 0, 1.5000, 0, -0.1182, 0, -1.4953, 3.00, 0.00, -39.00)
+
+[node name="Block196" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-1.4953, 0, 0.1182, 0, 1.5000, 0, -0.1182, 0, -1.4953, 3.00, 3.00, -39.00)
+
+[node name="Block197" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-1.4953, 0, 0.1182, 0, 1.5000, 0, -0.1182, 0, -1.4953, 3.00, 6.00, -39.00)
+
+[node name="Low77" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(-1.4953, 0, 0.1182, 0, 1.5000, 0, -0.1182, 0, -1.4953, 3.00, 9.00, -39.00)
+
+[node name="Block198" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.4762, 0, 0.2663, 0, 1.5000, 0, -0.2663, 0, 1.4762, 3.00, 0.00, -36.00)
+
+[node name="Block199" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.4762, 0, 0.2663, 0, 1.5000, 0, -0.2663, 0, 1.4762, 3.00, 3.00, -36.00)
+
+[node name="Block200" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.4762, 0, 0.2663, 0, 1.5000, 0, -0.2663, 0, 1.4762, 3.00, 6.00, -36.00)
+
+[node name="Block201" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.4762, 0, 0.2663, 0, 1.5000, 0, -0.2663, 0, 1.4762, 3.00, 9.00, -36.00)
+
+[node name="Block202" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(0.5446, 0, -1.3976, 0, 1.5000, 0, 1.3976, 0, 0.5446, 3.00, 0.00, -33.00)
+
+[node name="Block203" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(0.5446, 0, -1.3976, 0, 1.5000, 0, 1.3976, 0, 0.5446, 3.00, 3.00, -33.00)
+
+[node name="Block204" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(0.5446, 0, -1.3976, 0, 1.5000, 0, 1.3976, 0, 0.5446, 3.00, 6.00, -33.00)
+
+[node name="Block205" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(0.5446, 0, -1.3976, 0, 1.5000, 0, 1.3976, 0, 0.5446, 3.00, 9.00, -33.00)
+
+[node name="Low78" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(0.5446, 0, -1.3976, 0, 1.5000, 0, 1.3976, 0, 0.5446, 3.00, 12.00, -33.00)
+
+[node name="Block206" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.3801, 0, 0.5876, 0, 1.5000, 0, -0.5876, 0, 1.3801, 3.00, 0.00, -30.00)
+
+[node name="Block207" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.3801, 0, 0.5876, 0, 1.5000, 0, -0.5876, 0, 1.3801, 3.00, 3.00, -30.00)
+
+[node name="Block208" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.3801, 0, 0.5876, 0, 1.5000, 0, -0.5876, 0, 1.3801, 3.00, 6.00, -30.00)
+
+[node name="Block209" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.3801, 0, 0.5876, 0, 1.5000, 0, -0.5876, 0, 1.3801, 3.00, 9.00, -30.00)
+
+[node name="Low79" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.3801, 0, 0.5876, 0, 1.5000, 0, -0.5876, 0, 1.3801, 3.00, 12.00, -30.00)
+
+[node name="Block210" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 3.00, 9.00, -27.00)
+
+[node name="Low80" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 3.00, 9.00, -24.00)
+
+[node name="Block211" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 3.00, 6.00, -21.00)
+
+[node name="Block212" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 3.00, 3.00, -18.00)
+
+[node name="Block213" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 3.00, 3.00, -15.00)
+
+[node name="Block214" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 3.00, 0.00, -12.00)
+
+[node name="Block215" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 3.00, 0.00, -9.00)
+
+[node name="Block216" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 3.00, 0.00, -6.00)
+
+[node name="Block217" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 3.00, 0.00, -3.00)
+
+[node name="Block218" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 3.00, 0.00, 0.00)
+
+[node name="Block219" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.9525, 0, 1.1588, 0, 1.5000, 0, -1.1588, 0, 0.9525, 6.00, 0.00, -48.00)
+
+[node name="Block220" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-0.2480, 0, -1.4794, 0, 1.5000, 0, 1.4794, 0, -0.2480, 6.00, 0.00, -45.00)
+
+[node name="Low81" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(-0.2480, 0, -1.4794, 0, 1.5000, 0, 1.4794, 0, -0.2480, 6.00, 3.00, -45.00)
+
+[node name="Block221" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-0.5577, 0, -1.3925, 0, 1.5000, 0, 1.3925, 0, -0.5577, 6.00, 0.00, -42.00)
+
+[node name="Block222" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-0.5577, 0, -1.3925, 0, 1.5000, 0, 1.3925, 0, -0.5577, 6.00, 3.00, -42.00)
+
+[node name="Block223" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.4241, 0, -0.4711, 0, 1.5000, 0, 0.4711, 0, 1.4241, 6.00, 0.00, -39.00)
+
+[node name="Block224" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.4241, 0, -0.4711, 0, 1.5000, 0, 0.4711, 0, 1.4241, 6.00, 3.00, -39.00)
+
+[node name="Block225" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.4241, 0, -0.4711, 0, 1.5000, 0, 0.4711, 0, 1.4241, 6.00, 6.00, -39.00)
+
+[node name="Block226" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.2862, 0, 0.7718, 0, 1.5000, 0, -0.7718, 0, 1.2862, 6.00, 0.00, -36.00)
+
+[node name="Block227" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.2862, 0, 0.7718, 0, 1.5000, 0, -0.7718, 0, 1.2862, 6.00, 3.00, -36.00)
+
+[node name="Block228" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.2862, 0, 0.7718, 0, 1.5000, 0, -0.7718, 0, 1.2862, 6.00, 6.00, -36.00)
+
+[node name="Low82" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.2862, 0, 0.7718, 0, 1.5000, 0, -0.7718, 0, 1.2862, 6.00, 9.00, -36.00)
+
+[node name="Block229" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(0.2680, 0, 1.4759, 0, 1.5000, 0, -1.4759, 0, 0.2680, 6.00, 0.00, -33.00)
+
+[node name="Block230" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(0.2680, 0, 1.4759, 0, 1.5000, 0, -1.4759, 0, 0.2680, 6.00, 3.00, -33.00)
+
+[node name="Block231" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(0.2680, 0, 1.4759, 0, 1.5000, 0, -1.4759, 0, 0.2680, 6.00, 6.00, -33.00)
+
+[node name="Block232" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(0.2680, 0, 1.4759, 0, 1.5000, 0, -1.4759, 0, 0.2680, 6.00, 9.00, -33.00)
+
+[node name="Block233" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-1.4790, 0, -0.2501, 0, 1.5000, 0, 0.2501, 0, -1.4790, 6.00, 0.00, -30.00)
+
+[node name="Block234" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-1.4790, 0, -0.2501, 0, 1.5000, 0, 0.2501, 0, -1.4790, 6.00, 3.00, -30.00)
+
+[node name="Block235" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-1.4790, 0, -0.2501, 0, 1.5000, 0, 0.2501, 0, -1.4790, 6.00, 6.00, -30.00)
+
+[node name="Block236" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-1.4790, 0, -0.2501, 0, 1.5000, 0, 0.2501, 0, -1.4790, 6.00, 9.00, -30.00)
+
+[node name="Low83" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 6.00, 9.00, -27.00)
+
+[node name="Block237" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 6.00, 6.00, -24.00)
+
+[node name="Low84" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 6.00, 6.00, -21.00)
+
+[node name="Block238" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 6.00, 3.00, -18.00)
+
+[node name="Block239" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 6.00, 3.00, -15.00)
+
+[node name="Block240" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 6.00, 0.00, -12.00)
+
+[node name="Block241" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 6.00, 0.00, -9.00)
+
+[node name="Block242" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 6.00, 0.00, -6.00)
+
+[node name="Block243" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 6.00, 0.00, -3.00)
+
+[node name="Block244" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 6.00, 0.00, 0.00)
+
+[node name="Block245" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.8324, 0, -1.2479, 0, 1.5000, 0, 1.2479, 0, 0.8324, 9.00, 0.00, -48.00)
+
+[node name="Block246" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 9.00, 0.00, -45.00)
+
+[node name="Block247" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.3948, 0, -0.5519, 0, 1.5000, 0, 0.5519, 0, -1.3948, 9.00, 0.00, -42.00)
+
+[node name="Low85" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(-1.3948, 0, -0.5519, 0, 1.5000, 0, 0.5519, 0, -1.3948, 9.00, 3.00, -42.00)
+
+[node name="Block248" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-0.5670, 0, 1.3887, 0, 1.5000, 0, -1.3887, 0, -0.5670, 9.00, 0.00, -39.00)
+
+[node name="Block249" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-0.5670, 0, 1.3887, 0, 1.5000, 0, -1.3887, 0, -0.5670, 9.00, 3.00, -39.00)
+
+[node name="Low86" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(-0.5670, 0, 1.3887, 0, 1.5000, 0, -1.3887, 0, -0.5670, 9.00, 6.00, -39.00)
+
+[node name="Block250" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.2164, 0, -0.8777, 0, 1.5000, 0, 0.8777, 0, 1.2164, 9.00, 0.00, -36.00)
+
+[node name="Block251" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.2164, 0, -0.8777, 0, 1.5000, 0, 0.8777, 0, 1.2164, 9.00, 3.00, -36.00)
+
+[node name="Block252" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.2164, 0, -0.8777, 0, 1.5000, 0, 0.8777, 0, 1.2164, 9.00, 6.00, -36.00)
+
+[node name="Block253" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.3891, 0, 1.4487, 0, 1.5000, 0, -1.4487, 0, 0.3891, 9.00, 0.00, -33.00)
+
+[node name="Block254" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.3891, 0, 1.4487, 0, 1.5000, 0, -1.4487, 0, 0.3891, 9.00, 3.00, -33.00)
+
+[node name="Block255" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.3891, 0, 1.4487, 0, 1.5000, 0, -1.4487, 0, 0.3891, 9.00, 6.00, -33.00)
+
+[node name="Block256" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(0.8875, 0, -1.2092, 0, 1.5000, 0, 1.2092, 0, 0.8875, 9.00, 0.00, -30.00)
+
+[node name="Block257" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(0.8875, 0, -1.2092, 0, 1.5000, 0, 1.2092, 0, 0.8875, 9.00, 3.00, -30.00)
+
+[node name="Block258" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(0.8875, 0, -1.2092, 0, 1.5000, 0, 1.2092, 0, 0.8875, 9.00, 6.00, -30.00)
+
+[node name="Low87" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(0.8875, 0, -1.2092, 0, 1.5000, 0, 1.2092, 0, 0.8875, 9.00, 9.00, -30.00)
+
+[node name="Block259" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 9.00, 6.00, -27.00)
+
+[node name="Low88" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 9.00, 6.00, -24.00)
+
+[node name="Low89" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 9.00, 6.00, -21.00)
+
+[node name="Block260" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 9.00, 3.00, -18.00)
+
+[node name="Block261" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 9.00, 3.00, -15.00)
+
+[node name="Block262" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 9.00, 3.00, -12.00)
+
+[node name="Block263" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 9.00, 0.00, -9.00)
+
+[node name="Block264" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 9.00, 0.00, -6.00)
+
+[node name="Block265" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 9.00, 0.00, -3.00)
+
+[node name="Block266" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 9.00, 0.00, 0.00)
+
+[node name="Block267" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.4620, 0, -0.3355, 0, 1.5000, 0, 0.3355, 0, -1.4620, 12.00, 0.00, -48.00)
+
+[node name="Block268" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 12.00, 0.00, -45.00)
+
+[node name="Block269" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.4772, 0, 0.2603, 0, 1.5000, 0, -0.2603, 0, 1.4772, 12.00, 0.00, -42.00)
+
+[node name="Low90" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.4772, 0, 0.2603, 0, 1.5000, 0, -0.2603, 0, 1.4772, 12.00, 3.00, -42.00)
+
+[node name="Block270" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.4924, 0, -0.1507, 0, 1.5000, 0, 0.1507, 0, -1.4924, 12.00, 0.00, -39.00)
+
+[node name="Block271" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.4924, 0, -0.1507, 0, 1.5000, 0, 0.1507, 0, -1.4924, 12.00, 3.00, -39.00)
+
+[node name="Block272" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.4731, 0, -1.4234, 0, 1.5000, 0, 1.4234, 0, 0.4731, 12.00, 0.00, -36.00)
+
+[node name="Block273" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.4731, 0, -1.4234, 0, 1.5000, 0, 1.4234, 0, 0.4731, 12.00, 3.00, -36.00)
+
+[node name="Block274" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.3845, 0, -0.5772, 0, 1.5000, 0, 0.5772, 0, -1.3845, 12.00, 0.00, -33.00)
+
+[node name="Block275" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.3845, 0, -0.5772, 0, 1.5000, 0, 0.5772, 0, -1.3845, 12.00, 3.00, -33.00)
+
+[node name="Low91" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(-1.3845, 0, -0.5772, 0, 1.5000, 0, 0.5772, 0, -1.3845, 12.00, 6.00, -33.00)
+
+[node name="Block276" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 12.00, 6.00, -30.00)
+
+[node name="Low92" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 12.00, 6.00, -27.00)
+
+[node name="Low93" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 12.00, 6.00, -24.00)
+
+[node name="Low94" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 12.00, 6.00, -21.00)
+
+[node name="Low95" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 12.00, 6.00, -18.00)
+
+[node name="Low96" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 12.00, 6.00, -15.00)
+
+[node name="Block277" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 12.00, 3.00, -12.00)
+
+[node name="Low97" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 12.00, 3.00, -9.00)
+
+[node name="Block278" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 12.00, 0.00, -6.00)
+
+[node name="Block279" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 12.00, 0.00, -3.00)
+
+[node name="Block280" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 12.00, 0.00, 0.00)
+
+[node name="Block281" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.3297, 0, -0.6942, 0, 1.5000, 0, 0.6942, 0, 1.3297, 15.00, 0.00, -45.00)
+
+[node name="Block282" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 0.00, -42.00)
+
+[node name="Block283" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 0.00, -39.00)
+
+[node name="Low98" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 3.00, -36.00)
+
+[node name="Low99" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 3.00, -33.00)
+
+[node name="Block284" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 3.00, -30.00)
+
+[node name="Block285" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 3.00, -27.00)
+
+[node name="Block286" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 3.00, -24.00)
+
+[node name="Low100" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 6.00, -21.00)
+
+[node name="Low101" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 6.00, -18.00)
+
+[node name="Low102" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 6.00, -15.00)
+
+[node name="Block287" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 3.00, -12.00)
+
+[node name="Block288" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 0.00, -9.00)
+
+[node name="Block289" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 3.00, -9.00)
+
+[node name="Block290" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(0.5394, 0, 1.3996, 0, 1.5000, 0, -1.3996, 0, 0.5394, 15.00, 0.00, -6.00)
+
+[node name="Low103" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(0.5394, 0, 1.3996, 0, 1.5000, 0, -1.3996, 0, 0.5394, 15.00, 3.00, -6.00)
+
+[node name="Block291" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 0.00, -3.00)
+
+[node name="Low104" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 3.00, -3.00)
+
+[node name="Block292" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 0.00, 0.00)
+
+[node name="Low105" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 3.00, 0.00)
+
+[node name="Block293" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 0.00, 3.00)
+
+[node name="Low106" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 3.00, 3.00)
+
+[node name="Block294" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 0.00, 6.00)
+
+[node name="Low107" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 3.00, 6.00)
+
+[node name="Block295" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 0.00, 9.00)
+
+[node name="Low108" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 3.00, 9.00)
+
+[node name="Low109" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 0.00, 12.00)
+
+[node name="Low110" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 15.00, 0.00, 15.00)
+
+[node name="Block296" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-0.6564, 0, 1.3488, 0, 1.5000, 0, -1.3488, 0, -0.6564, 18.00, 0.00, -42.00)
+
+[node name="Block297" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 18.00, 0.00, -39.00)
+
+[node name="Block298" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 18.00, 0.00, -36.00)
+
+[node name="Block299" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 18.00, 0.00, -33.00)
+
+[node name="Low111" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 18.00, 3.00, -30.00)
+
+[node name="Low112" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 18.00, 3.00, -27.00)
+
+[node name="Block300" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 18.00, 3.00, -24.00)
+
+[node name="Low113" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 18.00, 6.00, -21.00)
+
+[node name="Low114" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 18.00, 6.00, -18.00)
+
+[node name="Low115" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 18.00, 6.00, -15.00)
+
+[node name="Block301" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 18.00, 3.00, -12.00)
+
+[node name="Block302" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.0753, 0, 1.0458, 0, 1.5000, 0, -1.0458, 0, 1.0753, 21.00, 0.00, -39.00)
+
+[node name="Low116" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 21.00, 0.00, -36.00)
+
+[node name="Block303" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 21.00, 0.00, -33.00)
+
+[node name="Block304" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(-1.4968, 0, -0.0986, 0, 1.5000, 0, 0.0986, 0, -1.4968, 21.00, 0.00, -30.00)
+
+[node name="Low117" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(-1.4968, 0, -0.0986, 0, 1.5000, 0, 0.0986, 0, -1.4968, 21.00, 3.00, -30.00)
+
+[node name="Low118" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 21.00, 3.00, -27.00)
+
+[node name="Low119" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 21.00, 3.00, -24.00)
+
+[node name="Block305" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 21.00, 3.00, -21.00)
+
+[node name="Low120" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 21.00, 6.00, -21.00)
+
+[node name="Block306" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 21.00, 6.00, -18.00)
+
+[node name="Low121" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 21.00, 6.00, -15.00)
+
+[node name="Block307" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 21.00, 3.00, -12.00)
+
+[node name="Block308" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-0.0052, 0, 1.5000, 0, 1.5000, 0, -1.5000, 0, -0.0052, 24.00, 0.00, -39.00)
+
+[node name="Low122" parent="MainIsland/Ground" instance=ExtResource("4_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 24.00, 0.00, -36.00)
+
+[node name="Block309" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(0.4838, 0, 1.4198, 0, 1.5000, 0, -1.4198, 0, 0.4838, 24.00, 0.00, -33.00)
+
+[node name="Block310" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 24.00, 0.00, -30.00)
+
+[node name="Low123" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 24.00, 3.00, -27.00)
+
+[node name="Low124" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 24.00, 3.00, -24.00)
+
+[node name="Block311" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 24.00, 3.00, -21.00)
+
+[node name="Low125" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 24.00, 6.00, -18.00)
+
+[node name="Block312" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 24.00, 3.00, -15.00)
+
+[node name="Block313" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 24.00, 3.00, -12.00)
+
+[node name="Block314" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.2834, 0, 0.7765, 0, 1.5000, 0, -0.7765, 0, -1.2834, 27.00, 0.00, -36.00)
+
+[node name="Block315" parent="MainIsland/Ground" instance=ExtResource("3_r")]
+transform = Transform3D(-1.4746, 0, -0.2750, 0, 1.5000, 0, 0.2750, 0, -1.4746, 27.00, 0.00, -33.00)
+
+[node name="Block316" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 27.00, 0.00, -30.00)
+
+[node name="Block317" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 27.00, 0.00, -27.00)
+
+[node name="Block318" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(-1.0178, 0, -1.1019, 0, 1.5000, 0, 1.1019, 0, -1.0178, 27.00, 0.00, -24.00)
+
+[node name="Low126" parent="MainIsland/Ground" instance=ExtResource("8_r")]
+transform = Transform3D(-1.0178, 0, -1.1019, 0, 1.5000, 0, 1.1019, 0, -1.0178, 27.00, 3.00, -24.00)
+
+[node name="Block319" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 27.00, 0.00, -21.00)
+
+[node name="Block320" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 27.00, 3.00, -21.00)
+
+[node name="Block321" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 27.00, 0.00, -18.00)
+
+[node name="Block322" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 27.00, 3.00, -18.00)
+
+[node name="Block323" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 27.00, 0.00, -15.00)
+
+[node name="Block324" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 27.00, 3.00, -15.00)
+
+[node name="Block325" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 27.00, 0.00, -12.00)
+
+[node name="Block326" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 27.00, 3.00, -12.00)
+
+[node name="Block327" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 27.00, 0.00, -9.00)
+
+[node name="Block328" parent="MainIsland/Ground" instance=ExtResource("7_r")]
+transform = Transform3D(1.5000, 0, 0.0000, 0, 1.5000, 0, -0.0000, 0, 1.5000, 27.00, 3.00, -9.00)
+
+[node name="Low127" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(-0.9672, 0, -1.1465, 0, 1.5000, 0, 1.1465, 0, -0.9672, 27.00, 0.00, -6.00)
+
+[node name="Block329" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(-1.4741, 0, -0.2775, 0, 1.5000, 0, 0.2775, 0, -1.4741, 27.00, 0.00, -3.00)
+
+[node name="Block330" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(0.8912, 0, -1.2065, 0, 1.5000, 0, 1.2065, 0, 0.8912, 27.00, 0.00, 0.00)
+
+[node name="Block331" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(-1.1454, 0, -0.9685, 0, 1.5000, 0, 0.9685, 0, -1.1454, 27.00, 0.00, 3.00)
+
+[node name="Block332" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(0.9324, 0, -1.1750, 0, 1.5000, 0, 1.1750, 0, 0.9324, 27.00, 0.00, 6.00)
+
+[node name="Block333" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(0.1631, 0, 1.4911, 0, 1.5000, 0, -1.4911, 0, 0.1631, 30.00, 0.00, -30.00)
+
+[node name="Block334" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(-0.0869, 0, -1.4975, 0, 1.5000, 0, 1.4975, 0, -0.0869, 30.00, 0.00, -27.00)
+
+[node name="Low128" parent="MainIsland/Ground" instance=ExtResource("6_r")]
+transform = Transform3D(0.5566, 0, -1.3929, 0, 1.5000, 0, 1.3929, 0, 0.5566, 30.00, 0.00, -24.00)
+
+[node name="Block335" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(1.2282, 0, -0.8611, 0, 1.5000, 0, 0.8611, 0, 1.2282, 33.00, 0.00, -27.00)
+
+[node name="Block336" parent="MainIsland/Ground" instance=ExtResource("5_r")]
+transform = Transform3D(-0.6033, 0, 1.3733, 0, 1.5000, 0, -1.3733, 0, -0.6033, 33.00, 0.00, -24.00)
+
+[node name="Paths" type="Node3D" parent="MainIsland"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 0.00, 0.00, 0.00)
+
+[node name="Stairs" type="Node3D" parent="MainIsland"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 0.00, 0.00, 0.00)
+
+[node name="Stairs1" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(2.2768, 0, -0.9961, 0, 3.3333, 0, 0.7589, 0, 2.9884, 7.02, 3.00, -12.07)
+
+[node name="Stairs2" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(2.2768, 0, 0.4981, 0, 1.6667, 0, -0.7589, 0, 1.4942, 6.73, 6.00, -18.81)
+
+[node name="Stairs3" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(1.4993, 0, 1.2299, 0, 1.6667, 0, -1.8741, 0, 0.9839, 5.01, 7.50, -21.79)
+
+[node name="Stairs4" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(1.4993, 0, 1.2299, 0, 1.6667, 0, -1.8741, 0, 0.9839, 4.61, 9.00, -22.11)
+
+[node name="Stairs5" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(1.4993, 0, 1.2299, 0, 1.6667, 0, -1.8741, 0, 0.9839, 2.01, 10.50, -24.19)
+
+[node name="Stairs6" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(1.6971, 0, 1.1137, 0, 1.6667, 0, -1.6971, 0, 1.1137, 0.99, 12.00, -25.01)
+
+[node name="Stairs7" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(0.6593, 0, 3.0288, 0, 3.3333, 0, -2.3077, 0, 0.8654, -11.42, 3.00, -7.12)
+
+[node name="Stairs8" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(1.8222, 0, 1.0250, 0, 1.6667, 0, -1.5619, 0, 1.1958, -21.99, 6.00, -13.65)
+
+[node name="Stairs9" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(-2.2988, 0, 0.4526, 0, 1.6667, 0, -0.6896, 0, -1.5086, -22.68, 6.00, -20.41)
+
+[node name="Stairs10" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(-2.2988, 0, 0.4526, 0, 1.6667, 0, -0.6896, 0, -1.5086, -22.24, 4.50, -21.88)
+
+[node name="Stairs11" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(2.2988, 0, -0.4526, 0, 1.6667, 0, 0.6896, 0, 1.5086, -21.37, 4.50, -24.76)
+
+[node name="Stairs12" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(0.9747, 0, -1.4393, 0, 1.6667, 0, 2.1931, 0, 0.6397, -15.95, 6.00, -28.24)
+
+[node name="Stairs13" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(0.9747, 0, -1.4393, 0, 1.6667, 0, 2.1931, 0, 0.6397, -14.10, 7.50, -29.06)
+
+[node name="Stairs14" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(-0.3394, 0, -3.1183, 0, 3.3333, 0, 2.3759, 0, -0.4455, -11.81, 9.00, -29.97)
+
+[node name="Stairs15" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(-0.3394, 0, -1.5592, 0, 1.6667, 0, 2.3759, 0, -0.2227, -8.28, 12.00, -29.47)
+
+[node name="Stairs16" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(1.9662, 0, -0.9032, 0, 1.6667, 0, 1.3763, 0, 1.2903, 10.07, 3.00, -9.81)
+
+[node name="Stairs17" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(1.9662, 0, -0.9032, 0, 1.6667, 0, 1.3763, 0, 1.2903, 10.22, 4.50, -10.02)
+
+[node name="Stairs18" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(1.9662, 0, -0.9032, 0, 1.6667, 0, 1.3763, 0, 1.2903, 12.26, 6.00, -12.94)
+
+[node name="Stairs19" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(2.4000, 0, 0.0000, 0, 1.6667, 0, -0.0000, 0, 1.5750, 21.00, 6.00, -12.71)
+
+[node name="Stairs20" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(2.4000, 0, -0.0000, 0, 3.3333, 0, 0.0000, 0, 3.1500, 3.00, 3.00, -11.98)
+
+[node name="Stairs21" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(0.0000, 0, 3.1500, 0, 3.3333, 0, -2.4000, 0, 0.0000, -11.96, 3.00, 0.30)
+
+[node name="Stairs22" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(2.2632, 0, -0.5242, 0, 1.6667, 0, 0.7988, 0, 1.4852, -16.09, 4.50, 5.26)
+
+[node name="Stairs23" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(-0.2977, 0, -1.5628, 0, 1.6667, 0, 2.3815, 0, -0.1954, -17.28, 3.00, 4.84)
+
+[node name="Stairs24" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(-0.1596, 0, -1.5715, 0, 1.6667, 0, 2.3947, 0, -0.1048, -26.54, 1.50, -0.90)
+
+[node name="Stairs25" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(1.2348, 0, -1.3506, 0, 1.6667, 0, 2.0580, 0, 0.8103, -17.27, 3.00, 5.86)
+
+[node name="Stairs26" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(-0.9666, 0, 1.4416, 0, 1.6667, 0, -2.1968, 0, -0.6343, 14.29, 6.00, -26.89)
+
+[node name="Stairs27" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(-2.2689, 0, 1.0269, 0, 3.3333, 0, -0.7824, 0, -2.9779, 17.01, 3.00, -33.04)
+
+[node name="Stairs28" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(0.8913, 0, 1.4624, 0, 1.6667, 0, -2.2283, 0, 0.5849, 17.41, 4.50, -26.24)
+
+[node name="Stairs29" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(-0.8913, 0, -1.4624, 0, 1.6667, 0, 2.2283, 0, -0.5849, 18.57, 4.50, -25.77)
+
+[node name="Stairs30" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(0.8913, 0, 1.4624, 0, 1.6667, 0, -2.2283, 0, 0.5849, 20.27, 4.50, -25.09)
+
+[node name="Stairs31" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(1.4052, 0, -1.2768, 0, 1.6667, 0, 1.9456, 0, 0.9221, 9.90, 6.00, -16.37)
+
+[node name="Stairs32" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(2.3789, 0, -0.2082, 0, 1.6667, 0, 0.3172, 0, 1.5612, -11.87, 9.00, -30.97)
+
+[node name="Stairs33" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(-2.3982, 0, -0.0605, 0, 1.6667, 0, 0.0922, 0, -1.5738, -21.24, 4.50, -32.37)
+
+[node name="Stairs34" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(-2.3982, 0, -0.1211, 0, 3.3333, 0, 0.0922, 0, -3.1477, -21.39, 1.50, -36.20)
+
+[node name="Stairs35" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(2.3945, 0, -0.1065, 0, 1.6667, 0, 0.1623, 0, 1.5714, -15.12, 3.00, 8.31)
+
+[node name="Stairs36" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(2.3945, 0, -0.1065, 0, 1.6667, 0, 0.1623, 0, 1.5714, -15.33, 1.50, 11.39)
+
+[node name="Stairs37" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(-0.7013, 0, -1.5063, 0, 1.6667, 0, 2.2952, 0, -0.4602, 12.89, 3.00, -0.92)
+
+[node name="Stairs38" parent="MainIsland/Stairs" instance=ExtResource("9_r")]
+transform = Transform3D(2.4000, 0, 0.0000, 0, 3.3333, 0, -0.0000, 0, 3.1500, 15.40, 1.50, 12.19)
+
+[node name="Path1" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(-0.8736, 0, 2.0191, 0, 1.0000, 0, -2.0191, 0, -0.8736, 6.00, 3.01, -9.00)
+
+[node name="Path2" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(1.9460, 0, -1.0262, 0, 1.0000, 0, 1.0262, 0, 1.9460, 7.68, 6.01, -14.04)
+
+[node name="Path3" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(0.4374, 0, 2.1561, 0, 1.0000, 0, -2.1561, 0, 0.4374, 7.68, 6.01, -15.96)
+
+[node name="Path4" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(2.1999, 0, -0.0228, 0, 1.0000, 0, 0.0228, 0, 2.1999, -0.50, 13.51, -26.50)
+
+[node name="Path5" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(1.6733, 0, -1.4283, 0, 1.0000, 0, 1.4283, 0, 1.6733, -1.81, 13.51, -27.81)
+
+[node name="Path6" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(1.4659, 0, 1.6404, 0, 1.0000, 0, -1.6404, 0, 1.4659, -13.41, 6.01, -7.69)
+
+[node name="Path7" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(0.1471, 0, 2.1951, 0, 1.0000, 0, -2.1951, 0, 0.1471, -15.10, 6.01, -8.17)
+
+[node name="Path8" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(-0.3226, 0, -2.1762, 0, 1.0000, 0, 2.1762, 0, -0.3226, -16.79, 6.01, -8.66)
+
+[node name="Path9" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(-0.1312, 0, 2.1961, 0, 1.0000, 0, -2.1961, 0, -0.1312, -18.33, 6.01, -9.39)
+
+[node name="Path10" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(1.8038, 0, 1.2595, 0, 1.0000, 0, -1.2595, 0, 1.8038, -19.50, 6.01, -10.75)
+
+[node name="Path11" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(1.0860, 0, -1.9133, 0, 1.0000, 0, 1.9133, 0, 1.0860, -20.67, 6.01, -12.11)
+
+[node name="Path12" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(-1.9386, 0, 1.0401, 0, 1.0000, 0, -1.0401, 0, -1.9386, -23.33, 7.51, -15.22)
+
+[node name="Path13" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(0.5463, 0, -2.1311, 0, 1.0000, 0, 2.1311, 0, 0.5463, -23.71, 7.51, -16.98)
+
+[node name="Path14" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(1.5458, 0, 1.5654, 0, 1.0000, 0, -1.5654, 0, 1.5458, -20.08, 6.01, -26.41)
+
+[node name="Path15" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(-1.8021, 0, 1.2619, 0, 1.0000, 0, -1.2619, 0, -1.8021, -18.46, 6.01, -27.13)
+
+[node name="Path16" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(-0.8710, 0, -2.0202, 0, 1.0000, 0, 2.0202, 0, -0.8710, -6.25, 13.51, -29.18)
+
+[node name="Path17" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(2.1863, 0, 0.2450, 0, 1.0000, 0, -0.2450, 0, 2.1863, 13.71, 7.51, -14.29)
+
+[node name="Path18" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(0.6675, 0, 2.0963, 0, 1.0000, 0, -2.0963, 0, 0.6675, 15.38, 7.51, -14.95)
+
+[node name="Path19" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(-0.9068, 0, -2.0044, 0, 1.0000, 0, 2.0044, 0, -0.9068, 17.05, 7.51, -15.62)
+
+[node name="Path20" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(1.8676, 0, -1.1628, 0, 1.0000, 0, 1.1628, 0, 1.8676, 18.86, 7.51, -15.43)
+
+[node name="Path21" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(2.1567, 0, -0.4342, 0, 1.0000, 0, 0.4342, 0, 2.1567, 0.00, 3.01, -9.50)
+
+[node name="Path22" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(1.6465, 0, 1.4591, 0, 1.0000, 0, -1.4591, 0, 1.6465, 1.40, 3.01, -10.67)
+
+[node name="Path23" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(-2.1986, 0, -0.0785, 0, 1.0000, 0, 0.0785, 0, -2.1986, 3.00, 6.01, -14.08)
+
+[node name="Path24" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(0.1127, 0, -2.1971, 0, 1.0000, 0, 2.1971, 0, 0.1127, -10.00, 3.01, 0.30)
+
+[node name="Path25" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(-2.1997, 0, -0.0385, 0, 1.0000, 0, 0.0385, 0, -2.1997, -14.04, 6.01, 0.30)
+
+[node name="Path26" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(-0.8651, 0, -2.0228, 0, 1.0000, 0, 2.0228, 0, -0.8651, -14.89, 6.01, 1.84)
+
+[node name="Path27" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(0.8226, 0, 2.0404, 0, 1.0000, 0, -2.0404, 0, 0.8226, -19.25, 3.01, 4.59)
+
+[node name="Path28" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(1.9874, 0, 0.9436, 0, 1.0000, 0, -0.9436, 0, 1.9874, -20.59, 3.01, 3.36)
+
+[node name="Path29" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(1.7284, 0, 1.3612, 0, 1.0000, 0, -1.3612, 0, 1.7284, -21.37, 3.01, 1.74)
+
+[node name="Path30" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(2.1394, 0, 0.5127, 0, 1.0000, 0, -0.5127, 0, 2.1394, -21.86, 3.01, -0.08)
+
+[node name="Path31" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(-2.0851, 0, -0.7018, 0, 1.0000, 0, 0.7018, 0, -2.0851, -23.50, 3.01, -0.70)
+
+[node name="Path32" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(-2.1905, 0, -0.2046, 0, 1.0000, 0, 0.2046, 0, -2.1905, -28.46, 1.51, -1.60)
+
+[node name="Path33" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(-1.9980, 0, -0.9210, 0, 1.0000, 0, 0.9210, 0, -1.9980, -29.54, 1.51, -3.00)
+
+[node name="Path34" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(1.3313, 0, 1.7514, 0, 1.0000, 0, -1.7514, 0, 1.3313, 7.09, 7.51, -22.09)
+
+[node name="Path35" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(0.8796, 0, 2.0165, 0, 1.0000, 0, -2.0165, 0, 0.8796, 8.36, 7.51, -23.36)
+
+[node name="Path36" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(0.6282, 0, 2.1084, 0, 1.0000, 0, -2.1084, 0, 0.6282, 9.64, 7.51, -24.64)
+
+[node name="Path37" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(1.1813, 0, -1.8559, 0, 1.0000, 0, 1.8559, 0, 1.1813, 11.19, 7.51, -25.52)
+
+[node name="Path38" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(2.1959, 0, -0.1340, 0, 1.0000, 0, 0.1340, 0, 2.1959, 15.50, 6.01, -28.65)
+
+[node name="Path39" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(1.9720, 0, -0.9754, 0, 1.0000, 0, 0.9754, 0, 1.9720, 16.08, 6.01, -30.34)
+
+[node name="Path40" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(1.8177, 0, 1.2394, 0, 1.0000, 0, -1.2394, 0, 1.8177, 17.25, 3.01, -35.09)
+
+[node name="Path41" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(2.0355, 0, 0.8348, 0, 1.0000, 0, -0.8348, 0, 2.0355, 8.00, 6.01, -15.00)
+
+[node name="Path42" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(2.0986, 0, -0.6602, 0, 1.0000, 0, 0.6602, 0, 2.0986, 11.60, 7.51, -17.60)
+
+[node name="Path43" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(-2.1378, 0, 0.5193, 0, 1.0000, 0, -0.5193, 0, -2.1378, -11.60, 10.51, -33.00)
+
+[node name="Path44" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(0.2032, 0, -2.1906, 0, 1.0000, 0, 2.1906, 0, 0.2032, -21.03, 6.01, -26.76)
+
+[node name="Path45" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(-1.0212, 0, 1.9486, 0, 1.0000, 0, -1.9486, 0, -1.0212, -21.10, 6.01, -28.54)
+
+[node name="Path46" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(-2.1528, 0, 0.4534, 0, 1.0000, 0, -0.4534, 0, -2.1528, -21.17, 6.01, -30.31)
+
+[node name="Path47" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(-2.1899, 0, -0.2110, 0, 1.0000, 0, 0.2110, 0, -2.1899, 11.00, 3.01, -1.50)
+
+[node name="Path48" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(-1.9911, 0, 0.9357, 0, 1.0000, 0, -0.9357, 0, -1.9911, 14.60, 4.51, 0.16)
+
+[node name="Path49" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(-1.7723, 0, -1.3035, 0, 1.0000, 0, 1.3035, 0, -1.7723, 15.40, 4.51, 5.00)
+
+[node name="Path50" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(2.1924, 0, 0.1829, 0, 1.0000, 0, -0.1829, 0, 2.1924, 15.40, 4.51, 6.79)
+
+[node name="Path51" parent="MainIsland/Paths" instance=ExtResource("10_r")]
+transform = Transform3D(-0.6663, 0, -2.0967, 0, 1.0000, 0, 2.0967, 0, -0.6663, 15.40, 4.51, 8.57)
+
+[node name="Lamps" type="Node3D" parent="MainIsland"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 0.00, 0.00, 0.00)
+
+[node name="Lamp1" parent="MainIsland/Lamps" instance=ExtResource("11_r")]
+transform = Transform3D(0.6325, 0, -1.8974, 0, 2.0000, 0, 1.8974, 0, 0.6325, 8.73, 6.00, -18.18)
+
+[node name="Lamp2" parent="MainIsland/Lamps" instance=ExtResource("11_r")]
+transform = Transform3D(-1.4142, 0, 1.4142, 0, 2.0000, 0, -1.4142, 0, -1.4142, -2.08, 13.50, -25.67)
+
+[node name="Lamp3" parent="MainIsland/Lamps" instance=ExtResource("11_r")]
+transform = Transform3D(1.3016, 0, -1.5185, 0, 2.0000, 0, 1.5185, 0, 1.3016, -16.71, 6.00, -10.11)
+
+[node name="Lamp4" parent="MainIsland/Lamps" instance=ExtResource("11_r")]
+transform = Transform3D(0.5747, 0, 1.9157, 0, 2.0000, 0, -1.9157, 0, 0.5747, -25.34, 7.50, -17.46)
+
+[node name="Lamp5" parent="MainIsland/Lamps" instance=ExtResource("11_r")]
+transform = Transform3D(-1.8276, 0, -0.8123, 0, 2.0000, 0, 0.8123, 0, -1.8276, -17.77, 6.00, -25.57)
+
+[node name="Lamp6" parent="MainIsland/Lamps" instance=ExtResource("11_r")]
+transform = Transform3D(1.9799, 0, -0.2828, 0, 2.0000, 0, 0.2828, 0, 1.9799, -9.76, 12.00, -31.40)
+
+[node name="Lamp7" parent="MainIsland/Lamps" instance=ExtResource("11_r")]
+transform = Transform3D(-1.8570, 0, -0.7428, 0, 2.0000, 0, 0.7428, 0, -1.8570, 16.49, 7.50, -13.56)
+
+[node name="Lamp8" parent="MainIsland/Lamps" instance=ExtResource("11_r")]
+transform = Transform3D(1.5364, 0, 1.2804, 0, 2.0000, 0, -1.2804, 0, 1.5364, -0.69, 3.00, -11.14)
+
+[node name="Lamp9" parent="MainIsland/Lamps" instance=ExtResource("11_r")]
+transform = Transform3D(0.6656, 0, 1.8860, 0, 2.0000, 0, -1.8860, 0, 0.6656, -16.40, 6.00, 1.03)
+
+[node name="Lamp10" parent="MainIsland/Lamps" instance=ExtResource("11_r")]
+transform = Transform3D(-0.5199, 0, 1.9312, 0, 2.0000, 0, -1.9312, 0, -0.5199, -23.57, 3.00, 0.10)
+
+[node name="Lamp11" parent="MainIsland/Lamps" instance=ExtResource("11_r")]
+transform = Transform3D(1.2194, 0, -1.5852, 0, 2.0000, 0, 1.5852, 0, 1.2194, -28.34, 1.50, -4.24)
+
+[node name="Lamp12" parent="MainIsland/Lamps" instance=ExtResource("11_r")]
+transform = Transform3D(1.8306, 0, 0.8055, 0, 2.0000, 0, -0.8055, 0, 1.8306, 10.51, 7.50, -27.08)
+
+[node name="Lamp13" parent="MainIsland/Lamps" instance=ExtResource("11_r")]
+transform = Transform3D(-0.2337, 0, -1.9863, 0, 2.0000, 0, 1.9863, 0, -0.2337, 18.84, 3.00, -34.11)
+
+[node name="Lamp14" parent="MainIsland/Lamps" instance=ExtResource("11_r")]
+transform = Transform3D(1.6214, 0, 1.1710, 0, 2.0000, 0, -1.1710, 0, 1.6214, 7.00, 6.00, -16.38)
+
+[node name="Lamp15" parent="MainIsland/Lamps" instance=ExtResource("11_r")]
+transform = Transform3D(0.0769, 0, -1.9985, 0, 2.0000, 0, 1.9985, 0, 0.0769, -19.35, 6.00, -27.33)
+
+[node name="Lamp16" parent="MainIsland/Lamps" instance=ExtResource("11_r")]
+transform = Transform3D(-0.1353, 0, -1.9954, 0, 2.0000, 0, 1.9954, 0, -0.1353, -13.51, 3.00, 9.69)
+
+[node name="Lamp17" parent="MainIsland/Lamps" instance=ExtResource("11_r")]
+transform = Transform3D(0.0000, 0, 2.0000, 0, 2.0000, 0, -2.0000, 0, 0.0000, 13.70, 4.50, 5.77)
+
+[node name="Peak" type="Node3D" parent="MainIsland"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 0.00, 0.00, 0.00)
+
+[node name="Tower1" parent="MainIsland/Peak" instance=ExtResource("12_r")]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, -3.00, 15.00, -33.00)
+
+[node name="FireBasket1" parent="MainIsland/Peak" instance=ExtResource("13_r")]
+transform = Transform3D(2.0000, 0, 0.0000, 0, 2.0000, 0, -0.0000, 0, 2.0000, -0.80, 15.00, -30.80)
+
+[node name="FireBasket2" parent="MainIsland/Peak" instance=ExtResource("13_r")]
+transform = Transform3D(2.0000, 0, 0.0000, 0, 2.0000, 0, -0.0000, 0, 2.0000, -5.20, 15.00, -30.80)
+
+[node name="Tent1" parent="MainIsland/Peak" instance=ExtResource("14_r")]
+transform = Transform3D(-1.4748, 0, 1.3509, 0, 2.0000, 0, -1.3509, 0, -1.4748, 6.60, 7.50, -21.60)
+
+[node name="Campfire1" parent="MainIsland/Peak" instance=ExtResource("15_r")]
+transform = Transform3D(4.0000, 0, 0.0000, 0, 4.0000, 0, -0.0000, 0, 4.0000, 5.50, 7.50, -20.10)
+
+[node name="Bench1" parent="MainIsland/Peak" instance=ExtResource("16_r")]
+transform = Transform3D(0.7247, 0, 1.8641, 0, 2.0000, 0, -1.8641, 0, 0.7247, 4.90, 7.50, -21.20)
+
+[node name="SeaCave" type="Node3D" parent="MainIsland"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 0.00, 0.00, 0.00)
+
+[node name="Rock1" parent="MainIsland/SeaCave" instance=ExtResource("17_r")]
+transform = Transform3D(0.3405, 0, 0.7388, 0, 0.8135, 0, -0.7388, 0, 0.3405, 14.20, -0.40, -8.20)
+
+[node name="Rock2" parent="MainIsland/SeaCave" instance=ExtResource("18_r")]
+transform = Transform3D(-0.6378, 0, 0.6775, 0, 0.9305, 0, -0.6775, 0, -0.6378, 15.80, -0.40, -7.40)
+
+[node name="Rock3" parent="MainIsland/SeaCave" instance=ExtResource("18_r")]
+transform = Transform3D(0.4212, 0, 0.7130, 0, 0.8281, 0, -0.7130, 0, 0.4212, 27.80, -0.40, -8.00)
+
+[node name="Rock4" parent="MainIsland/SeaCave" instance=ExtResource("17_r")]
+transform = Transform3D(-0.3221, 0, 0.6453, 0, 0.7212, 0, -0.6453, 0, -0.3221, 26.40, -0.40, -7.20)
+
+[node name="Rock5" parent="MainIsland/SeaCave" instance=ExtResource("18_r")]
+transform = Transform3D(0.6582, 0, -0.6530, 0, 0.9272, 0, 0.6530, 0, 0.6582, 29.00, -0.40, -11.50)
+
+[node name="Rock6" parent="MainIsland/SeaCave" instance=ExtResource("19_r")]
+transform = Transform3D(-0.6772, 0, -0.3170, 0, 0.7477, 0, 0.3170, 0, -0.6772, 29.20, -0.40, -16.00)
+
+[node name="Rock7" parent="MainIsland/SeaCave" instance=ExtResource("18_r")]
+transform = Transform3D(0.8959, 0, -0.0979, 0, 0.9012, 0, 0.0979, 0, 0.8959, 28.80, -0.40, -20.50)
+
+[node name="Jetty1" parent="MainIsland/SeaCave" instance=ExtResource("20_r")]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 17.60, 0.10, -18.50)
+
+[node name="Jetty2" parent="MainIsland/SeaCave" instance=ExtResource("20_r")]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 17.60, 0.10, -15.80)
+
+[node name="Jetty3" parent="MainIsland/SeaCave" instance=ExtResource("20_r")]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 17.60, 0.10, -13.10)
+
+[node name="Chest1" parent="MainIsland/SeaCave" instance=ExtResource("21_r")]
+transform = Transform3D(0.0016, 0, 2.0000, 0, 2.0000, 0, -2.0000, 0, 0.0016, 17.50, 0.53, -18.80)
+
+[node name="Crate1" parent="MainIsland/SeaCave" instance=ExtResource("22_r")]
+transform = Transform3D(0.5880, 0, 0.1192, 0, 0.6000, 0, -0.1192, 0, 0.5880, 17.50, 0.53, -16.60)
+
+[node name="Crate2" parent="MainIsland/SeaCave" instance=ExtResource("23_r")]
+transform = Transform3D(0.5732, 0, -0.1773, 0, 0.6000, 0, 0.1773, 0, 0.5732, 17.50, 0.53, -15.50)
+
+[node name="Barrel1" parent="MainIsland/SeaCave" instance=ExtResource("24_r")]
+transform = Transform3D(0.4605, 0, 0.1947, 0, 0.5000, 0, -0.1947, 0, 0.4605, 17.40, 0.53, -13.60)
+
+[node name="Barrel2" parent="MainIsland/SeaCave" instance=ExtResource("24_r")]
+transform = Transform3D(0.2702, 0, 0.4207, 0, 0.5000, 0, -0.4207, 0, 0.2702, 17.60, 0.53, -12.60)
+
+[node name="Lantern1" parent="MainIsland/SeaCave" instance=ExtResource("25_r")]
+transform = Transform3D(2.0000, 0, 0.0000, 0, 2.0000, 0, -0.0000, 0, 2.0000, 17.60, 2.10, -10.90)
+
+[node name="Lantern2" parent="MainIsland/SeaCave" instance=ExtResource("25_r")]
+transform = Transform3D(2.0000, 0, 0.0000, 0, 2.0000, 0, -0.0000, 0, 2.0000, 25.40, 2.10, -10.90)
+
+[node name="CaveLight" type="OmniLight3D" parent="MainIsland/SeaCave"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 2, -14.5)
+light_color = Color(1, 0.62, 0.3, 1)
+light_energy = 2.0
+omni_range = 9.0
+
+[node name="MouthLight" type="OmniLight3D" parent="MainIsland/SeaCave"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.5, 2.2, -10.2)
+light_color = Color(1, 0.7, 0.35, 1)
+light_energy = 1.2
+omni_range = 6.0
+
+[node name="Cannon1" parent="MainIsland/SeaCave" instance=ExtResource("26_r")]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 19.20, 6.00, -10.80)
+
+[node name="Cannon2" parent="MainIsland/SeaCave" instance=ExtResource("26_r")]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 23.60, 6.00, -10.80)
+
+[node name="Flag1" parent="MainIsland/SeaCave" instance=ExtResource("27_r")]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 24.50, 6.00, -15.50)
+
+[node name="Crate3" parent="MainIsland/SeaCave" instance=ExtResource("23_r")]
+transform = Transform3D(0.5777, 0, 0.3952, 0, 0.7000, 0, -0.3952, 0, 0.5777, 19.50, 7.50, -15.50)
+
+[node name="Beaches" type="Node3D" parent="MainIsland"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 0.00, 0.00, 0.00)
+
+[node name="ShoreRocks" type="Node3D" parent="MainIsland"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 0.00, 0.00, 0.00)
+
+[node name="Sand1" parent="MainIsland/Beaches" instance=ExtResource("28_r")]
+transform = Transform3D(0.9335, 0, -0.5818, 0, 1.1000, 0, 0.5818, 0, 0.9335, -39.80, 0.00, -9.00)
+
+[node name="Rock1" parent="MainIsland/ShoreRocks" instance=ExtResource("18_r")]
+transform = Transform3D(0.9085, 0, -0.8548, 0, 1.2474, 0, 0.8548, 0, 0.9085, -33.00, -0.30, -17.80)
+
+[node name="Rock2" parent="MainIsland/ShoreRocks" instance=ExtResource("29_r")]
+transform = Transform3D(0.5171, 0, 1.1913, 0, 1.2987, 0, -1.1913, 0, 0.5171, -35.80, -0.30, -3.00)
+
+[node name="Sand2" parent="MainIsland/Beaches" instance=ExtResource("28_r")]
+transform = Transform3D(0.8864, 0, 0.6514, 0, 1.1000, 0, -0.6514, 0, 0.8864, -33.00, 0.00, 0.80)
+
+[node name="Sand3" parent="MainIsland/Beaches" instance=ExtResource("28_r")]
+transform = Transform3D(-0.1582, 0, 1.0886, 0, 1.1000, 0, -1.0886, 0, -0.1582, -33.80, 0.00, -21.00)
+
+[node name="Sand4" parent="MainIsland/Beaches" instance=ExtResource("28_r")]
+transform = Transform3D(0.2329, 0, 1.0751, 0, 1.1000, 0, -1.0751, 0, 0.2329, -33.80, 0.00, 0.00)
+
+[node name="Rock3" parent="MainIsland/ShoreRocks" instance=ExtResource("19_r")]
+transform = Transform3D(-1.0712, 0, -0.2259, 0, 1.0948, 0, 0.2259, 0, -1.0712, -29.80, -0.30, -33.00)
+
+[node name="Rock4" parent="MainIsland/ShoreRocks" instance=ExtResource("29_r")]
+transform = Transform3D(0.8020, 0, 0.7495, 0, 1.0977, 0, -0.7495, 0, 0.8020, -29.80, -0.30, -30.00)
+
+[node name="Rock5" parent="MainIsland/ShoreRocks" instance=ExtResource("17_r")]
+transform = Transform3D(-0.9501, 0, -0.8418, 0, 1.2694, 0, 0.8418, 0, -0.9501, -29.80, -0.30, 3.00)
+
+[node name="Rock6" parent="MainIsland/ShoreRocks" instance=ExtResource("30_r")]
+transform = Transform3D(-1.2801, 0, -0.0383, 0, 1.2807, 0, 0.0383, 0, -1.2801, -26.80, -0.30, -36.00)
+
+[node name="Rock7" parent="MainIsland/ShoreRocks" instance=ExtResource("17_r")]
+transform = Transform3D(0.8354, 0, 0.5946, 0, 1.0254, 0, -0.5946, 0, 0.8354, -24.00, -0.30, -38.80)
+
+[node name="Rock8" parent="MainIsland/ShoreRocks" instance=ExtResource("31_r")]
+transform = Transform3D(-1.0013, 0, 0.5863, 0, 1.1603, 0, -0.5863, 0, -1.0013, -21.00, -0.30, -41.80)
+
+[node name="Sand5" parent="MainIsland/Beaches" instance=ExtResource("28_r")]
+transform = Transform3D(-1.0334, 0, 0.3769, 0, 1.1000, 0, -0.3769, 0, -1.0334, -18.00, 0.00, 21.80)
+
+[node name="Rock9" parent="MainIsland/ShoreRocks" instance=ExtResource("31_r")]
+transform = Transform3D(-1.0468, 0, -0.7360, 0, 1.2796, 0, 0.7360, 0, -1.0468, -17.80, -0.30, -42.00)
+
+[node name="Sand6" parent="MainIsland/Beaches" instance=ExtResource("28_r")]
+transform = Transform3D(0.9958, 0, -0.4674, 0, 1.1000, 0, 0.4674, 0, 0.9958, -15.00, 0.00, -45.80)
+
+[node name="Sand7" parent="MainIsland/Beaches" instance=ExtResource("28_r")]
+transform = Transform3D(-1.0827, 0, 0.1941, 0, 1.1000, 0, -0.1941, 0, -1.0827, -15.00, 0.00, 24.80)
+
+[node name="Rock10" parent="MainIsland/ShoreRocks" instance=ExtResource("30_r")]
+transform = Transform3D(-1.1569, 0, -0.3122, 0, 1.1983, 0, 0.3122, 0, -1.1569, -12.00, -0.30, -44.80)
+
+[node name="Rock11" parent="MainIsland/ShoreRocks" instance=ExtResource("30_r")]
+transform = Transform3D(-1.0219, 0, 0.5559, 0, 1.1634, 0, -0.5559, 0, -1.0219, -11.80, -0.30, -45.00)
+
+[node name="Rock12" parent="MainIsland/ShoreRocks" instance=ExtResource("18_r")]
+transform = Transform3D(-1.1208, 0, -0.2168, 0, 1.1416, 0, 0.2168, 0, -1.1208, -9.00, -0.30, -47.80)
+
+[node name="Rock13" parent="MainIsland/ShoreRocks" instance=ExtResource("18_r")]
+transform = Transform3D(-0.6581, 0, -1.0907, 0, 1.2739, 0, 1.0907, 0, -0.6581, -6.00, -0.30, -47.80)
+
+[node name="Sand8" parent="MainIsland/Beaches" instance=ExtResource("28_r")]
+transform = Transform3D(0.1549, 0, -1.0890, 0, 1.1000, 0, 1.0890, 0, 0.1549, -3.00, 0.00, -48.80)
+
+[node name="Rock14" parent="MainIsland/ShoreRocks" instance=ExtResource("29_r")]
+transform = Transform3D(0.7074, 0, 1.0636, 0, 1.2773, 0, -1.0636, 0, 0.7074, 0.00, -0.30, -47.80)
+
+[node name="Rock15" parent="MainIsland/ShoreRocks" instance=ExtResource("18_r")]
+transform = Transform3D(-0.0095, 0, -0.9250, 0, 0.9251, 0, 0.9250, 0, -0.0095, 3.00, -0.30, -47.80)
+
+[node name="Sand9" parent="MainIsland/Beaches" instance=ExtResource("28_r")]
+transform = Transform3D(0.9119, 0, -0.6151, 0, 1.1000, 0, 0.6151, 0, 0.9119, 9.00, 0.00, -51.80)
+
+[node name="Rock16" parent="MainIsland/ShoreRocks" instance=ExtResource("30_r")]
+transform = Transform3D(-0.0074, 0, 1.2777, 0, 1.2777, 0, -1.2777, 0, -0.0074, 14.80, -0.30, -48.00)
+
+[node name="Sand10" parent="MainIsland/Beaches" instance=ExtResource("28_r")]
+transform = Transform3D(0.8961, 0, 0.6380, 0, 1.1000, 0, -0.6380, 0, 0.8961, 12.00, 0.00, -51.80)
+
+[node name="Sand11" parent="MainIsland/Beaches" instance=ExtResource("28_r")]
+transform = Transform3D(1.0654, 0, -0.2739, 0, 1.1000, 0, 0.2739, 0, 1.0654, 15.00, 0.00, 18.80)
+
+[node name="Rock17" parent="MainIsland/ShoreRocks" instance=ExtResource("29_r")]
+transform = Transform3D(0.9088, 0, 0.8021, 0, 1.2121, 0, -0.8021, 0, 0.9088, 20.80, -0.30, -42.00)
+
+[node name="Rock18" parent="MainIsland/ShoreRocks" instance=ExtResource("19_r")]
+transform = Transform3D(0.6932, 0, -0.8260, 0, 1.0783, 0, 0.8260, 0, 0.6932, 18.00, -0.30, -44.80)
+
+[node name="Rock19" parent="MainIsland/ShoreRocks" instance=ExtResource("18_r")]
+transform = Transform3D(-1.1553, 0, 0.4335, 0, 1.2339, 0, -0.4335, 0, -1.1553, 21.00, -0.30, -41.80)
+
+[node name="Rock20" parent="MainIsland/ShoreRocks" instance=ExtResource("18_r")]
+transform = Transform3D(-0.7935, 0, -0.9542, 0, 1.2410, 0, 0.9542, 0, -0.7935, 26.80, -0.30, -39.00)
+
+[node name="Rock21" parent="MainIsland/ShoreRocks" instance=ExtResource("29_r")]
+transform = Transform3D(-1.3728, 0, -0.2687, 0, 1.3988, 0, 0.2687, 0, -1.3728, 24.00, -0.30, -41.80)
+
+[node name="Rock22" parent="MainIsland/ShoreRocks" instance=ExtResource("17_r")]
+transform = Transform3D(-1.0541, 0, -0.0195, 0, 1.0543, 0, 0.0195, 0, -1.0541, 29.80, -0.30, -33.00)
+
+[node name="Rock23" parent="MainIsland/ShoreRocks" instance=ExtResource("18_r")]
+transform = Transform3D(-0.1867, 0, 1.1904, 0, 1.2049, 0, -1.1904, 0, -0.1867, 32.80, -0.30, -30.00)
+
+[node name="Rock24" parent="MainIsland/ShoreRocks" instance=ExtResource("19_r")]
+transform = Transform3D(-0.8556, 0, -0.9475, 0, 1.2767, 0, 0.9475, 0, -0.8556, 35.80, -0.30, -27.00)
+
+[node name="Sand12" parent="MainIsland/Beaches" instance=ExtResource("28_r")]
+transform = Transform3D(0.0072, 0, 1.1000, 0, 1.1000, 0, -1.1000, 0, 0.0072, 33.00, 0.00, -30.80)
+
+[node name="Trees" type="Node3D" parent="MainIsland"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 0.00, 0.00, 0.00)
+
+[node name="Plants" type="Node3D" parent="MainIsland"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 0.00, 0.00, 0.00)
+
+[node name="Tree1" parent="MainIsland/Trees" instance=ExtResource("32_r")]
+transform = Transform3D(2.4082, 0, 0.1435, 0, 2.4124, 0, -0.1435, 0, 2.4082, -11.17, 7.50, -43.01)
+
+[node name="Tree2" parent="MainIsland/Trees" instance=ExtResource("33_r")]
+transform = Transform3D(1.5648, 0, 2.4953, 0, 2.9454, 0, -2.4953, 0, 1.5648, 20.51, 3.00, -32.44)
+
+[node name="Tree3" parent="MainIsland/Trees" instance=ExtResource("34_r")]
+transform = Transform3D(-2.6238, 0, 0.9570, 0, 2.7929, 0, -0.9570, 0, -2.6238, -23.34, 4.50, -9.12)
+
+[node name="Tree4" parent="MainIsland/Trees" instance=ExtResource("34_r")]
+transform = Transform3D(-2.2443, 0, 1.0968, 0, 2.4980, 0, -1.0968, 0, -2.2443, 29.62, 3.00, -26.89)
+
+[node name="Tree5" parent="MainIsland/Trees" instance=ExtResource("35_r")]
+transform = Transform3D(-0.3376, 0, -0.9396, 0, 0.9984, 0, 0.9396, 0, -0.3376, -33.93, 3.00, -6.63)
+
+[node name="Tree6" parent="MainIsland/Trees" instance=ExtResource("33_r")]
+transform = Transform3D(2.3345, 0, -1.8172, 0, 2.9584, 0, 1.8172, 0, 2.3345, -3.09, 6.00, -18.61)
+
+[node name="Tree7" parent="MainIsland/Trees" instance=ExtResource("36_r")]
+transform = Transform3D(2.3342, 0, 1.4760, 0, 2.7617, 0, -1.4760, 0, 2.3342, -14.26, 7.50, -38.86)
+
+[node name="Tree8" parent="MainIsland/Trees" instance=ExtResource("37_r")]
+transform = Transform3D(-1.1329, 0, 1.9289, 0, 2.2370, 0, -1.9289, 0, -1.1329, -23.82, 4.50, -27.43)
+
+[node name="Tree9" parent="MainIsland/Trees" instance=ExtResource("38_r")]
+transform = Transform3D(-1.7667, 0, 2.8560, 0, 3.3583, 0, -2.8560, 0, -1.7667, 8.44, 9.00, -36.62)
+
+[node name="Tree10" parent="MainIsland/Trees" instance=ExtResource("33_r")]
+transform = Transform3D(2.0827, 0, 2.4143, 0, 3.1885, 0, -2.4143, 0, 2.0827, 2.64, 4.50, -43.97)
+
+[node name="Tree11" parent="MainIsland/Trees" instance=ExtResource("35_r")]
+transform = Transform3D(-0.3482, 0, 0.8400, 0, 0.9093, 0, -0.8400, 0, -0.3482, -29.82, 1.50, -20.10)
+
+[node name="Tree12" parent="MainIsland/Trees" instance=ExtResource("39_r")]
+transform = Transform3D(0.3082, 0, -1.0184, 0, 1.0640, 0, 1.0184, 0, 0.3082, -32.18, 1.50, -2.11)
+
+[node name="Tree13" parent="MainIsland/Trees" instance=ExtResource("37_r")]
+transform = Transform3D(0.5723, 0, -2.2692, 0, 2.3402, 0, 2.2692, 0, 0.5723, 27.10, 3.00, -2.99)
+
+[node name="Tree14" parent="MainIsland/Trees" instance=ExtResource("40_r")]
+transform = Transform3D(1.0756, 0, -0.3751, 0, 1.1392, 0, 0.3751, 0, 1.0756, -26.90, 3.00, -23.94)
+
+[node name="Tree15" parent="MainIsland/Trees" instance=ExtResource("37_r")]
+transform = Transform3D(-1.1629, 0, -1.6869, 0, 2.0489, 0, 1.6869, 0, -1.1629, -20.63, 4.50, -5.61)
+
+[node name="Tree16" parent="MainIsland/Trees" instance=ExtResource("41_r")]
+transform = Transform3D(-2.4635, 0, 0.2681, 0, 2.4781, 0, -0.2681, 0, -2.4635, -11.41, 7.50, -26.29)
+
+[node name="Tree17" parent="MainIsland/Trees" instance=ExtResource("42_r")]
+transform = Transform3D(1.5048, 0, -2.9448, 0, 3.3070, 0, 2.9448, 0, 1.5048, 23.73, 3.00, -29.98)
+
+[node name="Tree18" parent="MainIsland/Trees" instance=ExtResource("43_r")]
+transform = Transform3D(-2.1892, 0, -0.6849, 0, 2.2938, 0, 0.6849, 0, -2.1892, -15.54, 9.00, -32.91)
+
+[node name="Tree19" parent="MainIsland/Trees" instance=ExtResource("40_r")]
+transform = Transform3D(0.0501, 0, -0.9576, 0, 0.9589, 0, 0.9576, 0, 0.0501, -33.47, 1.50, -14.13)
+
+[node name="Tree20" parent="MainIsland/Trees" instance=ExtResource("32_r")]
+transform = Transform3D(-2.4215, 0, 0.7142, 0, 2.5246, 0, -0.7142, 0, -2.4215, -15.69, 6.00, -23.89)
+
+[node name="Tree21" parent="MainIsland/Trees" instance=ExtResource("32_r")]
+transform = Transform3D(1.3758, 0, 2.1249, 0, 2.5314, 0, -2.1249, 0, 1.3758, 6.25, 3.00, -47.69)
+
+[node name="Tree22" parent="MainIsland/Trees" instance=ExtResource("38_r")]
+transform = Transform3D(-2.6823, 0, 1.8048, 0, 3.2330, 0, -1.8048, 0, -2.6823, -27.79, 1.50, -33.25)
+
+[node name="Tree23" parent="MainIsland/Trees" instance=ExtResource("41_r")]
+transform = Transform3D(1.6694, 0, -1.3956, 0, 2.1759, 0, 1.3956, 0, 1.6694, 27.57, 3.00, -35.45)
+
+[node name="Tree24" parent="MainIsland/Trees" instance=ExtResource("38_r")]
+transform = Transform3D(2.7112, 0, -2.7784, 0, 3.8820, 0, 2.7784, 0, 2.7112, -9.83, 6.00, -15.12)
+
+[node name="Tree25" parent="MainIsland/Trees" instance=ExtResource("36_r")]
+transform = Transform3D(2.3434, 0, -2.2075, 0, 3.2194, 0, 2.2075, 0, 2.3434, -8.90, 9.00, -23.65)
+
+[node name="Tree26" parent="MainIsland/Trees" instance=ExtResource("43_r")]
+transform = Transform3D(-0.7827, 0, -2.0627, 0, 2.2062, 0, 2.0627, 0, -0.7827, 12.69, 3.00, -45.23)
+
+[node name="Tree27" parent="MainIsland/Trees" instance=ExtResource("43_r")]
+transform = Transform3D(1.6546, 0, -1.2128, 0, 2.0515, 0, 1.2128, 0, 1.6546, -24.67, 1.50, -32.26)
+
+[node name="Tree28" parent="MainIsland/Trees" instance=ExtResource("35_r")]
+transform = Transform3D(-0.3780, 0, 1.0280, 0, 1.0953, 0, -1.0280, 0, -0.3780, -14.01, 1.50, 19.05)
+
+[node name="Tree29" parent="MainIsland/Trees" instance=ExtResource("36_r")]
+transform = Transform3D(-1.3011, 0, -2.2655, 0, 2.6125, 0, 2.2655, 0, -1.3011, -7.95, 9.00, -38.13)
+
+[node name="Tree30" parent="MainIsland/Trees" instance=ExtResource("39_r")]
+transform = Transform3D(1.1173, 0, 0.0187, 0, 1.1175, 0, -0.0187, 0, 1.1173, -26.73, 1.50, -29.08)
+
+[node name="Tree31" parent="MainIsland/Trees" instance=ExtResource("40_r")]
+transform = Transform3D(0.0903, 0, 0.9780, 0, 0.9821, 0, -0.9780, 0, 0.0903, 30.62, 3.00, -30.74)
+
+[node name="Tree32" parent="MainIsland/Trees" instance=ExtResource("36_r")]
+transform = Transform3D(-0.1724, 0, 2.8318, 0, 2.8371, 0, -2.8318, 0, -0.1724, -5.37, 4.50, -44.36)
+
+[node name="Tree33" parent="MainIsland/Trees" instance=ExtResource("40_r")]
+transform = Transform3D(-1.1351, 0, -0.1556, 0, 1.1457, 0, 0.1556, 0, -1.1351, 34.07, 3.00, -27.78)
+
+[node name="Tree34" parent="MainIsland/Trees" instance=ExtResource("40_r")]
+transform = Transform3D(0.8398, 0, -0.3607, 0, 0.9140, 0, 0.3607, 0, 0.8398, 27.93, 3.00, 2.29)
+
+[node name="Tree35" parent="MainIsland/Trees" instance=ExtResource("32_r")]
+transform = Transform3D(-2.7688, 0, -0.3304, 0, 2.7885, 0, 0.3304, 0, -2.7688, -6.30, 6.00, -15.50)
+
+[node name="Tree36" parent="MainIsland/Trees" instance=ExtResource("41_r")]
+transform = Transform3D(-1.0832, 0, 2.1177, 0, 2.3787, 0, -2.1177, 0, -1.0832, 5.89, 4.50, -44.22)
+
+[node name="Tree37" parent="MainIsland/Trees" instance=ExtResource("33_r")]
+transform = Transform3D(-2.2280, 0, -2.3844, 0, 3.2633, 0, 2.3844, 0, -2.2280, -12.79, 7.50, -11.23)
+
+[node name="Tree38" parent="MainIsland/Trees" instance=ExtResource("44_r")]
+transform = Transform3D(-0.2639, 0, -0.8153, 0, 0.8569, 0, 0.8153, 0, -0.2639, -18.05, 1.50, 17.47)
+
+[node name="Tree39" parent="MainIsland/Trees" instance=ExtResource("32_r")]
+transform = Transform3D(1.3890, 0, 1.9081, 0, 2.3601, 0, -1.9081, 0, 1.3890, -6.42, 9.00, -21.31)
+
+[node name="Tree40" parent="MainIsland/Trees" instance=ExtResource("43_r")]
+transform = Transform3D(1.3519, 0, -1.7198, 0, 2.1875, 0, 1.7198, 0, 1.3519, 3.47, 6.00, -18.38)
+
+[node name="Tree41" parent="MainIsland/Trees" instance=ExtResource("33_r")]
+transform = Transform3D(1.7001, 0, -3.0470, 0, 3.4892, 0, 3.0470, 0, 1.7001, 9.31, 7.50, -39.82)
+
+[node name="Tree42" parent="MainIsland/Trees" instance=ExtResource("42_r")]
+transform = Transform3D(0.3443, 0, 2.8767, 0, 2.8973, 0, -2.8767, 0, 0.3443, -18.66, 4.50, -20.73)
+
+[node name="Tree43" parent="MainIsland/Trees" instance=ExtResource("40_r")]
+transform = Transform3D(-0.1052, 0, 0.9254, 0, 0.9313, 0, -0.9254, 0, -0.1052, -30.06, 1.50, -23.57)
+
+[node name="Tree44" parent="MainIsland/Trees" instance=ExtResource("37_r")]
+transform = Transform3D(1.5001, 0, -1.5812, 0, 2.1795, 0, 1.5812, 0, 1.5001, -18.99, 4.50, 0.47)
+
+[node name="Tree45" parent="MainIsland/Trees" instance=ExtResource("43_r")]
+transform = Transform3D(-1.6327, 0, 2.0009, 0, 2.5826, 0, -2.0009, 0, -1.6327, -14.91, 6.00, -17.62)
+
+[node name="Tree46" parent="MainIsland/Trees" instance=ExtResource("38_r")]
+transform = Transform3D(-0.2942, 0, 3.1261, 0, 3.1400, 0, -3.1261, 0, -0.2942, -12.96, 6.00, -21.30)
+
+[node name="Tree47" parent="MainIsland/Trees" instance=ExtResource("36_r")]
+transform = Transform3D(-1.4434, 0, 2.0544, 0, 2.5107, 0, -2.0544, 0, -1.4434, -17.90, 6.00, -14.60)
+
+[node name="Tree48" parent="MainIsland/Trees" instance=ExtResource("36_r")]
+transform = Transform3D(-3.0355, 0, 0.0135, 0, 3.0355, 0, -0.0135, 0, -3.0355, -0.15, 9.00, -40.98)
+
+[node name="Tree49" parent="MainIsland/Trees" instance=ExtResource("32_r")]
+transform = Transform3D(2.0138, 0, 1.9254, 0, 2.7862, 0, -1.9254, 0, 2.0138, 9.01, 9.00, -32.85)
+
+[node name="Tree50" parent="MainIsland/Trees" instance=ExtResource("34_r")]
+transform = Transform3D(1.2605, 0, 2.3456, 0, 2.6628, 0, -2.3456, 0, 1.2605, 32.36, 3.00, -24.64)
+
+[node name="Tree51" parent="MainIsland/Trees" instance=ExtResource("39_r")]
+transform = Transform3D(-0.7261, 0, 0.7277, 0, 1.0280, 0, -0.7277, 0, -0.7261, -29.62, 1.50, -27.56)
+
+[node name="Tree52" parent="MainIsland/Trees" instance=ExtResource("43_r")]
+transform = Transform3D(2.0512, 0, 0.2089, 0, 2.0618, 0, -0.2089, 0, 2.0512, 12.87, 6.00, -39.91)
+
+[node name="Tree53" parent="MainIsland/Trees" instance=ExtResource("38_r")]
+transform = Transform3D(2.1838, 0, 3.2067, 0, 3.8797, 0, -3.2067, 0, 2.1838, 11.20, 9.00, -29.12)
+
+[node name="Tree54" parent="MainIsland/Trees" instance=ExtResource("33_r")]
+transform = Transform3D(-0.6681, 0, -2.7914, 0, 2.8703, 0, 2.7914, 0, -0.6681, -14.35, 6.00, -42.86)
+
+[node name="Tree55" parent="MainIsland/Trees" instance=ExtResource("38_r")]
+transform = Transform3D(-0.1472, 0, -3.0563, 0, 3.0598, 0, 3.0563, 0, -0.1472, 6.03, 9.00, -39.04)
+
+[node name="Tree56" parent="MainIsland/Trees" instance=ExtResource("34_r")]
+transform = Transform3D(-1.4540, 0, -2.0387, 0, 2.5041, 0, 2.0387, 0, -1.4540, 26.61, 1.50, -7.07)
+
+[node name="Tree57" parent="MainIsland/Trees" instance=ExtResource("38_r")]
+transform = Transform3D(2.8187, 0, 1.2249, 0, 3.0733, 0, -1.2249, 0, 2.8187, -8.52, 6.00, -18.15)
+
+[node name="Tree58" parent="MainIsland/Trees" instance=ExtResource("38_r")]
+transform = Transform3D(2.5635, 0, 1.9198, 0, 3.2027, 0, -1.9198, 0, 2.5635, 14.16, 4.50, -36.69)
+
+[node name="Tree59" parent="MainIsland/Trees" instance=ExtResource("35_r")]
+transform = Transform3D(0.6221, 0, 0.7047, 0, 0.9401, 0, -0.7047, 0, 0.6221, -23.57, 3.00, -4.04)
+
+[node name="Tree60" parent="MainIsland/Trees" instance=ExtResource("36_r")]
+transform = Transform3D(3.1420, 0, -0.4769, 0, 3.1780, 0, 0.4769, 0, 3.1420, -0.62, 9.00, -21.50)
+
+[node name="Tree61" parent="MainIsland/Trees" instance=ExtResource("38_r")]
+transform = Transform3D(0.1086, 0, 3.1103, 0, 3.1122, 0, -3.1103, 0, 0.1086, 20.10, 1.50, -35.59)
+
+[node name="Tree62" parent="MainIsland/Trees" instance=ExtResource("33_r")]
+transform = Transform3D(-2.2291, 0, 2.8199, 0, 3.5946, 0, -2.8199, 0, -2.2291, 9.13, 3.00, -48.80)
+
+[node name="Tree63" parent="MainIsland/Trees" instance=ExtResource("43_r")]
+transform = Transform3D(1.9839, 0, -0.6845, 0, 2.0987, 0, 0.6845, 0, 1.9839, 26.87, 3.00, -32.33)
+
+[node name="Tree64" parent="MainIsland/Trees" instance=ExtResource("35_r")]
+transform = Transform3D(-0.0327, 0, 1.1204, 0, 1.1208, 0, -1.1204, 0, -0.0327, -27.58, 1.50, -5.28)
+
+[node name="Tree65" parent="MainIsland/Trees" instance=ExtResource("43_r")]
+transform = Transform3D(-0.0658, 0, 2.4786, 0, 2.4795, 0, -2.4786, 0, -0.0658, -4.94, 6.00, -41.18)
+
+[node name="Tree66" parent="MainIsland/Trees" instance=ExtResource("32_r")]
+transform = Transform3D(-0.7009, 0, -2.4686, 0, 2.5662, 0, 2.4686, 0, -0.7009, -0.51, 6.00, -44.35)
+
+[node name="Tree67" parent="MainIsland/Trees" instance=ExtResource("33_r")]
+transform = Transform3D(-3.1092, 0, -0.1724, 0, 3.1140, 0, 0.1724, 0, -3.1092, -18.36, 6.00, -31.05)
+
+[node name="Tree68" parent="MainIsland/Trees" instance=ExtResource("37_r")]
+transform = Transform3D(-0.3745, 0, 2.4195, 0, 2.4483, 0, -2.4195, 0, -0.3745, -17.44, 4.50, -5.81)
+
+[node name="Tree69" parent="MainIsland/Trees" instance=ExtResource("41_r")]
+transform = Transform3D(-0.3731, 0, -1.8641, 0, 1.9011, 0, 1.8641, 0, -0.3731, -9.05, 4.50, -45.97)
+
+[node name="Tree70" parent="MainIsland/Trees" instance=ExtResource("44_r")]
+transform = Transform3D(-0.6250, 0, -0.7687, 0, 0.9907, 0, 0.7687, 0, -0.6250, -36.85, 3.00, -8.59)
+
+[node name="Tree71" parent="MainIsland/Trees" instance=ExtResource("41_r")]
+transform = Transform3D(-1.2227, 0, -1.6766, 0, 2.0751, 0, 1.6766, 0, -1.2227, -20.78, 6.00, -17.42)
+
+[node name="Tree72" parent="MainIsland/Trees" instance=ExtResource("33_r")]
+transform = Transform3D(-3.1300, 0, 1.8052, 0, 3.6133, 0, -1.8052, 0, -3.1300, 12.26, 7.50, -33.40)
+
+[node name="Tree73" parent="MainIsland/Trees" instance=ExtResource("43_r")]
+transform = Transform3D(2.3891, 0, -1.0763, 0, 2.6203, 0, 1.0763, 0, 2.3891, 3.44, 7.50, -41.03)
+
+[node name="Tree74" parent="MainIsland/Trees" instance=ExtResource("40_r")]
+transform = Transform3D(0.7472, 0, 0.4900, 0, 0.8935, 0, -0.4900, 0, 0.7472, 18.82, 4.50, -29.33)
+
+[node name="Tree75" parent="MainIsland/Trees" instance=ExtResource("44_r")]
+transform = Transform3D(0.6733, 0, 0.5851, 0, 0.8920, 0, -0.5851, 0, 0.6733, -26.20, 3.00, -7.98)
+
+[node name="Tree76" parent="MainIsland/Trees" instance=ExtResource("41_r")]
+transform = Transform3D(1.8315, 0, 0.8801, 0, 2.0320, 0, -0.8801, 0, 1.8315, 8.78, 4.50, -42.93)
+
+[node name="Tree77" parent="MainIsland/Trees" instance=ExtResource("35_r")]
+transform = Transform3D(-0.4791, 0, -0.7380, 0, 0.8799, 0, 0.7380, 0, -0.4791, -30.82, 3.00, -17.05)
+
+[node name="Tree78" parent="MainIsland/Trees" instance=ExtResource("44_r")]
+transform = Transform3D(-0.9375, 0, 0.2792, 0, 0.9782, 0, -0.2792, 0, -0.9375, -30.53, 3.00, -12.62)
+
+[node name="Tree79" parent="MainIsland/Trees" instance=ExtResource("38_r")]
+transform = Transform3D(3.3656, 0, 0.0885, 0, 3.3668, 0, -0.0885, 0, 3.3656, 12.44, 3.00, -49.01)
+
+[node name="Tree80" parent="MainIsland/Trees" instance=ExtResource("44_r")]
+transform = Transform3D(-0.8256, 0, 0.3256, 0, 0.8874, 0, -0.3256, 0, -0.8256, -27.82, 3.00, 2.12)
+
+[node name="Tree81" parent="MainIsland/Trees" instance=ExtResource("32_r")]
+transform = Transform3D(-2.4740, 0, -0.1449, 0, 2.4783, 0, 0.1449, 0, -2.4740, 15.77, 3.00, -45.61)
+
+[node name="Tree82" parent="MainIsland/Trees" instance=ExtResource("38_r")]
+transform = Transform3D(-3.0560, 0, -1.8049, 0, 3.5492, 0, 1.8049, 0, -3.0560, 24.40, 1.50, -35.29)
+
+[node name="Tree83" parent="MainIsland/Trees" instance=ExtResource("38_r")]
+transform = Transform3D(-3.5247, 0, 1.4047, 0, 3.7943, 0, -1.4047, 0, -3.5247, 24.21, 3.00, -39.46)
+
+[node name="Tree84" parent="MainIsland/Trees" instance=ExtResource("36_r")]
+transform = Transform3D(-0.0322, 0, 3.1793, 0, 3.1794, 0, -3.1793, 0, -0.0322, -26.11, 7.50, -18.97)
+
+[node name="Tree85" parent="MainIsland/Trees" instance=ExtResource("38_r")]
+transform = Transform3D(-3.7752, 0, -0.9780, 0, 3.8998, 0, 0.9780, 0, -3.7752, -13.04, 7.50, -14.77)
+
+[node name="Tree86" parent="MainIsland/Trees" instance=ExtResource("42_r")]
+transform = Transform3D(1.2243, 0, -3.3226, 0, 3.5409, 0, 3.3226, 0, 1.2243, 28.96, 1.50, -23.57)
+
+[node name="Tree87" parent="MainIsland/Trees" instance=ExtResource("32_r")]
+transform = Transform3D(2.5230, 0, -0.0936, 0, 2.5247, 0, 0.0936, 0, 2.5230, -24.86, 1.50, -35.56)
+
+[node name="Tree88" parent="MainIsland/Trees" instance=ExtResource("40_r")]
+transform = Transform3D(-0.8057, 0, -0.2741, 0, 0.8511, 0, 0.2741, 0, -0.8057, -30.83, 1.50, 0.99)
+
+[node name="Tree89" parent="MainIsland/Trees" instance=ExtResource("38_r")]
+transform = Transform3D(0.9681, 0, -3.5120, 0, 3.6430, 0, 3.5120, 0, 0.9681, -17.35, 1.50, -38.20)
+
+[node name="Tree90" parent="MainIsland/Trees" instance=ExtResource("38_r")]
+transform = Transform3D(-2.9544, 0, 1.1952, 0, 3.1870, 0, -1.1952, 0, -2.9544, 17.39, 3.00, -42.81)
+
+[node name="Tree91" parent="MainIsland/Trees" instance=ExtResource("37_r")]
+transform = Transform3D(1.5131, 0, 2.2749, 0, 2.7321, 0, -2.2749, 0, 1.5131, 15.03, 4.50, -3.88)
+
+[node name="Tree92" parent="MainIsland/Trees" instance=ExtResource("42_r")]
+transform = Transform3D(-1.3361, 0, 2.4642, 0, 2.8031, 0, -2.4642, 0, -1.3361, 26.08, 3.00, -27.37)
+
+[node name="Tree93" parent="MainIsland/Trees" instance=ExtResource("36_r")]
+transform = Transform3D(-2.7420, 0, -0.6525, 0, 2.8185, 0, 0.6525, 0, -2.7420, -8.05, 6.00, -41.72)
+
+[node name="Tree94" parent="MainIsland/Trees" instance=ExtResource("32_r")]
+transform = Transform3D(-1.5711, 0, -2.2409, 0, 2.7368, 0, 2.2409, 0, -1.5711, 8.48, 9.00, -27.43)
+
+[node name="Tree95" parent="MainIsland/Trees" instance=ExtResource("35_r")]
+transform = Transform3D(0.9071, 0, -0.1214, 0, 0.9152, 0, 0.1214, 0, 0.9071, -18.44, 3.00, 13.00)
+
+[node name="Tree96" parent="MainIsland/Trees" instance=ExtResource("43_r")]
+transform = Transform3D(-0.1152, 0, -2.4287, 0, 2.4314, 0, 2.4287, 0, -0.1152, -11.70, 6.00, -18.36)
+
+[node name="Tree97" parent="MainIsland/Trees" instance=ExtResource("35_r")]
+transform = Transform3D(0.3092, 0, -0.9517, 0, 1.0007, 0, 0.9517, 0, 0.3092, -15.81, 1.50, 21.95)
+
+[node name="Tree98" parent="MainIsland/Trees" instance=ExtResource("39_r")]
+transform = Transform3D(-0.5519, 0, -0.9204, 0, 1.0732, 0, 0.9204, 0, -0.5519, -33.46, 3.00, -10.07)
+
+[node name="Tree99" parent="MainIsland/Trees" instance=ExtResource("32_r")]
+transform = Transform3D(-0.8453, 0, 2.3780, 0, 2.5238, 0, -2.3780, 0, -0.8453, -16.02, 7.50, -11.18)
+
+[node name="Tree100" parent="MainIsland/Trees" instance=ExtResource("36_r")]
+transform = Transform3D(2.1206, 0, 1.8124, 0, 2.7896, 0, -1.8124, 0, 2.1206, -26.51, 7.50, -11.08)
+
+[node name="Tree101" parent="MainIsland/Trees" instance=ExtResource("43_r")]
+transform = Transform3D(1.6500, 0, -1.7607, 0, 2.4130, 0, 1.7607, 0, 1.6500, -17.94, 6.00, -35.16)
+
+[node name="Tree102" parent="MainIsland/Trees" instance=ExtResource("41_r")]
+transform = Transform3D(-2.3844, 0, 0.3148, 0, 2.4051, 0, -0.3148, 0, -2.3844, 6.10, 9.00, -25.03)
+
+[node name="Tree103" parent="MainIsland/Trees" instance=ExtResource("42_r")]
+transform = Transform3D(3.0828, 0, 1.4823, 0, 3.4207, 0, -1.4823, 0, 3.0828, 25.99, 3.00, 0.01)
+
+[node name="Plant1" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(2.2099, 0, 1.1689, 0, 2.5000, 0, -1.1689, 0, 2.2099, 33.99, 3.00, -26.46)
+
+[node name="Plant2" parent="MainIsland/Plants" instance=ExtResource("46_r")]
+transform = Transform3D(-1.5341, 0, -1.2832, 0, 2.0000, 0, 1.2832, 0, -1.5341, -8.66, 6.00, -14.12)
+
+[node name="Plant3" parent="MainIsland/Plants" instance=ExtResource("47_r")]
+transform = Transform3D(1.8738, 0, 0.6991, 0, 2.0000, 0, -0.6991, 0, 1.8738, -20.39, 4.50, -7.88)
+
+[node name="Plant4" parent="MainIsland/Plants" instance=ExtResource("47_r")]
+transform = Transform3D(-0.5333, 0, 1.9276, 0, 2.0000, 0, -1.9276, 0, -0.5333, 27.85, 3.00, -27.22)
+
+[node name="Plant5" parent="MainIsland/Plants" instance=ExtResource("47_r")]
+transform = Transform3D(-1.1994, 0, -1.6004, 0, 2.0000, 0, 1.6004, 0, -1.1994, 27.60, 3.00, 0.29)
+
+[node name="Plant6" parent="MainIsland/Plants" instance=ExtResource("46_r")]
+transform = Transform3D(1.9721, 0, 0.3326, 0, 2.0000, 0, -0.3326, 0, 1.9721, -18.26, 6.00, -15.75)
+
+[node name="Plant7" parent="MainIsland/Plants" instance=ExtResource("48_r")]
+transform = Transform3D(2.2549, 0, -1.0795, 0, 2.5000, 0, 1.0795, 0, 2.2549, 6.76, 3.00, -48.05)
+
+[node name="Plant8" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(1.5921, 0, 1.9275, 0, 2.5000, 0, -1.9275, 0, 1.5921, 26.87, 3.00, -2.32)
+
+[node name="Plant9" parent="MainIsland/Plants" instance=ExtResource("49_r")]
+transform = Transform3D(0.8787, 0, 1.7966, 0, 2.0000, 0, -1.7966, 0, 0.8787, -15.35, 6.00, -17.93)
+
+[node name="Plant10" parent="MainIsland/Plants" instance=ExtResource("50_r")]
+transform = Transform3D(0.6194, 0, -0.7851, 0, 1.0000, 0, 0.7851, 0, 0.6194, -27.36, 1.50, -26.60)
+
+[node name="Plant11" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(-2.4117, 0, -0.6585, 0, 2.5000, 0, 0.6585, 0, -2.4117, -5.12, 3.00, -6.40)
+
+[node name="Plant12" parent="MainIsland/Plants" instance=ExtResource("46_r")]
+transform = Transform3D(1.9324, 0, -0.5155, 0, 2.0000, 0, 0.5155, 0, 1.9324, 20.29, 3.00, -37.80)
+
+[node name="Plant13" parent="MainIsland/Plants" instance=ExtResource("49_r")]
+transform = Transform3D(1.3793, 0, -1.4483, 0, 2.0000, 0, 1.4483, 0, 1.3793, 6.29, 6.00, -42.90)
+
+[node name="Plant14" parent="MainIsland/Plants" instance=ExtResource("51_r")]
+transform = Transform3D(0.5777, 0, 2.9439, 0, 3.0000, 0, -2.9439, 0, 0.5777, 2.83, 13.50, -29.92)
+
+[node name="Plant15" parent="MainIsland/Plants" instance=ExtResource("52_r")]
+transform = Transform3D(-2.6491, 0, 1.4080, 0, 3.0000, 0, -1.4080, 0, -2.6491, -0.27, 12.00, -35.38)
+
+[node name="Plant16" parent="MainIsland/Plants" instance=ExtResource("46_r")]
+transform = Transform3D(1.5504, 0, 1.2635, 0, 2.0000, 0, -1.2635, 0, 1.5504, 13.99, 3.00, -44.61)
+
+[node name="Plant17" parent="MainIsland/Plants" instance=ExtResource("47_r")]
+transform = Transform3D(1.7791, 0, 0.9136, 0, 2.0000, 0, -0.9136, 0, 1.7791, -24.57, 4.50, -23.98)
+
+[node name="Plant18" parent="MainIsland/Plants" instance=ExtResource("53_r")]
+transform = Transform3D(0.4037, 0, -1.7541, 0, 1.8000, 0, 1.7541, 0, 0.4037, 5.12, 12.00, -30.48)
+
+[node name="Plant19" parent="MainIsland/Plants" instance=ExtResource("50_r")]
+transform = Transform3D(-0.1827, 0, -0.9832, 0, 1.0000, 0, 0.9832, 0, -0.1827, -28.80, 3.00, -11.41)
+
+[node name="Plant20" parent="MainIsland/Plants" instance=ExtResource("48_r")]
+transform = Transform3D(2.4795, 0, -0.3192, 0, 2.5000, 0, 0.3192, 0, 2.4795, -14.82, 6.00, -17.32)
+
+[node name="Plant21" parent="MainIsland/Plants" instance=ExtResource("46_r")]
+transform = Transform3D(1.6571, 0, 1.4470, 0, 2.2000, 0, -1.4470, 0, 1.6571, 0.52, 10.50, -38.29)
+
+[node name="Plant22" parent="MainIsland/Plants" instance=ExtResource("46_r")]
+transform = Transform3D(-0.9906, 0, -1.7375, 0, 2.0000, 0, 1.7375, 0, -0.9906, -18.66, 6.00, -15.15)
+
+[node name="Plant23" parent="MainIsland/Plants" instance=ExtResource("48_r")]
+transform = Transform3D(0.8919, 0, -2.3355, 0, 2.5000, 0, 2.3355, 0, 0.8919, -13.15, 6.00, -21.50)
+
+[node name="Plant24" parent="MainIsland/Plants" instance=ExtResource("50_r")]
+transform = Transform3D(-0.6676, 0, -0.7446, 0, 1.0000, 0, 0.7446, 0, -0.6676, -36.36, 3.00, -8.91)
+
+[node name="Plant25" parent="MainIsland/Plants" instance=ExtResource("46_r")]
+transform = Transform3D(1.8739, 0, -0.6989, 0, 2.0000, 0, 0.6989, 0, 1.8739, -14.40, 6.00, -6.13)
+
+[node name="Plant26" parent="MainIsland/Plants" instance=ExtResource("49_r")]
+transform = Transform3D(1.6239, 0, 1.1675, 0, 2.0000, 0, -1.1675, 0, 1.6239, -23.13, 7.50, -11.94)
+
+[node name="Plant27" parent="MainIsland/Plants" instance=ExtResource("54_r")]
+transform = Transform3D(0.9577, 0, -0.2879, 0, 1.0000, 0, 0.2879, 0, 0.9577, 30.55, 3.00, -31.17)
+
+[node name="Plant28" parent="MainIsland/Plants" instance=ExtResource("49_r")]
+transform = Transform3D(-1.7404, 0, 0.9854, 0, 2.0000, 0, -0.9854, 0, -1.7404, 13.09, 3.00, -2.92)
+
+[node name="Plant29" parent="MainIsland/Plants" instance=ExtResource("54_r")]
+transform = Transform3D(0.9551, 0, -0.2963, 0, 1.0000, 0, 0.2963, 0, 0.9551, -22.19, 3.00, -4.03)
+
+[node name="Plant30" parent="MainIsland/Plants" instance=ExtResource("52_r")]
+transform = Transform3D(-2.9922, 0, -0.2166, 0, 3.0000, 0, 0.2166, 0, -2.9922, -2.32, 10.50, -38.38)
+
+[node name="Plant31" parent="MainIsland/Plants" instance=ExtResource("54_r")]
+transform = Transform3D(0.9858, 0, 0.1681, 0, 1.0000, 0, -0.1681, 0, 0.9858, -18.13, 1.50, 15.30)
+
+[node name="Plant32" parent="MainIsland/Plants" instance=ExtResource("48_r")]
+transform = Transform3D(2.3852, 0, -0.7488, 0, 2.5000, 0, 0.7488, 0, 2.3852, 12.42, 7.50, -31.83)
+
+[node name="Plant33" parent="MainIsland/Plants" instance=ExtResource("54_r")]
+transform = Transform3D(0.9952, 0, -0.0978, 0, 1.0000, 0, 0.0978, 0, 0.9952, -19.89, 4.50, -8.51)
+
+[node name="Plant34" parent="MainIsland/Plants" instance=ExtResource("48_r")]
+transform = Transform3D(-0.9720, 0, 2.3033, 0, 2.5000, 0, -2.3033, 0, -0.9720, 9.07, 9.00, -27.17)
+
+[node name="Plant35" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(-0.6168, 0, -2.4227, 0, 2.5000, 0, 2.4227, 0, -0.6168, -12.16, 7.50, -27.97)
+
+[node name="Plant36" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(0.9788, 0, -2.3004, 0, 2.5000, 0, 2.3004, 0, 0.9788, -0.77, 3.00, -0.76)
+
+[node name="Plant37" parent="MainIsland/Plants" instance=ExtResource("52_r")]
+transform = Transform3D(2.9588, 0, 0.4958, 0, 3.0000, 0, -0.4958, 0, 2.9588, -0.16, 15.00, -29.10)
+
+[node name="Plant38" parent="MainIsland/Plants" instance=ExtResource("46_r")]
+transform = Transform3D(-1.2463, 0, -1.5642, 0, 2.0000, 0, 1.5642, 0, -1.2463, -6.87, 9.00, -20.35)
+
+[node name="Plant39" parent="MainIsland/Plants" instance=ExtResource("55_r")]
+transform = Transform3D(-2.7961, 0, 1.0870, 0, 3.0000, 0, -1.0870, 0, -2.7961, -30.08, 1.50, -23.60)
+
+[node name="Plant40" parent="MainIsland/Plants" instance=ExtResource("54_r")]
+transform = Transform3D(0.4945, 0, -0.8692, 0, 1.0000, 0, 0.8692, 0, 0.4945, -26.55, 3.00, -21.57)
+
+[node name="Plant41" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(-2.2670, 0, 1.0539, 0, 2.5000, 0, -1.0539, 0, -2.2670, 24.22, 3.00, -31.94)
+
+[node name="Plant42" parent="MainIsland/Plants" instance=ExtResource("46_r")]
+transform = Transform3D(1.9319, 0, 0.5174, 0, 2.0000, 0, -0.5174, 0, 1.9319, -2.53, 6.00, -15.45)
+
+[node name="Plant43" parent="MainIsland/Plants" instance=ExtResource("52_r")]
+transform = Transform3D(1.5729, 0, 2.5546, 0, 3.0000, 0, -2.5546, 0, 1.5729, 23.03, 6.00, -13.17)
+
+[node name="Plant44" parent="MainIsland/Plants" instance=ExtResource("50_r")]
+transform = Transform3D(0.8613, 0, 0.5080, 0, 1.0000, 0, -0.5080, 0, 0.8613, -24.13, 3.00, -30.90)
+
+[node name="Plant45" parent="MainIsland/Plants" instance=ExtResource("48_r")]
+transform = Transform3D(-2.4994, 0, 0.0560, 0, 2.5000, 0, -0.0560, 0, -2.4994, 27.11, 3.00, -35.10)
+
+[node name="Plant46" parent="MainIsland/Plants" instance=ExtResource("49_r")]
+transform = Transform3D(-1.2677, 0, -1.5469, 0, 2.0000, 0, 1.5469, 0, -1.2677, 13.88, 4.50, -33.33)
+
+[node name="Plant47" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(-1.1264, 0, -2.2319, 0, 2.5000, 0, 2.2319, 0, -1.1264, 9.71, 9.00, -32.27)
+
+[node name="Plant48" parent="MainIsland/Plants" instance=ExtResource("51_r")]
+transform = Transform3D(-1.1184, 0, 2.7837, 0, 3.0000, 0, -2.7837, 0, -1.1184, -2.99, 12.00, -36.94)
+
+[node name="Plant49" parent="MainIsland/Plants" instance=ExtResource("50_r")]
+transform = Transform3D(0.9971, 0, -0.0759, 0, 1.0000, 0, 0.0759, 0, 0.9971, -24.11, 3.00, -6.81)
+
+[node name="Plant50" parent="MainIsland/Plants" instance=ExtResource("49_r")]
+transform = Transform3D(-1.4749, 0, 1.3508, 0, 2.0000, 0, -1.3508, 0, -1.4749, 12.92, 7.50, -31.90)
+
+[node name="Plant51" parent="MainIsland/Plants" instance=ExtResource("49_r")]
+transform = Transform3D(-1.9990, 0, 0.0645, 0, 2.0000, 0, -0.0645, 0, -1.9990, 0.11, 9.00, -20.41)
+
+[node name="Plant52" parent="MainIsland/Plants" instance=ExtResource("49_r")]
+transform = Transform3D(-0.2456, 0, 1.9849, 0, 2.0000, 0, -1.9849, 0, -0.2456, 2.09, 7.50, -42.70)
+
+[node name="Plant53" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(1.6874, 0, -1.8446, 0, 2.5000, 0, 1.8446, 0, 1.6874, 33.50, 3.00, -22.93)
+
+[node name="Plant54" parent="MainIsland/Plants" instance=ExtResource("51_r")]
+transform = Transform3D(-2.5272, 0, -1.6166, 0, 3.0000, 0, 1.6166, 0, -2.5272, 2.54, 12.00, -36.25)
+
+[node name="Plant55" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(-2.2195, 0, 1.1505, 0, 2.5000, 0, -1.1505, 0, -2.2195, -9.82, 6.00, -41.23)
+
+[node name="Plant56" parent="MainIsland/Plants" instance=ExtResource("46_r")]
+transform = Transform3D(2.1602, 0, 0.4163, 0, 2.2000, 0, -0.4163, 0, 2.1602, -0.78, 15.00, -30.80)
+
+[node name="Plant57" parent="MainIsland/Plants" instance=ExtResource("51_r")]
+transform = Transform3D(1.4112, 0, -2.6473, 0, 3.0000, 0, 2.6473, 0, 1.4112, 26.56, 6.00, -12.11)
+
+[node name="Plant58" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(-2.4748, 0, 0.3541, 0, 2.5000, 0, -0.3541, 0, -2.4748, -15.13, 4.50, -20.93)
+
+[node name="Plant59" parent="MainIsland/Plants" instance=ExtResource("46_r")]
+transform = Transform3D(-1.7766, 0, -1.2975, 0, 2.2000, 0, 1.2975, 0, -1.7766, 17.98, 7.50, -21.52)
+
+[node name="Plant60" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(1.7001, 0, -1.8329, 0, 2.5000, 0, 1.8329, 0, 1.7001, -2.09, 6.00, -44.07)
+
+[node name="Plant61" parent="MainIsland/Plants" instance=ExtResource("46_r")]
+transform = Transform3D(-0.0431, 0, -1.9995, 0, 2.0000, 0, 1.9995, 0, -0.0431, -2.84, 6.00, -44.59)
+
+[node name="Plant62" parent="MainIsland/Plants" instance=ExtResource("54_r")]
+transform = Transform3D(0.9998, 0, 0.0219, 0, 1.0000, 0, -0.0219, 0, 0.9998, -2.89, 3.00, -11.64)
+
+[node name="Plant63" parent="MainIsland/Plants" instance=ExtResource("46_r")]
+transform = Transform3D(-1.9310, 0, 0.5207, 0, 2.0000, 0, -0.5207, 0, -1.9310, -3.62, 9.00, -21.16)
+
+[node name="Plant64" parent="MainIsland/Plants" instance=ExtResource("54_r")]
+transform = Transform3D(-0.9647, 0, -0.2632, 0, 1.0000, 0, 0.2632, 0, -0.9647, 26.98, 3.00, 2.81)
+
+[node name="Plant65" parent="MainIsland/Plants" instance=ExtResource("48_r")]
+transform = Transform3D(1.9122, 0, 1.6104, 0, 2.5000, 0, -1.6104, 0, 1.9122, -18.33, 6.00, -12.09)
+
+[node name="Plant66" parent="MainIsland/Plants" instance=ExtResource("53_r")]
+transform = Transform3D(-1.5857, 0, 0.8518, 0, 1.8000, 0, -0.8518, 0, -1.5857, 26.00, 6.00, -19.95)
+
+[node name="Plant67" parent="MainIsland/Plants" instance=ExtResource("53_r")]
+transform = Transform3D(1.1522, 0, 1.3829, 0, 1.8000, 0, -1.3829, 0, 1.1522, 3.24, 13.50, -29.17)
+
+[node name="Plant68" parent="MainIsland/Plants" instance=ExtResource("46_r")]
+transform = Transform3D(-0.7398, 0, 1.8581, 0, 2.0000, 0, -1.8581, 0, -0.7398, -7.98, 7.50, -20.29)
+
+[node name="Plant69" parent="MainIsland/Plants" instance=ExtResource("49_r")]
+transform = Transform3D(-1.0480, 0, 1.7035, 0, 2.0000, 0, -1.7035, 0, -1.0480, -9.53, 3.00, -2.00)
+
+[node name="Plant70" parent="MainIsland/Plants" instance=ExtResource("55_r")]
+transform = Transform3D(-0.8643, 0, 2.8728, 0, 3.0000, 0, -2.8728, 0, -0.8643, -17.01, 1.50, 18.01)
+
+[node name="Plant71" parent="MainIsland/Plants" instance=ExtResource("49_r")]
+transform = Transform3D(0.7780, 0, -1.8425, 0, 2.0000, 0, 1.8425, 0, 0.7780, 29.42, 3.00, -30.21)
+
+[node name="Plant72" parent="MainIsland/Plants" instance=ExtResource("46_r")]
+transform = Transform3D(1.6061, 0, -1.5034, 0, 2.2000, 0, 1.5034, 0, 1.6061, 24.19, 6.00, -20.58)
+
+[node name="Plant73" parent="MainIsland/Plants" instance=ExtResource("53_r")]
+transform = Transform3D(-1.7667, 0, 0.3444, 0, 1.8000, 0, -0.3444, 0, -1.7667, 15.39, 6.00, -9.34)
+
+[node name="Plant74" parent="MainIsland/Plants" instance=ExtResource("54_r")]
+transform = Transform3D(0.3232, 0, 0.9463, 0, 1.0000, 0, -0.9463, 0, 0.3232, 2.02, 3.00, -6.96)
+
+[node name="Plant75" parent="MainIsland/Plants" instance=ExtResource("48_r")]
+transform = Transform3D(2.5000, 0, -0.0082, 0, 2.5000, 0, 0.0082, 0, 2.5000, -18.37, 6.00, -31.07)
+
+[node name="Plant76" parent="MainIsland/Plants" instance=ExtResource("47_r")]
+transform = Transform3D(1.0732, 0, -1.6876, 0, 2.0000, 0, 1.6876, 0, 1.0732, -23.49, 4.50, -26.52)
+
+[node name="Plant77" parent="MainIsland/Plants" instance=ExtResource("46_r")]
+transform = Transform3D(1.1468, 0, -1.6386, 0, 2.0000, 0, 1.6386, 0, 1.1468, -5.25, 6.00, -17.53)
+
+[node name="Plant78" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(1.2965, 0, 2.1376, 0, 2.5000, 0, -2.1376, 0, 1.2965, -0.46, 6.00, -44.22)
+
+[node name="Plant79" parent="MainIsland/Plants" instance=ExtResource("53_r")]
+transform = Transform3D(1.1148, 0, -1.4133, 0, 1.8000, 0, 1.4133, 0, 1.1148, -2.47, 15.00, -29.49)
+
+[node name="Plant80" parent="MainIsland/Plants" instance=ExtResource("47_r")]
+transform = Transform3D(-1.9992, 0, 0.0569, 0, 2.0000, 0, -0.0569, 0, -1.9992, 30.44, 3.00, -26.69)
+
+[node name="Plant81" parent="MainIsland/Plants" instance=ExtResource("53_r")]
+transform = Transform3D(1.7406, 0, -0.4586, 0, 1.8000, 0, 0.4586, 0, 1.7406, -0.60, 12.00, -37.07)
+
+[node name="Plant82" parent="MainIsland/Plants" instance=ExtResource("48_r")]
+transform = Transform3D(2.2425, 0, 1.1050, 0, 2.5000, 0, -1.1050, 0, 2.2425, 9.67, 9.00, -36.51)
+
+[node name="Plant83" parent="MainIsland/Plants" instance=ExtResource("54_r")]
+transform = Transform3D(-0.8387, 0, -0.5446, 0, 1.0000, 0, 0.5446, 0, -0.8387, -17.76, 4.50, -18.70)
+
+[node name="Plant84" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(1.9649, 0, -1.5457, 0, 2.5000, 0, 1.5457, 0, 1.9649, -17.36, 6.00, -11.00)
+
+[node name="Plant85" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(2.4237, 0, 0.6129, 0, 2.5000, 0, -0.6129, 0, 2.4237, -0.22, 9.00, -41.36)
+
+[node name="Plant86" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(2.4924, 0, 0.1949, 0, 2.5000, 0, -0.1949, 0, 2.4924, -20.65, 4.50, -19.84)
+
+[node name="Plant87" parent="MainIsland/Plants" instance=ExtResource("54_r")]
+transform = Transform3D(-0.6736, 0, 0.7391, 0, 1.0000, 0, -0.7391, 0, -0.6736, -23.88, 3.00, -3.63)
+
+[node name="Plant88" parent="MainIsland/Plants" instance=ExtResource("48_r")]
+transform = Transform3D(2.0274, 0, -1.4627, 0, 2.5000, 0, 1.4627, 0, 2.0274, 25.82, 3.00, -36.95)
+
+[node name="Plant89" parent="MainIsland/Plants" instance=ExtResource("55_r")]
+transform = Transform3D(1.0586, 0, -2.8070, 0, 3.0000, 0, 2.8070, 0, 1.0586, -17.23, 1.50, 16.85)
+
+[node name="Plant90" parent="MainIsland/Plants" instance=ExtResource("49_r")]
+transform = Transform3D(1.8531, 0, 0.7523, 0, 2.0000, 0, -0.7523, 0, 1.8531, 26.57, 3.00, 2.14)
+
+[node name="Plant91" parent="MainIsland/Plants" instance=ExtResource("46_r")]
+transform = Transform3D(-1.9582, 0, -0.4067, 0, 2.0000, 0, 0.4067, 0, -1.9582, -13.97, 6.00, -42.96)
+
+[node name="Plant92" parent="MainIsland/Plants" instance=ExtResource("46_r")]
+transform = Transform3D(1.8712, 0, -0.7062, 0, 2.0000, 0, 0.7062, 0, 1.8712, -3.30, 6.00, -14.81)
+
+[node name="Plant93" parent="MainIsland/Plants" instance=ExtResource("49_r")]
+transform = Transform3D(-1.9903, 0, 0.1967, 0, 2.0000, 0, -0.1967, 0, -1.9903, -10.11, 6.00, -42.20)
+
+[node name="Plant94" parent="MainIsland/Plants" instance=ExtResource("55_r")]
+transform = Transform3D(-0.8937, 0, -2.8638, 0, 3.0000, 0, 2.8638, 0, -0.8937, -29.66, 1.50, -24.92)
+
+[node name="Plant95" parent="MainIsland/Plants" instance=ExtResource("54_r")]
+transform = Transform3D(-0.7443, 0, 0.6678, 0, 1.0000, 0, -0.6678, 0, -0.7443, -14.52, 4.50, -21.34)
+
+[node name="Plant96" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(0.3618, 0, -2.4737, 0, 2.5000, 0, 2.4737, 0, 0.3618, -3.57, 9.00, -21.73)
+
+[node name="Plant97" parent="MainIsland/Plants" instance=ExtResource("46_r")]
+transform = Transform3D(0.0423, 0, -1.9996, 0, 2.0000, 0, 1.9996, 0, 0.0423, 6.97, 4.50, -45.14)
+
+[node name="Plant98" parent="MainIsland/Plants" instance=ExtResource("53_r")]
+transform = Transform3D(1.0199, 0, 1.4832, 0, 1.8000, 0, -1.4832, 0, 1.0199, -3.50, 12.00, -36.96)
+
+[node name="Plant99" parent="MainIsland/Plants" instance=ExtResource("51_r")]
+transform = Transform3D(1.3454, 0, 2.6814, 0, 3.0000, 0, -2.6814, 0, 1.3454, 2.72, 12.00, -36.78)
+
+[node name="Plant100" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(1.1292, 0, 2.2305, 0, 2.5000, 0, -2.2305, 0, 1.1292, 23.12, 3.00, -29.17)
+
+[node name="Plant101" parent="MainIsland/Plants" instance=ExtResource("55_r")]
+transform = Transform3D(-0.3707, 0, 2.9770, 0, 3.0000, 0, -2.9770, 0, -0.3707, -37.06, 3.00, -9.03)
+
+[node name="Plant102" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(1.8094, 0, 1.7251, 0, 2.5000, 0, -1.7251, 0, 1.8094, -5.51, 6.00, -17.68)
+
+[node name="Plant103" parent="MainIsland/Plants" instance=ExtResource("48_r")]
+transform = Transform3D(1.3934, 0, -2.0757, 0, 2.5000, 0, 2.0757, 0, 1.3934, 14.60, 4.50, -36.80)
+
+[node name="Plant104" parent="MainIsland/Plants" instance=ExtResource("54_r")]
+transform = Transform3D(0.9836, 0, 0.1801, 0, 1.0000, 0, -0.1801, 0, 0.9836, 26.49, 3.00, -30.18)
+
+[node name="Plant105" parent="MainIsland/Plants" instance=ExtResource("50_r")]
+transform = Transform3D(0.9671, 0, 0.2546, 0, 1.0000, 0, -0.2546, 0, 0.9671, -27.31, 3.00, -9.86)
+
+[node name="Plant106" parent="MainIsland/Plants" instance=ExtResource("47_r")]
+transform = Transform3D(-1.7171, 0, -1.0255, 0, 2.0000, 0, 1.0255, 0, -1.7171, 8.03, 3.00, -6.58)
+
+[node name="Plant107" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(1.5104, 0, 1.9922, 0, 2.5000, 0, -1.9922, 0, 1.5104, -18.90, 6.00, -29.90)
+
+[node name="Plant108" parent="MainIsland/Plants" instance=ExtResource("46_r")]
+transform = Transform3D(-1.6911, 0, 1.4072, 0, 2.2000, 0, -1.4072, 0, -1.6911, 6.10, 12.00, -30.76)
+
+[node name="Plant109" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(1.9382, 0, -1.5791, 0, 2.5000, 0, 1.5791, 0, 1.9382, -16.10, 7.50, -12.10)
+
+[node name="Plant110" parent="MainIsland/Plants" instance=ExtResource("54_r")]
+transform = Transform3D(-0.9999, 0, 0.0150, 0, 1.0000, 0, -0.0150, 0, -0.9999, -25.07, 3.00, -5.56)
+
+[node name="Plant111" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(1.2105, 0, 2.1874, 0, 2.5000, 0, -2.1874, 0, 1.2105, -18.07, 4.50, 1.14)
+
+[node name="Plant112" parent="MainIsland/Plants" instance=ExtResource("49_r")]
+transform = Transform3D(-1.9719, 0, -0.3342, 0, 2.0000, 0, 0.3342, 0, -1.9719, 2.91, 4.50, -45.39)
+
+[node name="Plant113" parent="MainIsland/Plants" instance=ExtResource("55_r")]
+transform = Transform3D(-2.5435, 0, -1.5908, 0, 3.0000, 0, 1.5908, 0, -2.5435, -33.52, 1.50, -12.62)
+
+[node name="Plant114" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(1.9436, 0, -1.5724, 0, 2.5000, 0, 1.5724, 0, 1.9436, 27.73, 3.00, -27.68)
+
+[node name="Plant115" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(2.2385, 0, 1.1131, 0, 2.5000, 0, -1.1131, 0, 2.2385, 21.63, 3.00, -38.64)
+
+[node name="Plant116" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(1.4415, 0, 2.0426, 0, 2.5000, 0, -2.0426, 0, 1.4415, 11.15, 9.00, -29.18)
+
+[node name="Plant117" parent="MainIsland/Plants" instance=ExtResource("45_r")]
+transform = Transform3D(-2.4046, 0, -0.6839, 0, 2.5000, 0, 0.6839, 0, -2.4046, 9.66, 3.00, -45.18)
+
+[node name="Plant118" parent="MainIsland/Plants" instance=ExtResource("49_r")]
+transform = Transform3D(1.7269, 0, -1.0089, 0, 2.0000, 0, 1.0089, 0, 1.7269, 21.46, 4.50, -30.18)
+
+[node name="Plant119" parent="MainIsland/Plants" instance=ExtResource("50_r")]
+transform = Transform3D(0.0291, 0, -0.9996, 0, 1.0000, 0, 0.9996, 0, 0.0291, -31.84, 1.50, -14.82)
+
+[node name="Plant120" parent="MainIsland/Plants" instance=ExtResource("53_r")]
+transform = Transform3D(1.5041, 0, -0.9887, 0, 1.8000, 0, 0.9887, 0, 1.5041, 3.27, 10.50, -39.10)
+
+[node name="Palm1" parent="MainIsland/Trees" instance=ExtResource("39_r")]
+transform = Transform3D(0.6942, 0, -0.5728, 0, 0.9000, 0, 0.5728, 0, 0.6942, -7.50, 3.00, -12.00)
+
+[node name="Palm2" parent="MainIsland/Trees" instance=ExtResource("35_r")]
+transform = Transform3D(0.5644, 0, 0.7011, 0, 0.9000, 0, -0.7011, 0, 0.5644, 0.50, 3.00, -5.00)
+
+[node name="FishingCamp" type="Node3D" parent="MainIsland"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, -27.00, 1.50, -6.00)
+
+[node name="Tent1" parent="MainIsland/FishingCamp" instance=ExtResource("56_r")]
+transform = Transform3D(1.2683, 0, 3.2621, 0, 3.5000, 0, -3.2621, 0, 1.2683, 0.00, 0.00, 0.00)
+
+[node name="Stand1" parent="MainIsland/FishingCamp" instance=ExtResource("57_r")]
+transform = Transform3D(3.6842, 0, 1.5577, 0, 4.0000, 0, -1.5577, 0, 3.6842, 1.80, 0.00, 1.80)
+
+[node name="Fire1" parent="MainIsland/FishingCamp" instance=ExtResource("15_r")]
+transform = Transform3D(4.0000, 0, 0.0000, 0, 4.0000, 0, -0.0000, 0, 4.0000, 1.80, 0.00, 1.80)
+
+[node name="Barrel1" parent="MainIsland/FishingCamp" instance=ExtResource("58_r")]
+transform = Transform3D(3.5000, 0, 0.0000, 0, 3.5000, 0, -0.0000, 0, 3.5000, -1.40, 0.00, 1.60)
+
+[node name="Bucket1" parent="MainIsland/FishingCamp" instance=ExtResource("59_r")]
+transform = Transform3D(3.5000, 0, 0.0000, 0, 3.5000, 0, -0.0000, 0, 3.5000, -0.60, 0.00, 2.20)
+
+[node name="Harbour" type="Node3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 0.00, 0.00, 0.00)
+
+[node name="Dock" type="Node3D" parent="Harbour"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 0.00, 0.00, 0.00)
+
+[node name="Deck1" parent="Harbour/Dock" instance=ExtResource("60_r")]
+transform = Transform3D(1.2000, 0, 0.0000, 0, 1.2000, 0, -0.0000, 0, 1.2000, 0.00, -0.92, 4.00)
+
+[node name="Deck2" parent="Harbour/Dock" instance=ExtResource("60_r")]
+transform = Transform3D(1.2000, 0, 0.0000, 0, 1.2000, 0, -0.0000, 0, 1.2000, 0.00, -0.92, 7.00)
+
+[node name="Deck3" parent="Harbour/Dock" instance=ExtResource("60_r")]
+transform = Transform3D(1.2000, 0, 0.0000, 0, 1.2000, 0, -0.0000, 0, 1.2000, 0.00, -0.92, 10.00)
+
+[node name="DockStairs1" parent="Harbour/Dock" instance=ExtResource("9_r")]
+transform = Transform3D(2.4000, 0, 0.0000, 0, 2.6111, 0, -0.0000, 0, 2.5000, 0.00, 0.65, 2.80)
+
+[node name="DockLamp1" parent="Harbour/Dock" instance=ExtResource("11_r")]
+transform = Transform3D(-2.0000, 0, 0.0000, 0, 2.0000, 0, -0.0000, 0, -2.0000, -1.25, 0.65, 11.00)
+
+[node name="DockLamp2" parent="Harbour/Dock" instance=ExtResource("11_r")]
+transform = Transform3D(2.0000, 0, 0.0000, 0, 2.0000, 0, -0.0000, 0, 2.0000, 1.25, 0.65, 11.00)
+
+[node name="Barrel1" parent="Harbour/Dock" instance=ExtResource("24_r")]
+transform = Transform3D(0.5732, 0, 0.1773, 0, 0.6000, 0, -0.1773, 0, 0.5732, -1.00, 0.65, 8.50)
+
+[node name="Barrel2" parent="Harbour/Dock" instance=ExtResource("24_r")]
+transform = Transform3D(0.2722, 0, 0.5347, 0, 0.6000, 0, -0.5347, 0, 0.2722, -1.00, 0.65, 9.40)
+
+[node name="Crate1" parent="Harbour/Dock" instance=ExtResource("23_r")]
+transform = Transform3D(0.7350, 0, 0.1490, 0, 0.7500, 0, -0.1490, 0, 0.7350, 1.00, 0.65, 5.50)
+
+[node name="Crate2" parent="Harbour/Dock" instance=ExtResource("22_r")]
+transform = Transform3D(0.6687, 0, -0.2069, 0, 0.7000, 0, 0.2069, 0, 0.6687, 1.00, 0.65, 6.60)
+
+[node name="Fish1" parent="Harbour/Dock" instance=ExtResource("61_r")]
+transform = Transform3D(2.6327, 0, 1.4383, 0, 3.0000, 0, -1.4383, 0, 2.6327, 0.90, 1.20, 5.60)
+
+[node name="Breakwaters" type="Node3D" parent="Harbour"]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 0.00, 0.00, 0.00)
+
+[node name="Rock1" parent="Harbour/Breakwaters" instance=ExtResource("19_r")]
+transform = Transform3D(0.0937, 0, -0.6937, 0, 0.7000, 0, 0.6937, 0, 0.0937, -14.50, -0.40, 20.00)
+
+[node name="Rock2" parent="Harbour/Breakwaters" instance=ExtResource("17_r")]
+transform = Transform3D(0.6208, 0, -0.3235, 0, 0.7000, 0, 0.3235, 0, 0.6208, -13.80, -0.40, 21.80)
+
+[node name="Rock3" parent="Harbour/Breakwaters" instance=ExtResource("17_r")]
+transform = Transform3D(0.6877, 0, -0.1305, 0, 0.7000, 0, 0.1305, 0, 0.6877, 14.50, -0.40, 20.00)
+
+[node name="Rock4" parent="Harbour/Breakwaters" instance=ExtResource("17_r")]
+transform = Transform3D(-0.0754, 0, 0.6959, 0, 0.7000, 0, -0.6959, 0, -0.0754, 13.80, -0.40, 21.80)
+
+[node name="Buoy1" parent="Harbour" instance=ExtResource("62_r")]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, -12.00, 0.00, 23.50)
+
+[node name="Buoy2" parent="Harbour" instance=ExtResource("62_r")]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 12.00, 0.00, 23.50)
+
+[node name="Boathouse1" parent="Harbour" instance=ExtResource("63_r")]
+transform = Transform3D(-1.2000, 0, 0.0000, 0, 1.2000, 0, -0.0000, 0, -1.2000, -11.00, 0.00, 4.60)
+
+[node name="IsletNorthWest" type="Node3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, -55.00, 0.00, -50.00)
+
+[node name="Sand1" parent="IsletNorthWest" instance=ExtResource("28_r")]
+transform = Transform3D(-0.7159, 0, 1.4309, 0, 1.6000, 0, -1.4309, 0, -0.7159, 0.00, 0.00, 0.00)
+
+[node name="Piece1" parent="IsletNorthWest" instance=ExtResource("30_r")]
+transform = Transform3D(0.7002, 0, 0.9746, 0, 1.2000, 0, -0.9746, 0, 0.7002, 1.00, 0.30, -0.50)
+
+[node name="Piece2" parent="IsletNorthWest" instance=ExtResource("44_r")]
+transform = Transform3D(-0.6413, 0, -0.8937, 0, 1.1000, 0, 0.8937, 0, -0.6413, -2.00, 0.30, 1.00)
+
+[node name="Piece3" parent="IsletNorthWest" instance=ExtResource("35_r")]
+transform = Transform3D(0.8982, 0, 0.4396, 0, 1.0000, 0, -0.4396, 0, 0.8982, 2.50, 0.30, 2.00)
+
+[node name="IsletNorthEast" type="Node3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 60.00, 0.00, -40.00)
+
+[node name="Sand1" parent="IsletNorthEast" instance=ExtResource("28_r")]
+transform = Transform3D(-1.5595, 0, -0.3577, 0, 1.6000, 0, 0.3577, 0, -1.5595, 0.00, 0.00, 0.00)
+
+[node name="Piece1" parent="IsletNorthEast" instance=ExtResource("19_r")]
+transform = Transform3D(-0.7975, 0, 0.8967, 0, 1.2000, 0, -0.8967, 0, -0.7975, 1.00, 0.30, -0.50)
+
+[node name="Piece2" parent="IsletNorthEast" instance=ExtResource("18_r")]
+transform = Transform3D(1.0278, 0, 0.3920, 0, 1.1000, 0, -0.3920, 0, 1.0278, -2.00, 0.30, 1.00)
+
+[node name="Piece3" parent="IsletNorthEast" instance=ExtResource("17_r")]
+transform = Transform3D(-0.9989, 0, -0.0467, 0, 1.0000, 0, 0.0467, 0, -0.9989, 2.50, 0.30, 2.00)
+
+[node name="IsletWest" type="Node3D" parent="."]
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, -78.00, 0.00, 58.00)
+
+[node name="Sand1" parent="IsletWest" instance=ExtResource("28_r")]
+transform = Transform3D(1.5558, 0, 0.3735, 0, 1.6000, 0, -0.3735, 0, 1.5558, 0.00, 0.00, 0.00)
+
+[node name="Piece1" parent="IsletWest" instance=ExtResource("64_r")]
+transform = Transform3D(-1.0972, 0, 0.4859, 0, 1.2000, 0, -0.4859, 0, -1.0972, 1.00, 0.30, -0.50)
+
+[node name="Piece2" parent="IsletWest" instance=ExtResource("40_r")]
+transform = Transform3D(0.9957, 0, 0.4675, 0, 1.1000, 0, -0.4675, 0, 0.9957, -2.00, 0.30, 1.00)
+
+[node name="Piece3" parent="IsletWest" instance=ExtResource("29_r")]
+transform = Transform3D(0.8419, 0, 0.5396, 0, 1.0000, 0, -0.5396, 0, 0.8419, 2.50, 0.30, 2.00)
