@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Fishopoly"
 config/description="First greybox: tier 1 of the Fishopoly economy with box art."
-run/main_scene="res://scenes/main.tscn"
+run/main_scene="res://scenes/title.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 
 [autoload]

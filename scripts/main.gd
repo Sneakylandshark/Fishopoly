@@ -27,6 +27,8 @@ var buoy_mesh := SphereMesh.new()
 var animating := false
 # Which building menu is open ("" = none). "fish" is the dock / harbor menu.
 var open_menu := ""
+# True when the title screen uses this scene as its moving background: no menus, no clicks, the camera circles on its own
+var showcase := false
 
 # The Town Hall window: Build (buy buildings), Fleet (where boats work, your buildings) and Ledger (the day log) tabs
 @onready var town_hall: PanelContainer = $UI/TownHallWindow
@@ -95,6 +97,8 @@ func _ready() -> void:
 	_rebuild_boats()
 	_show_weather("normal")
 	refresh()
+	if showcase:
+		_start_showcase()
 
 
 func _on_changed() -> void:
@@ -124,6 +128,9 @@ func refresh() -> void:
 # ---------- Clicking buildings ----------
 
 func _unhandled_input(event: InputEvent) -> void:
+	# The title screen's background ignores the mouse and keys
+	if showcase:
+		return
 	if _camera_input(event):
 		return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
@@ -1868,6 +1875,11 @@ func _camera_input(event: InputEvent) -> bool:
 
 
 func _process(delta: float) -> void:
+	# Title screen background: the camera slowly circles the island
+	if showcase:
+		cam_yaw += deg_to_rad(SHOWCASE_TURN * delta)
+		_apply_camera()
+		return
 	_keep_windows_on_screen()
 	var turn := 0.0
 	if Input.is_physical_key_pressed(KEY_Q):
@@ -1932,3 +1944,78 @@ func _fit_paper() -> void:
 	var panel: Control = $UI/Newspaper
 	panel.reset_size()
 	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER, Control.PRESET_MODE_MINSIZE)
+
+
+# ---------- Title screen background (showcase) ----------
+# title.gd fills the Game with an end-game island (every building, a big fleet) before this scene starts.
+# Here the boats then work through pretend days on a loop: they head out, move to new spots,
+# pirates and smugglers go on voyages, the mail boat calls and visitors come and go.
+
+# Degrees per second the camera circles the island
+const SHOWCASE_TURN := 3.0
+# Seconds of each pretend day: boats nudging out, then sailing to their new spots
+const SHOWCASE_HEAD_OUT := 1.2
+const SHOWCASE_DAY := 7.5
+var show_timer: Timer
+var show_step := 0
+
+
+func _start_showcase() -> void:
+	$UI.visible = false
+	_show_weather("perfect")
+	# A clean picture: no deep sea strip, and no name tags over buildings and zones (the harbour's shallow water stays)
+	$DeepSea.visible = false
+	for label in find_children("*", "Label3D", true, false):
+		label.visible = false
+	# Pull back so the whole island fits, and shift the view so the island sits right of the menu
+	cam_dist = 92.0
+	$Camera3D.h_offset = -14.0
+	_apply_camera()
+	show_timer = Timer.new()
+	show_timer.one_shot = true
+	add_child(show_timer)
+	show_timer.timeout.connect(_showcase_step)
+	show_timer.start(1.5)
+
+
+func _showcase_step() -> void:
+	show_step += 1
+	# Odd steps: the morning nudge, like Start Day
+	if show_step % 2 == 1:
+		for i in boat_nodes.size():
+			var n: Node3D = boat_nodes[i]
+			# Oil rigs stay put
+			if Game.boats[i].kind == "rig":
+				continue
+			if n.visible and Time.get_ticks_msec() >= int(n.get_meta("busy_until", 0)):
+				n.head_out(3.0, SHOWCASE_HEAD_OUT)
+		show_timer.start(SHOWCASE_HEAD_OUT)
+		return
+	# Even steps: a new day's spots for everyone
+	var day := show_step / 2
+	_shuffle_showcase_boats()
+	_place_boats(4.0)
+	# The mail boat calls every third day, visitors every fourth
+	Game.news_unread = day % 3 == 1
+	_update_mail()
+	Game.pending_offer = 0 if day % 4 == 2 else -1
+	_update_visitor_ship()
+	# Mostly fine weather, with the odd grey day
+	_show_weather("normal" if day % 5 == 4 else "perfect")
+	show_timer.start(SHOWCASE_DAY)
+
+
+func _shuffle_showcase_boats() -> void:
+	for b in Game.boats:
+		match b.kind:
+			"fish":
+				b.zone = ["harbor", "harbor", "deep", "deep", "dock"].pick_random()
+			"crab":
+				b.zone = ["harbor", "deep"].pick_random()
+			"smuggler":
+				# About a third change plans each day: home cove, hiding in the sea cave, or off on a voyage
+				if randf() < 0.35:
+					b.zone = ["harbor", "hidden", "voyage"].pick_random()
+			"pirate":
+				if randf() < 0.3:
+					b.zone = "harbor" if b.zone == "voyage" else "voyage"
