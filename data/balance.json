@@ -837,5 +837,59 @@
 			{"id": "ch_banker", "needs": ["champion:The Banker"], "lines": [["The Banker", "Delighted to meet a fellow lender! We must do lunch."], ["The Silent Partner", "..."], ["The Banker", "Strictly business. Quite right. I'll... see myself out."]]}
 		]
 	},
+	"guide": {
+		"_read_me": "First-run tips. Each shows once, the first time it fits, and never again on this PC (kept in meta.json). 'when' must be one of: start, after_day1, can_build, built, bills, loan, tier2, tier3. Wording is PROPOSED: change it freely.",
+		"speaker": "event",
+		"steps": [
+			{
+				"id": "start",
+				"when": "start",
+				"title": "Welcome to the island",
+				"text": "You've got one fishing boat, $500 and a landlord. Save enough to buy the island off the Crown. The price is in the top bar.\n\nYour boat starts in the harbour: safe, but a small catch. Press [b]Start Day[/b] to send it out.\n\nForget something? The [b]? How to play[/b] button in the top bar has the lot."
+			},
+			{
+				"id": "after_day1",
+				"when": "after_day1",
+				"title": "Your first catch",
+				"text": "The weather is a secret until the boats head out. Good days pay more, storms are dangerous.\n\nTo change where a boat works, open the [b]Town Hall[/b] (bottom of the screen) and use the [b]Fleet[/b] tab."
+			},
+			{
+				"id": "can_build",
+				"when": "can_build",
+				"title": "You can build",
+				"text": "You've got enough for a new building. Open the [b]Town Hall[/b] and look at the [b]Build[/b] tab.\n\nWatch [b]Safe to spend[/b] in the top bar. Rent and tax come every 7 days, so don't spend the money you need for them."
+			},
+			{
+				"id": "built",
+				"when": "built",
+				"title": "Your first building",
+				"text": "It's standing on the island now. Click it to buy more units and upgrades. That's how a building earns more."
+			},
+			{
+				"id": "bills",
+				"when": "bills",
+				"title": "Bill day",
+				"text": "Every 7 days you pay rent and tax. Rent goes up as time passes, so keep growing.\n\nIf you can't pay, the Silent Partner lends you the rest, at steep interest. Pay it back fast."
+			},
+			{
+				"id": "loan",
+				"when": "loan",
+				"title": "You owe the Silent Partner",
+				"text": "Pay the loan back before the due date in the top bar, or the Silent Partner sells your things."
+			},
+			{
+				"id": "tier2",
+				"when": "tier2",
+				"title": "Tier 2 is open",
+				"text": "Salvage, treasure and whaling are on the Build tab now. The new trades also make your old ones earn more."
+			},
+			{
+				"id": "tier3",
+				"when": "tier3",
+				"title": "Dirty work",
+				"text": "Smuggling and piracy pay well, but they raise suspicion. Too much and the Crown investigates. Hide ships in the Hidden Moorings or pay off officials to cool things down."
+			}
+		]
+	},
 	"unit_price_growth": 1.2
 }

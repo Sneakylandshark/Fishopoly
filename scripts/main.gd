@@ -110,6 +110,9 @@ func _on_changed() -> void:
 
 
 func refresh() -> void:
+	# A first-run tip, if one fits right now (shows in the talk panel below)
+	if not showcase:
+		Game.guide_tick()
 	_update_top_bar()
 	if $UI/RunPanel.visible:
 		$UI/RunPanel/Box/Text.text = _run_text()

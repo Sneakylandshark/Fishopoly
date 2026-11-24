@@ -146,6 +146,8 @@ var history: Dictionary = {}
 var story: Array = []
 # Banter scenes already played this run (each plays once), and the day the last one played
 var banter_done: Array = []
+# First-run guide: which tips the player has already seen (kept between runs in meta.json)
+var guide_done: Array = []
 var banter_last := 0
 # Banter has its own dice, so adding or changing scenes never changes the weather, catches or events
 var banter_rng := RandomNumberGenerator.new()
@@ -1506,6 +1508,48 @@ func _banter_tick(report: Dictionary) -> void:
 		story.append({"day": day, "who": who, "role": role_of(who), "title": scene.get("title", b.title) if i == 0 else "", "text": scene.lines[i][1]})
 
 
+# ---------- First-run guide: one short tip the first time each thing happens ----------
+
+func guide_tick() -> void:
+	# Real games only (tests and the title screen skip it), and only between days with nothing else on screen
+	if not save_enabled or over or not story.is_empty() or not pending_pick.is_empty() or pending_offer >= 0 or pending_push >= 0:
+		return
+	var g: Dictionary = data.get("guide", {})
+	for step in g.get("steps", []):
+		if guide_done.has(step.id) or not _guide_ok(str(step.when)):
+			continue
+		guide_done.append(step.id)
+		_save_meta()
+		var sp: Dictionary = data.story.speakers.get(str(g.speaker), {"name": "Old Gus", "role": ""})
+		story.append({"day": day, "who": sp.name, "role": sp.role, "title": step.title, "text": step.text})
+		return
+
+
+func _guide_ok(when: String) -> bool:
+	match when:
+		"start":
+			return true
+		"after_day1":
+			return day >= 1
+		"can_build":
+			for key in data.avenues:
+				var a: Dictionary = data.avenues[key]
+				if int(a.tier) == 1 and not built.has(key) and not a.has("champion") and not a.has("info") and not a.has("graphs") and cash >= build_price(key):
+					return true
+			return false
+		"built":
+			return not built.is_empty()
+		"bills":
+			return day >= 7
+		"loan":
+			return loan > 0
+		"tier2":
+			return tier_open(2)
+		"tier3":
+			return tier_open(3)
+	return false
+
+
 func _banter_ok(scene: Dictionary, report: Dictionary) -> bool:
 	# Every "needs" rule must hold. Rules: day:N, built:key, advisor:key, advisor:key:a, offer:id:a,
 	# champion:Name, loan, suspicion:N, weather:storm
@@ -2676,6 +2720,7 @@ func favour_decree() -> bool:
 
 func _load_meta() -> void:
 	unlocked = []
+	guide_done = []
 	for c in data.champions.list:
 		if c.unlock == "start":
 			unlocked.append(c.id)
@@ -2686,13 +2731,14 @@ func _load_meta() -> void:
 			for id in parsed.get("unlocked", []):
 				if not unlocked.has(id):
 					unlocked.append(id)
+			guide_done = parsed.get("guide", [])
 
 
 func _save_meta() -> void:
 	if not save_enabled:
 		return
 	var f := FileAccess.open(META_PATH, FileAccess.WRITE)
-	f.store_string(JSON.stringify({"unlocked": unlocked}))
+	f.store_string(JSON.stringify({"unlocked": unlocked, "guide": guide_done}))
 
 
 func _unlock_met(rule: String) -> bool:
